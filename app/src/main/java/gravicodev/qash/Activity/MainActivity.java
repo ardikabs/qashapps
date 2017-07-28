@@ -38,14 +38,14 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_home);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_generate_qr);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_scan_qr);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_generateqr);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_scanqr);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_history);
 
         tabLayout.getTabAt(0).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#1E2A6C"), PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(2).getIcon().setColorFilter(Color.parseColor("#1E2A6C"), PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(3).getIcon().setColorFilter(Color.parseColor("#1E2A6C"), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(3).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
 
         tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager){
             @Override
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.getIcon().setColorFilter(Color.parseColor("#1E2A6C"), PorterDuff.Mode.SRC_IN);
+                tab.getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
             }
 
             @Override
