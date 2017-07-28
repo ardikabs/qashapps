@@ -10,7 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import gravicodev.qash.Helper.ApiHelper;
 import gravicodev.qash.R;
+import gravicodev.qash.Volley.VolleyHelper;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
@@ -40,6 +47,10 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplication(), "Sign Up", Toast.LENGTH_SHORT).show();
             }
         });
+
+        VolleyHelper vh = new VolleyHelper();
+        vh.getToken();
+
     }
 
     private void loginAccount(){
