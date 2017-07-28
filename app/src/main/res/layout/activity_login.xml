@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorPrimaryDark"
     android:fitsSystemWindows="true"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".Activity.LoginActivity">
@@ -20,12 +20,12 @@
         android:paddingStart="8dp">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"
             android:layout_marginBottom="8dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_generate_qr" />
+            android:src="@drawable/ic_qash" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/emailLogin"
@@ -76,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/colorPrimary"
         android:text="@string/signup_now"
         android:textAllCaps="false"
         android:textAppearance="?android:textAppearanceSmall"
