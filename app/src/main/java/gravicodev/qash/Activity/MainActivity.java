@@ -82,7 +82,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
+        if (id == R.id.action_about) {
+            startActivity(new Intent(getApplication(), AboutActivity.class));
+        }
+        else if (id == R.id.action_logout) {
             Toast.makeText(getApplication(), "Log Out", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(getApplication(), LoginActivity.class));
             finish();

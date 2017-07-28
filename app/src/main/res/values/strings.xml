@@ -1,13 +1,21 @@
 <resources>
     <string name="app_name" translatable="false">Qash</string>
+    <string name="app_description">Quick Qash (QR-Code as a Cash)</string>
+    <string name="gravicodev">Gravicodev</string>
+    <string name="gravicodev_url">https://gravicodev.id</string>
 
     <!-- Menu Main -->
     <string name="logout">Log Out</string>
+    <string name="about">About</string>
 
     <!-- Error Message -->
     <string name="err_msg_email">Invalid Email</string>
     <string name="err_msg_password">Password can\'t be empty</string>
     <string name="err_msg_min_password">Password must be 6 character</string>
+
+    <!-- List Last Activity -->
+    <string name="last_qr_name">Last QR Code Name</string>
+    <string name="last_qr_date">Last QR Code Date</string>
 
     <!-- Slider Activity -->
     <string name="next">Next</string>
@@ -31,4 +39,21 @@
     <string name="hint_email">E-mail Address</string>
     <string name="hint_password">Password</string>
     <string name="signup_now">Don\'t have an account? Sign up.</string>
+
+    <!-- Home Fragment -->
+    <string name="name_nasabah">Nasabah Name</string>
+    <string name="balance_nasabah">Balance</string>
+    <string name="circle_nasabah">Initial Name</string>
+    <string name="circle_initial">Q</string>
+    <string name="last_activity">Last Activity</string>
+
+    <!-- History Fragment -->
+    <string name="history_qash">Qash History</string>
+
+    <!-- Generate QR Frament -->
+    <string name="generate_qr">Generate QR Code</string>
+    <string name="qr_name">QR Code Name</string>
+    <string name="qr_balance">QR Code Balance</string>
+    <string name="generate">Generate</string>
+
 </resources>
