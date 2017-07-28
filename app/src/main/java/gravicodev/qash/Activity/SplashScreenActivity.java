@@ -8,7 +8,7 @@ import android.view.View;
 
 import gravicodev.qash.R;
 
-public class SplashScreenActivity extends AppCompatActivity {
+public class SplashScreenActivity extends BaseActivity {
     private static final String TAG = "SplashScreenActivity";
 
     @Override

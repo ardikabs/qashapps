@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import gravicodev.qash.R;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     private static final String TAG = "LoginActivity";
     private AppCompatEditText emailLogin, passwordLogin;
     private Button btnLogin, btnSignUpNow;
