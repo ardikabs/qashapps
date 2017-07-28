@@ -42,4 +42,11 @@
     <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
     <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <!--User information-->
+    <string name="email">Email</string>
+    <string name="id">ID User</string>
+    <string name="fname">Firstname</string>
+    <string name="lname">Lastname</string>
+    <string name="accnum">Account Number</string>
+
 </resources>

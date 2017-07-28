@@ -27,15 +27,23 @@ import com.google.android.gms.vision.barcode.Barcode;
 
 import gravicodev.qash.Adapter.TabFragmentPagerAdapter;
 import gravicodev.qash.Barcode.BarcodeCaptureActivity;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import gravicodev.qash.Adapter.TabFragmentPagerAdapter;
+import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
     private Toolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private static final int REQUEST_COARSE_LOCATION = 100;
     private static final int BARCODE_READER_REQUEST_CODE = 1;
+    private ChildEventListener notification;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -92,7 +100,83 @@ public class MainActivity extends AppCompatActivity {
 //        Intent intent = new Intent(getApplicationContext(), BarcodeCaptureActivity.class);
 //        startActivityForResult(intent, 1);
 
+        notification = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                showToast(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        notificationPayment();
     }
+
+    private void notificationPayment() {
+        FirebaseUtils.getBaseRef().child("settings").child("user_1").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.getKey().equals("notification")){
+                    if(dataSnapshot.getValue(Boolean.class)){
+                        FirebaseUtils.getBaseRef().child("qtransactions").child("user_1").addChildEventListener(notification);
+
+                    }
+                    else{
+                        showToast("Notification Off");
+                        FirebaseUtils.getBaseRef().child("qtransactions").child("user_1").removeEventListener(notification);
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                if(dataSnapshot.getKey().equals("notification")){
+                    if(dataSnapshot.getValue(Boolean.class)){
+                        FirebaseUtils.getBaseRef().child("qtransactions").child("user_1").addChildEventListener(notification);
+                    }
+                    else{
+                        showToast("Notification Off");
+                        FirebaseUtils.getBaseRef().child("qtransactions").child("user_1").removeEventListener(notification);
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -161,4 +245,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

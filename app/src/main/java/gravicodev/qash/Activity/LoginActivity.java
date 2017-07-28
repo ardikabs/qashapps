@@ -19,7 +19,7 @@ import gravicodev.qash.Helper.ApiHelper;
 import gravicodev.qash.R;
 import gravicodev.qash.Volley.VolleyHelper;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     private static final String TAG = "LoginActivity";
     private AppCompatEditText emailLogin, passwordLogin;
     private Button btnLogin, btnSignUpNow;

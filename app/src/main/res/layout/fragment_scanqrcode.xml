@@ -17,4 +17,10 @@
         android:text="Button" />
 
 
+    <Button
+        android:id="@+id/pushtestbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Push SCAN TEST"
+        />
 </LinearLayout>

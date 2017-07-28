@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "813567659006",
+    "firebase_url": "https://qashapps.firebaseio.com",
+    "project_id": "qashapps",
+    "storage_bucket": "qashapps.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813567659006:android:b3de48562a27c797",
+        "android_client_info": {
+          "package_name": "gravicodev.qash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813567659006-09j2sj916c7hpgbolkrp4cukn81vbodg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnkeLnyUXouMagqnCfvs1iTnCxU2sNuLk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
