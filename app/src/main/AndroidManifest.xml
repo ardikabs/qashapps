@@ -3,6 +3,7 @@
     package="gravicodev.qash">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:name="gravicodev.qash.Volley.AppController"
@@ -28,6 +29,9 @@
             android:name=".Activity.SliderActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".Activity.LoginActivity"></activity>
+        <activity
+            android:name=".Barcode.BarcodeCaptureActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 
 </manifest>
