@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".Activity.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_generate_qr" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/emailLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_email"
+            android:drawablePadding="16dp"
+            android:drawableStart="@drawable/ic_email"
+            android:hint="@string/hint_email"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:padding="16dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            app:backgroundTint="@android:color/white" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/passwordLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_password"
+            android:drawablePadding="16dp"
+            android:drawableStart="@drawable/ic_password"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:padding="16dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            app:backgroundTint="@android:color/white" />
+
+        <!-- Login Button -->
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@color/colorAccent"
+            android:text="@string/login"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSignUpNow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/colorPrimaryDark"
+        android:text="@string/signup_now"
+        android:textAllCaps="false"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:textColor="@android:color/white" />
+
+</android.support.design.widget.CoordinatorLayout>

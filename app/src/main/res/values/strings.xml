@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name" translatable="false">Qash</string>
+
+    <!-- Menu Main -->
+    <string name="logout">Log Out</string>
+
+    <!-- Error Message -->
+    <string name="err_msg_email">Invalid Email</string>
+    <string name="err_msg_password">Password can\'t be empty</string>
+    <string name="err_msg_min_password">Password must be 6 character</string>
+
+    <!-- Slider Activity -->
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="start">Got It</string>
+
+    <string name="slide_1_title">Hello Food!</string>
+    <string name="slide_1_desc">The easiest way to order food from your favourite restaurant!</string>
+
+    <string name="slide_2_title">Movie Tickets</string>
+    <string name="slide_2_desc">Book movie tickets for your family and friends!</string>
+
+    <string name="slide_3_title">Great Discounts</string>
+    <string name="slide_3_desc">Best discounts on every single service we offer!</string>
+
+    <string name="slide_4_title">World Travel</string>
+    <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
+
+    <!-- Login Activity -->
+    <string name="login">Log In</string>
+    <string name="hint_email">E-mail Address</string>
+    <string name="hint_password">Password</string>
+    <string name="signup_now">Don\'t have an account? Sign up.</string>
+</resources>
