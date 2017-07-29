@@ -3,12 +3,73 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:paddingBottom="8dp"
+    android:paddingEnd="@dimen/activity_horizontal_margin"
+    android:paddingStart="@dimen/activity_horizontal_margin"
+    android:paddingTop="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/circleName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:contentDescription="@string/circle_nasabah"
+                android:src="@drawable/ic_circle" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/circle_initial"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textColor="@android:color/white" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/nameNasabah"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/circleName"
+            android:layout_toRightOf="@id/circleName"
+            android:text="@string/name_nasabah"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/balanceNasabah"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/nameNasabah"
+            android:layout_gravity="center"
+            android:layout_toEndOf="@id/circleName"
+            android:layout_toRightOf="@id/circleName"
+            android:text="@string/balance_nasabah"
+            android:textAppearance="?android:textAppearanceMedium" />
+
+    </RelativeLayout>
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/homeTv"
-        android:text="Home"/>
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/last_activity"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/listLastActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

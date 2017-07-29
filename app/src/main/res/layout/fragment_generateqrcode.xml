@@ -3,12 +3,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:paddingBottom="8dp"
+    android:paddingEnd="@dimen/activity_horizontal_margin"
+    android:paddingStart="@dimen/activity_horizontal_margin"
+    android:paddingTop="8dp">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Generate QR Code"/>
+        android:text="@string/generate_qr"
+        android:textAppearance="?android:textAppearanceMedium" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/qr_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_qrcode"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_qrcode"
+        android:hint="@string/qr_name"
+        android:inputType="text"
+        android:maxLines="1"
+        android:padding="16dp" />
+
+    <android.support.v7.widget.AppCompatEditText
+        android:id="@+id/qr_balance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_rp"
+        android:drawablePadding="16dp"
+        android:drawableStart="@drawable/ic_rp"
+        android:hint="@string/qr_balance"
+        android:inputType="number"
+        android:maxLines="1"
+        android:padding="16dp" />
+
+    <Button
+        android:id="@+id/btnGenerate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/colorAccent"
+        android:text="@string/generate"
+        android:textAllCaps="true"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white" />
 
     <ImageView
         android:layout_width="wrap_content"
