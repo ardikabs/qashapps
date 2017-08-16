@@ -9,14 +9,13 @@ import android.widget.TextView;
 
 import gravicodev.qash.R;
 
-public class ListHistoryAdapter extends BaseAdapter {
-    private String[] name, balance, date;
+public class ListInformationQRAdapter extends BaseAdapter {
+    private String[] name, date;
     private LayoutInflater inflater;
 
-    public ListHistoryAdapter(Context context, String[] name, String[] balance, String[] date) {
+    public ListInformationQRAdapter(Context context, String[] name, String[] date) {
         inflater = LayoutInflater.from(context);
         this.name = name;
-        this.balance = balance;
         this.date = date;
     }
 
@@ -36,7 +35,7 @@ public class ListHistoryAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        TextView name, balance, date;
+        TextView name, date;
     }
 
     @Override
@@ -44,11 +43,10 @@ public class ListHistoryAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_history, null);
+            convertView = inflater.inflate(R.layout.list_information, null);
             holder = new ViewHolder();
-            holder.name = (TextView) convertView.findViewById(R.id.histQrName);
-            holder.balance = (TextView) convertView.findViewById(R.id.histQrBalance);
-            holder.date = (TextView) convertView.findViewById(R.id.histQrDate);
+            holder.name = (TextView) convertView.findViewById(R.id.listInformationName);
+            holder.date = (TextView) convertView.findViewById(R.id.listInformationDate);
             convertView.setTag(holder);
         }
         else {
@@ -56,7 +54,6 @@ public class ListHistoryAdapter extends BaseAdapter {
         }
 
         holder.name.setText(name[position]);
-        holder.balance.setText(balance[position]);
         holder.date.setText(date[position]);
 
         return convertView;

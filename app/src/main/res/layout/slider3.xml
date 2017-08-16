@@ -14,7 +14,8 @@
         <ImageView
             android:layout_width="@dimen/img_width_height"
             android:layout_height="@dimen/img_width_height"
-            android:src="@drawable/ic_discount"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/ic_scanqr"
             android:contentDescription="@string/slide_3_desc"/>
 
         <TextView

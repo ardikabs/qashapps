@@ -38,16 +38,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Developer"
+            android:text="@string/developer"
+            android:textColor="@color/colorAccent"
             android:textAppearance="?android:textAppearanceMedium" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="2dp"
-            android:background="@color/colorPrimaryDark"
-            android:minHeight="1dp" />
 
         <TextView
             android:layout_width="match_parent"

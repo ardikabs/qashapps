@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
     android:gravity="center"
-    tools:context="gravicodev.qash.Activity.SplashScreenActivity"
-    android:background="@android:color/white">
+    tools:context="gravicodev.qash.Activity.SplashScreenActivity">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_qash"/>
+        android:src="@drawable/ic_qash"
+        android:contentDescription="@string/app_name"/>
 
     <ImageView
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
-        android:src="@drawable/ic_bca"/>
+        android:src="@drawable/ic_bca_white"
+        android:contentDescription="@string/bca"/>
 
 </android.support.design.widget.CoordinatorLayout>

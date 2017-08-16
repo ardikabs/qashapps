@@ -1,44 +1,55 @@
 <resources>
     <string name="app_name" translatable="false">Qash</string>
     <string name="app_description">Quick Qash (QR-Code as a Cash)</string>
+    <string name="developer">Developer</string>
     <string name="gravicodev">Gravicodev</string>
     <string name="gravicodev_url">https://gravicodev.id</string>
+    <string name="bca">BCA</string>
 
-    <!-- Menu Main -->
+    <!-- Menu -->
     <string name="logout">Log Out</string>
     <string name="about">About</string>
+    <string name="share">Share</string>
 
     <!-- Error Message -->
     <string name="err_msg_email">Invalid Email</string>
-    <string name="err_msg_password">Password can\'t be empty</string>
-    <string name="err_msg_min_password">Password must be 6 character</string>
+    <string name="err_msg_pin">Pin number can\'t be empty</string>
+    <string name="err_msg_min_pin">Pin number must be 6 character</string>
+    <string name="err_msg_qrname">QR Name can\'t be empty</string>
+    <string name="err_msg_qrbalance">QR Balance can\'t be empty</string>
+    <string name="err_msg_min_qrbalance">QR Balance can\'t less than Rp 10.000</string>
 
-    <!-- List Last Activity -->
-    <string name="last_qr_name">Last QR Code Name</string>
-    <string name="last_qr_date">Last QR Code Date</string>
+    <!-- List Item -->
+    <string name="qr_name">QR-Code Name</string>
+    <string name="qr_balance">0</string>
+    <string name="qr_rp">Rp</string>
+    <string name="qr_date">1 hour ago</string>
+    <string name="qr_minus_balance">- Rp</string>
+    <string name="qr_created">created at</string>
 
     <!-- Slider Activity -->
     <string name="next">Next</string>
     <string name="skip">Skip</string>
     <string name="start">Got It</string>
 
-    <string name="slide_1_title">Hello Food!</string>
-    <string name="slide_1_desc">The easiest way to order food from your favourite restaurant!</string>
+    <string name="slide_1_title">Akun Nasabah</string>
+    <string name="slide_1_desc">Kemudahan pengelolaan akun nasabah</string>
 
-    <string name="slide_2_title">Movie Tickets</string>
-    <string name="slide_2_desc">Book movie tickets for your family and friends!</string>
+    <string name="slide_2_title">Generate QR-Code</string>
+    <string name="slide_2_desc">Buat QR-Code dengan saldo sesuai dengan yang kamu inginkan</string>
 
-    <string name="slide_3_title">Great Discounts</string>
-    <string name="slide_3_desc">Best discounts on every single service we offer!</string>
+    <string name="slide_3_title">Scan QR-Code</string>
+    <string name="slide_3_desc">Gunakan QR-Code mu dalam berbagai transaksi hanya dengan melakukan
+        scan</string>
 
-    <string name="slide_4_title">World Travel</string>
-    <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
+    <string name="slide_4_title">Riwayat QR-Code</string>
+    <string name="slide_4_desc">Ketahui semua transaksi QR-Code yang telah dilakukan</string>
 
     <!-- Login Activity -->
     <string name="login">Log In</string>
     <string name="hint_email">E-mail Address</string>
-    <string name="hint_password">Password</string>
-    <string name="signup_now">Don\'t have an account? Sign up.</string>
+    <string name="hint_pin">Pin Number</string>
+    <string name="howto_signup">How to sign up ?</string>
 
     <!-- Strings related to MainActivity-->
     <string name="scan_barcode_button">Scan barcode</string>
@@ -50,6 +61,7 @@
     <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
     <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
     <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+
     <!--User information-->
     <string name="email">Email</string>
     <string name="id">ID User</string>
@@ -62,15 +74,24 @@
     <string name="balance_nasabah">Balance</string>
     <string name="circle_nasabah">Initial Name</string>
     <string name="circle_initial">Q</string>
-    <string name="last_activity">Last Activity</string>
+    <string name="current_balance">Current Qash Balance</string>
 
     <!-- History Fragment -->
     <string name="history_qash">Qash History</string>
 
     <!-- Generate QR Frament -->
-    <string name="generate_qr">Generate QR Code</string>
-    <string name="qr_name">QR Code Name</string>
-    <string name="qr_balance">QR Code Balance</string>
+    <string name="generate_qash">Generate Qash</string>
     <string name="generate">Generate</string>
+    <string name="generate_name">QR-Code Name</string>
+    <string name="generate_balance">QR-Code Balance</string>
+
+    <!-- Information QR Fragment -->
+    <string name="information_qash">Qash Information</string>
+
+    <!-- Show QR Code Activity -->
+    <string name="show_qr">QR-Code</string>
+    <string name="qash_qrcode">QASH QR-Code</string>
+    <string name="save_qr">Save QR-Code</string>
+    <string name="qash_qrcode_desc">QR-Code</string>
 
 </resources>

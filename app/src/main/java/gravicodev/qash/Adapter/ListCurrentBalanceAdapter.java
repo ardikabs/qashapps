@@ -1,8 +1,6 @@
 package gravicodev.qash.Adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,18 +9,14 @@ import android.widget.TextView;
 
 import gravicodev.qash.R;
 
-/**
- * Created by Rasyadh A Aziz on 29/07/2017.
- */
-
-public class ListLastActivityAdapter extends BaseAdapter {
-    private String[] name, date;
+public class ListCurrentBalanceAdapter extends BaseAdapter {
+    private String[] name, balance;
     private LayoutInflater inflater;
 
-    public ListLastActivityAdapter(Context context, String[] name, String[] date) {
+    public ListCurrentBalanceAdapter(Context context, String[] name, String[] balance) {
         inflater = LayoutInflater.from(context);
         this.name = name;
-        this.date = date;
+        this.balance = balance;
     }
 
     @Override
@@ -41,7 +35,7 @@ public class ListLastActivityAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        TextView name, date;
+        TextView name, balance;
     }
 
     @Override
@@ -49,10 +43,10 @@ public class ListLastActivityAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_last_activity, null);
+            convertView = inflater.inflate(R.layout.list_current_balance, null);
             holder = new ViewHolder();
-            holder.name = (TextView) convertView.findViewById(R.id.lastQrName);
-            holder.date = (TextView) convertView.findViewById(R.id.lastQrDate);
+            holder.name = (TextView) convertView.findViewById(R.id.curQrName);
+            holder.balance = (TextView) convertView.findViewById(R.id.curQrBalance);
             convertView.setTag(holder);
         }
         else {
@@ -60,7 +54,7 @@ public class ListLastActivityAdapter extends BaseAdapter {
         }
 
         holder.name.setText(name[position]);
-        holder.date.setText(date[position]);
+        holder.balance.setText(balance[position]);
 
         return convertView;
     }

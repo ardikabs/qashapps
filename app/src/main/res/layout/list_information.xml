@@ -10,7 +10,7 @@
     android:paddingBottom="8dp">
 
     <TextView
-        android:id="@+id/histQrName"
+        android:id="@+id/listInformationName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/qr_name"
@@ -18,32 +18,31 @@
         android:textColor="@android:color/black" />
 
     <TextView
-        android:id="@+id/histQrMin"
+        android:id="@+id/listInformationCreated"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/histQrName"
-        android:text="@string/qr_minus_balance"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="@color/colorAccent" />
+        android:layout_below="@id/listInformationName"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:text="@string/qr_created" />
 
     <TextView
-        android:id="@+id/histQrBalance"
+        android:id="@+id/listInformationDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/histQrName"
-        android:layout_marginLeft="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_toEndOf="@id/histQrMin"
-        android:layout_toRightOf="@id/histQrMin"
-        android:text="@string/qr_balance"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="@color/colorAccent" />
-
-    <TextView
-        android:id="@+id/histQrDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/histQrBalance"
+        android:layout_below="@id/listInformationName"
+        android:layout_toEndOf="@id/listInformationCreated"
+        android:layout_toRightOf="@id/listInformationCreated"
         android:text="@string/qr_date" />
+
+    <ImageView
+        android:id="@+id/listInformationExpand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_expand_more"
+        android:contentDescription="@string/information_qash"/>
 
 </RelativeLayout>

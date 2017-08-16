@@ -14,8 +14,9 @@
         <ImageView
             android:layout_width="@dimen/img_width_height"
             android:layout_height="@dimen/img_width_height"
+            android:layout_marginBottom="16dp"
             android:contentDescription="@string/slide_1_desc"
-            android:src="@drawable/ic_food" />
+            android:src="@drawable/ic_home" />
 
         <TextView
             android:layout_width="wrap_content"

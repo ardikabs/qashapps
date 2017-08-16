@@ -13,12 +13,12 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:text="@string/history_qash"
+        android:text="@string/information_qash"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@color/colorPrimary" />
 
     <ListView
-        android:id="@+id/listQashHistory"
+        android:id="@+id/listInformationQr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

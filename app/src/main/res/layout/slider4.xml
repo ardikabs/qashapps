@@ -14,8 +14,9 @@
         <ImageView
             android:layout_width="@dimen/img_width_height"
             android:layout_height="@dimen/img_width_height"
+            android:layout_marginBottom="16dp"
             android:contentDescription="@string/slide_4_desc"
-            android:src="@drawable/ic_travel" />
+            android:src="@drawable/ic_history" />
 
         <TextView
             android:layout_width="wrap_content"

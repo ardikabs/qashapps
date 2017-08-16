@@ -8,16 +8,13 @@ import gravicodev.qash.Fragment.GenerateQRCodeFragment;
 import gravicodev.qash.Fragment.HistoryFragment;
 import gravicodev.qash.Fragment.HomeFragment;
 import gravicodev.qash.Fragment.ScanQRCodeFragment;
-
-/**
- * Created by Rasyadh A Aziz on 28/07/2017.
- */
+import gravicodev.qash.Fragment.InformationQRFragment;
 
 public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = "TabFragmentPagerAdapter";
 
     private String[] title = new String[]{
-            "Home", "Generate QR-Code", "Scan QR-Code", "History"
+            "Home", "Generate QR-Code", "Scan QR-Code", "Transaction", "History"
     };
 
     public TabFragmentPagerAdapter(FragmentManager fm) {
@@ -37,8 +34,11 @@ public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 fragment = new ScanQRCodeFragment();
                 break;
-            case 3 :
+            case 3:
                 fragment = new HistoryFragment();
+                break;
+            case 4:
+                fragment = new InformationQRFragment();
                 break;
             default:
                 fragment = null;

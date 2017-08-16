@@ -21,7 +21,7 @@ import gravicodev.qash.Volley.VolleyHelper;
 
 public class LoginActivity extends BaseActivity {
     private static final String TAG = "LoginActivity";
-    private AppCompatEditText emailLogin, passwordLogin;
+    private AppCompatEditText emailLogin, pinLogin;
     private Button btnLogin, btnSignUpNow;
 
     @Override
@@ -30,7 +30,7 @@ public class LoginActivity extends BaseActivity {
         setContentView(R.layout.activity_login);
 
         emailLogin = (AppCompatEditText) findViewById(R.id.emailLogin);
-        passwordLogin = (AppCompatEditText) findViewById(R.id.passwordLogin);
+        pinLogin = (AppCompatEditText) findViewById(R.id.pinLogin);
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnSignUpNow = (Button) findViewById(R.id.btnSignUpNow);
 
@@ -55,9 +55,9 @@ public class LoginActivity extends BaseActivity {
 
     private void loginAccount(){
         String email = emailLogin.getText().toString().trim();
-        String password = passwordLogin.getText().toString().trim();
+        String pin = pinLogin.getText().toString().trim();
 
-        if (!validateForm(email, password)){
+        if (!validateForm(email, pin)){
             return;
         }
 
@@ -69,7 +69,7 @@ public class LoginActivity extends BaseActivity {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private boolean validateForm(String email, String password){
+    private boolean validateForm(String email, String pin){
         boolean valid = true;
 
         if (TextUtils.isEmpty(email) | !isValidEmail(email)){
@@ -80,16 +80,16 @@ public class LoginActivity extends BaseActivity {
             emailLogin.setError(null);
         }
 
-        if (TextUtils.isEmpty(password)){
-            passwordLogin.setError(getString(R.string.err_msg_password));
+        if (TextUtils.isEmpty(pin)){
+            pinLogin.setError(getString(R.string.err_msg_pin));
             valid = false;
         }
-        else if (password.length() < 6){
-            passwordLogin.setError(getString(R.string.err_msg_min_password));
+        else if (pin.length() < 6){
+            pinLogin.setError(getString(R.string.err_msg_min_pin));
             valid = false;
         }
         else {
-            passwordLogin.setError(null);
+            pinLogin.setError(null);
         }
 
         return valid;

@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#015daa</color>
-    <color name="colorPrimaryDark">#014A87</color>
-    <color name="colorAccent">#f07b2d</color>
+    <color name="colorPrimary">#015CAA</color>
+    <color name="colorPrimaryDark">#00437D</color>
+    <color name="colorSecondary">#0094D6</color>
+    <color name="colorAccent">#F07B2D</color>
 
     <!-- Slider Screens background color-->
-    <color name="bg_slider_screen1">#f64c73</color>
-    <color name="bg_slider_screen2">#20d2bb</color>
-    <color name="bg_slider_screen3">#3395ff</color>
-    <color name="bg_slider_screen4">#c873f4</color>
+    <color name="bg_slider_screen1">#0094D6</color>
+    <color name="bg_slider_screen2">#0074A8</color>
+    <color name="bg_slider_screen3">#015CAA</color>
+    <color name="bg_slider_screen4">#00437D</color>
 
     <!-- dots inactive colors -->
-    <color name="dot_dark_screen1">#d1395c</color>
-    <color name="dot_dark_screen2">#14a895</color>
-    <color name="dot_dark_screen3">#2278d4</color>
-    <color name="dot_dark_screen4">#a854d4</color>
+    <color name="dot_dark_screen1">#007AB1</color>
+    <color name="dot_dark_screen2">#00618D</color>
+    <color name="dot_dark_screen3">#004C8D</color>
+    <color name="dot_dark_screen4">#00396B</color>
 
     <!-- dots active colors -->
-    <color name="dot_light_screen1">#f98da5</color>
-    <color name="dot_light_screen2">#8cf9eb</color>
-    <color name="dot_light_screen3">#93c6fd</color>
-    <color name="dot_light_screen4">#e4b5fc</color>
+    <color name="dot_light_screen1">#4DA0C5</color>
+    <color name="dot_light_screen2">#3783A5</color>
+    <color name="dot_light_screen3">#3C79AE</color>
+    <color name="dot_light_screen4">#305B80</color>
 
     <array name="array_dot_active">
         <item>@color/dot_light_screen1</item>

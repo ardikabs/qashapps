@@ -1,65 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="8dp"
-    android:paddingEnd="@dimen/activity_horizontal_margin"
-    android:paddingStart="@dimen/activity_horizontal_margin"
-    android:paddingTop="8dp">
+    android:layout_height="match_parent">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/generate_qr"
-        android:textAppearance="?android:textAppearanceMedium" />
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingTop="8dp">
 
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/qr_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_qrcode"
-        android:drawablePadding="16dp"
-        android:drawableStart="@drawable/ic_qrcode"
-        android:hint="@string/qr_name"
-        android:inputType="text"
-        android:maxLines="1"
-        android:padding="16dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/generate_qash"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/colorPrimary" />
 
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/qr_balance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_rp"
-        android:drawablePadding="16dp"
-        android:drawableStart="@drawable/ic_rp"
-        android:hint="@string/qr_balance"
-        android:inputType="number"
-        android:maxLines="1"
-        android:padding="16dp" />
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_qr_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/colorPrimary">
 
-    <Button
-        android:id="@+id/btnGenerate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@color/colorAccent"
-        android:text="@string/generate"
-        android:textAllCaps="true"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/white" />
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/qr_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_qrcode"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_qrcode"
+                android:hint="@string/generate_name"
+                android:inputType="text"
+                android:maxLines="1"
+                android:padding="16dp"
+                android:textColorHint="@android:color/black"
+                app:backgroundTint="@color/colorPrimary" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/qrCodeIV"/>
+        </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/pushbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Push Notification TEST"
-        />
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_qr_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/colorPrimary">
 
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/qr_balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_rp"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_rp"
+                android:hint="@string/generate_balance"
+                android:inputType="number"
+                android:maxLines="1"
+                android:padding="16dp"
+                android:textColorHint="@android:color/black"
+                app:backgroundTint="@color/colorPrimary" />
 
-</LinearLayout>
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnGenerate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorAccent"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/generate"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white" />
+
+        <ImageView
+            android:id="@+id/qrCodeIV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/app_name"/>
+
+        <Button
+            android:id="@+id/pushbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="Push Notification TEST" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -1,28 +1,21 @@
 package gravicodev.qash.Fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import gravicodev.qash.Barcode.BarcodeCaptureActivity;
-import java.util.ArrayList;
-
-import gravicodev.qash.Adapter.ListLastActivityAdapter;
+import gravicodev.qash.Adapter.ListCurrentBalanceAdapter;
 import gravicodev.qash.R;
-
-/**
- * Created by Rasyadh A Aziz on 28/07/2017.
- */
 
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
     private ListView listView;
-    private ListLastActivityAdapter listLastActivityAdapter;
+    private ListCurrentBalanceAdapter listCurrentBalanceAdapter;
+    private TextView nameNasabah, balanceNasabah, initialName;
 
     public HomeFragment() {}
 
@@ -31,20 +24,37 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // Change Title of each fragment
+        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Qash");
+
+        nameNasabah = (TextView) rootView.findViewById(R.id.nameNasabah);
+        balanceNasabah = (TextView) rootView.findViewById(R.id.balanceNasabah);
+        initialName = (TextView) rootView.findViewById(R.id.initialName);
+
+        // Data dummies nasabah
+        String nasabah = "Rasyadh Abdul Aziz";
+        String saldo = "Rp 20.000.000";
+
+        nameNasabah.setText(nasabah);
+        balanceNasabah.setText(saldo);
+        initialName.setText(nasabah.substring(0, 1).toUpperCase());
+
+        // Data dummies name
         String[] name = new String[]{
-                "QR Code 1", "QR Code 2", "QR Code 3", "QR Code 4", "QR Code 5"
+                "Gajian", "Uang Saku", "Belanja", "Jajan", "THR", "Testing"
         };
 
+        // Data dummies date
         String[] date = new String[]{
-                "10-07-2017", "15-07-2017", "21-07-2017", "26-07-2017", "29-07-2017"
+                "100.000", "50.000", "20.000", "5.000", "15.000", "0"
         };
 
-        listView = (ListView) rootView.findViewById(R.id.listLastActivity);
-        listLastActivityAdapter = new ListLastActivityAdapter(getActivity(), name, date);
-        listView.setAdapter(listLastActivityAdapter);
+        listView = (ListView) rootView.findViewById(R.id.listCurrentBalance);
+        listCurrentBalanceAdapter = new ListCurrentBalanceAdapter(getActivity(), name, date);
+        listView.setAdapter(listCurrentBalanceAdapter);
+        listView.setDivider(null);
 
         return rootView;
     }
-
 
 }

@@ -8,12 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import gravicodev.qash.Adapter.ListHistoryAdapter;
-import gravicodev.qash.Adapter.ListLastActivityAdapter;
 import gravicodev.qash.R;
-
-/**
- * Created by Rasyadh A Aziz on 28/07/2017.
- */
 
 public class HistoryFragment extends Fragment {
     private static final String TAG = "HistoryFragment";
@@ -27,17 +22,26 @@ public class HistoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
+        // Change Title of each fragment
+        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("History");
+
         String[] name = new String[]{
-                "QR Code 1", "QR Code 2", "QR Code 3", "QR Code 4", "QR Code 5"
+                "Belanja", "Gajian", "Uang Saku", "Jajan", "THR", "Testing"
         };
 
         String[] balance = new String[]{
-                "Rp 50000", "Rp 30000", "Rp 5000", "Rp 10000", "Rp 100000"
+                "20.000", "900.000", "10.000", "5.000", "85.000", "20.000"
+        };
+
+        String[] date = new String[]{
+                "1 hour ago", "5 hour ago", "yesterday at 10.00", "2 August 2017", "13 July 2017",
+                "1 July 2017"
         };
 
         listView = (ListView) rootView.findViewById(R.id.listQashHistory);
-        listHistoryAdapter = new ListHistoryAdapter(getActivity(), name, balance);
+        listHistoryAdapter = new ListHistoryAdapter(getActivity(), name, balance, date);
         listView.setAdapter(listHistoryAdapter);
+        listView.setDivider(null);
 
         return rootView;
     }

@@ -10,7 +10,7 @@
     android:paddingBottom="8dp">
 
     <TextView
-        android:id="@+id/histQrName"
+        android:id="@+id/curQrName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/qr_name"
@@ -18,32 +18,31 @@
         android:textColor="@android:color/black" />
 
     <TextView
-        android:id="@+id/histQrMin"
+        android:id="@+id/curQrRp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/histQrName"
-        android:text="@string/qr_minus_balance"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="@color/colorAccent" />
+        android:layout_below="@id/curQrName"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:text="@string/qr_rp" />
 
     <TextView
-        android:id="@+id/histQrBalance"
+        android:id="@+id/curQrBalance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/histQrName"
-        android:layout_marginLeft="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_toEndOf="@id/histQrMin"
-        android:layout_toRightOf="@id/histQrMin"
-        android:text="@string/qr_balance"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="@color/colorAccent" />
+        android:layout_below="@id/curQrName"
+        android:layout_toEndOf="@id/curQrRp"
+        android:layout_toRightOf="@id/curQrRp"
+        android:text="@string/qr_balance" />
 
-    <TextView
-        android:id="@+id/histQrDate"
+    <Switch
+        android:id="@+id/switchQr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/histQrBalance"
-        android:text="@string/qr_date" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@id/curQrName"
+        android:layout_toRightOf="@id/curQrName" />
 
 </RelativeLayout>
