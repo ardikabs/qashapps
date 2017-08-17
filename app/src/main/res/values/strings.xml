@@ -25,25 +25,29 @@
     <string name="qr_rp">Rp</string>
     <string name="qr_date">1 hour ago</string>
     <string name="qr_minus_balance">- Rp</string>
-    <string name="qr_created">created at</string>
+    <string name="qr_created">Created at</string>
+    <string name="qr_info_balance">Balance : Rp</string>
+    <string name="qr_info_status">Status : </string>
+    <string name="qr_info_value_status">Active</string>
+    <string name="qr_delete">Delete</string>
+    <string name="qr_show">Show QR-Code</string>
 
     <!-- Slider Activity -->
     <string name="next">Next</string>
     <string name="skip">Skip</string>
     <string name="start">Got It</string>
 
-    <string name="slide_1_title">Akun Nasabah</string>
-    <string name="slide_1_desc">Kemudahan pengelolaan akun nasabah</string>
+    <string name="slide_1_title">Banking Account</string>
+    <string name="slide_1_desc">Easy to manage your banking account</string>
 
-    <string name="slide_2_title">Generate QR-Code</string>
-    <string name="slide_2_desc">Buat QR-Code dengan saldo sesuai dengan yang kamu inginkan</string>
+    <string name="slide_2_title">Generate Qash</string>
+    <string name="slide_2_desc">Make your QR-Code with balance as much as you wish</string>
 
-    <string name="slide_3_title">Scan QR-Code</string>
-    <string name="slide_3_desc">Gunakan QR-Code mu dalam berbagai transaksi hanya dengan melakukan
-        scan</string>
+    <string name="slide_3_title">Scan Qash</string>
+    <string name="slide_3_desc">Use your QR-Code in every transaction with just a simple scan</string>
 
-    <string name="slide_4_title">Riwayat QR-Code</string>
-    <string name="slide_4_desc">Ketahui semua transaksi QR-Code yang telah dilakukan</string>
+    <string name="slide_4_title">Transaction History</string>
+    <string name="slide_4_desc">Get to know all of your QR-Code transaction</string>
 
     <!-- Login Activity -->
     <string name="login">Log In</string>

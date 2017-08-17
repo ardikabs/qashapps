@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/bg_slider_screen3">
 
     <LinearLayout
@@ -11,12 +12,13 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <ImageView
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animation_slider3"
             android:layout_width="@dimen/img_width_height"
             android:layout_height="@dimen/img_width_height"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/ic_scanqr"
-            android:contentDescription="@string/slide_3_desc"/>
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="slider_scan.json"
+            app:lottie_loop="true" />
 
         <TextView
             android:layout_width="wrap_content"

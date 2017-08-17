@@ -10,13 +10,16 @@ import android.widget.TextView;
 import gravicodev.qash.R;
 
 public class ListInformationQRAdapter extends BaseAdapter {
-    private String[] name, date;
+    private String[] name, date, balance, status;
     private LayoutInflater inflater;
 
-    public ListInformationQRAdapter(Context context, String[] name, String[] date) {
+    public ListInformationQRAdapter(Context context, String[] name, String[] date, String[] balance,
+                                    String[] status) {
         inflater = LayoutInflater.from(context);
         this.name = name;
         this.date = date;
+        this.balance = balance;
+        this.status = status;
     }
 
     @Override
@@ -35,7 +38,7 @@ public class ListInformationQRAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        TextView name, date;
+        TextView name, date, balance, status;
     }
 
     @Override
@@ -45,8 +48,10 @@ public class ListInformationQRAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_information, null);
             holder = new ViewHolder();
-            holder.name = (TextView) convertView.findViewById(R.id.listInformationName);
-            holder.date = (TextView) convertView.findViewById(R.id.listInformationDate);
+            holder.name = (TextView) convertView.findViewById(R.id.nameInfo);
+            holder.date = (TextView) convertView.findViewById(R.id.createdValueInfo);
+            holder.balance = (TextView) convertView.findViewById(R.id.balanceValueInfo);
+            holder.status = (TextView) convertView.findViewById(R.id.statusValueInfo);
             convertView.setTag(holder);
         }
         else {
@@ -55,6 +60,8 @@ public class ListInformationQRAdapter extends BaseAdapter {
 
         holder.name.setText(name[position]);
         holder.date.setText(date[position]);
+        holder.balance.setText(balance[position]);
+        holder.status.setText(status[position]);
 
         return convertView;
     }
