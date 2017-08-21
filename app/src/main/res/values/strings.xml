@@ -90,6 +90,10 @@
     <string name="generate_balance">QR-Code Balance</string>
 
     <!-- Scan QR Fragment -->
+    <string name="scan_qash">Scan Qash</string>
+    <string name="scan_balance">Balance</string>
+    <string name="scan_ket">Description</string>
+    <string name="scan">Scan Qash</string>
     <string name="accepted">Accepted</string>
     <string name="ammount_accepted">Rp 0</string>
 

@@ -78,19 +78,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/white" />
 
-        <ImageView
-            android:id="@+id/qrCodeIV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"/>
-
-        <Button
-            android:id="@+id/pushbutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Push Notification TEST" />
-
     </LinearLayout>
 
 </ScrollView>

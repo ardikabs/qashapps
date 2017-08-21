@@ -48,7 +48,7 @@ import static android.graphics.Color.WHITE;
 public class GenerateQRCodeFragment extends Fragment {
     private static final String TAG = "GenerateQRCodeFragment";
     public final static int WIDTH = 500;
-    private Button pButton, btnGenerate;
+    private Button btnGenerate;
     private AppCompatEditText qrName, qrBalance;
 
     public GenerateQRCodeFragment() {
@@ -62,18 +62,18 @@ public class GenerateQRCodeFragment extends Fragment {
         // Change Title of each fragment
         //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Generate");
 
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.qrCodeIV);
-        try {
-            Bitmap bitmap = encodeAsBitmap("471e7f048fb27452c82a10204cd460b2c51e96d994a2bc9ca643d0d8ccff4d24");
-            imageView.setImageBitmap(bitmap);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
+        // Bekas ImageView for test QR-Code
+//        ImageView imageView = (ImageView) rootView.findViewById(R.id.qrCodeIV);
+//        try {
+//            Bitmap bitmap = encodeAsBitmap("471e7f048fb27452c82a10204cd460b2c51e96d994a2bc9ca643d0d8ccff4d24");
+//            imageView.setImageBitmap(bitmap);
+//        } catch (WriterException e) {
+//            e.printStackTrace();
+//        }
 
         qrName = (AppCompatEditText) rootView.findViewById(R.id.qr_name);
         qrBalance = (AppCompatEditText) rootView.findViewById(R.id.qr_balance);
         btnGenerate = (Button) rootView.findViewById(R.id.btnGenerate);
-        pButton = (Button) rootView.findViewById(R.id.pushbutton);
 
         btnGenerate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,26 +101,28 @@ public class GenerateQRCodeFragment extends Fragment {
             }
         });
 
-        pButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, 7);
-                String key = "QRCODE_1";
-                Integer balance = 150000;
-                String status = "active";
-                Long date = cal.getTime().getTime();
-                String title = "TITLE QRCODE";
-                String san = "SourceAccountNumber (SOURCE)";
+        // Bekas setOnClickListenet untuk test push notification
+//        pButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Calendar cal = Calendar.getInstance();
+//                cal.add(Calendar.DATE, 7);
+//                String key = "QRCODE_1";
+//                Integer balance = 150000;
+//                String status = "active";
+//                Long date = cal.getTime().getTime();
+//                String title = "TITLE QRCODE";
+//                String san = "SourceAccountNumber (SOURCE)";
+//
+//                QMaster qMaster = new QMaster(balance, status, date, title, san);
+//                FirebaseUtils.getBaseRef().child("qmaster").child(key).setValue(qMaster);
+//
+//                HashMap<String, Boolean> qrvalue = new HashMap<>();
+//                qrvalue.put(key, true);
+//                FirebaseUtils.getBaseRef().child("qcreator").child("user_1").setValue(qrvalue);
+//            }
+//        });
 
-                QMaster qMaster = new QMaster(balance, status, date, title, san);
-                FirebaseUtils.getBaseRef().child("qmaster").child(key).setValue(qMaster);
-
-                HashMap<String, Boolean> qrvalue = new HashMap<>();
-                qrvalue.put(key, true);
-                FirebaseUtils.getBaseRef().child("qcreator").child("user_1").setValue(qrvalue);
-            }
-        });
         return rootView;
     }
 

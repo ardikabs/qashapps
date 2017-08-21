@@ -8,30 +8,82 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingTop="8dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Scan QR Code" />
-
-        <Button
-            android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:layout_marginBottom="8dp"
+            android:text="@string/scan_qash"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/colorPrimary" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_scan_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/colorPrimary">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/scan_balance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_rp"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_rp"
+                android:hint="@string/scan_balance"
+                android:inputType="number"
+                android:maxLines="1"
+                android:padding="16dp"
+                android:textColorHint="@android:color/black"
+                app:backgroundTint="@color/colorPrimary" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_scan_ket"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/colorPrimary">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/scan_ket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_description"
+                android:drawablePadding="16dp"
+                android:drawableStart="@drawable/ic_description"
+                android:hint="@string/scan_ket"
+                android:inputType="text"
+                android:maxLines="1"
+                android:padding="16dp"
+                android:textColorHint="@android:color/black"
+                app:backgroundTint="@color/colorPrimary" />
+
+        </android.support.design.widget.TextInputLayout>
 
         <Button
-            android:id="@+id/pushtestbutton"
-            android:layout_width="wrap_content"
+            android:id="@+id/btnScan"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Push SCAN TEST" />
+            android:layout_marginTop="16dp"
+            android:background="@color/colorAccent"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="@string/scan"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/testsucces"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:background="@color/colorAccent"
             android:text="Test Success" />
 
