@@ -61,9 +61,6 @@ public class ScanQRCodeFragment extends Fragment {
         // Change Title of each fragment
         //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Scan");
 
-        Intent intent = new Intent(getActivity(), BarcodeCaptureActivity.class);
-        startActivityForResult(intent, 1);
-
         final String key = "QRCODE_1";
         btnScan = (Button) rootView.findViewById(R.id.btnScan);
         scanBalance = (AppCompatEditText) rootView.findViewById(R.id.scan_balance);
@@ -85,6 +82,14 @@ public class ScanQRCodeFragment extends Fragment {
                         dimmer.setVisibility(View.GONE);
                     }
                 }, delay * 3000);
+            }
+        });
+
+        btnScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), BarcodeCaptureActivity.class);
+                startActivityForResult(intent, 1);
             }
         });
 
