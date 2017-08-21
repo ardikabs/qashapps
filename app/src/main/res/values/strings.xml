@@ -106,4 +106,7 @@
     <string name="save_qr">Save QR-Code</string>
     <string name="qash_qrcode_desc">QR-Code</string>
 
+    <!-- QR Code Reader-->
+    <string name="qash_reader">Qash Reader</string>
+
 </resources>
