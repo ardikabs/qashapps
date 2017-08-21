@@ -39,8 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="@string/developer"
-            android:textColor="@color/colorAccent"
-            android:textAppearance="?android:textAppearanceMedium" />
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/colorAccent" />
 
         <TextView
             android:layout_width="match_parent"
@@ -59,7 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_bca" />
+            android:src="@drawable/ic_bca"
+            android:visibility="gone" />
 
     </LinearLayout>
 

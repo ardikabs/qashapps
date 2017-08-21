@@ -3,18 +3,22 @@ package gravicodev.qash.Fragment;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
 import gravicodev.qash.Activity.MainActivity;
+import gravicodev.qash.Activity.SliderActivity;
 import gravicodev.qash.Barcode.BarcodeCaptureActivity;
 import android.widget.Button;
 import android.widget.Toast;
@@ -41,7 +45,9 @@ public class ScanQRCodeFragment extends Fragment {
     private static final String TAG = "ScanQRCodeFragment";
     private String BeneficieryAccountNumber = "0001-0001-1110";
     private String msg = "MESSAGE";
-    private Button pbutton;
+    private Button pbutton, testsuccess;
+    private FrameLayout dimmer;
+    private LottieAnimationView animSuccess;
 
     public ScanQRCodeFragment() {}
 
@@ -55,8 +61,29 @@ public class ScanQRCodeFragment extends Fragment {
 
         Intent intent = new Intent(getActivity(), BarcodeCaptureActivity.class);
         startActivityForResult(intent, 1);
+
         final String key = "QRCODE_1";
         pbutton = (Button) rootView.findViewById(R.id.pushtestbutton);
+        testsuccess = (Button) rootView.findViewById(R.id.testsucces);
+        dimmer = (FrameLayout) rootView.findViewById(R.id.dimmerSuccess);
+        animSuccess = (LottieAnimationView) rootView.findViewById(R.id.animation_success);
+
+        testsuccess.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dimmer.setVisibility(View.VISIBLE);
+                animSuccess.playAnimation();
+
+                int delay = 1;
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        dimmer.setVisibility(View.GONE);
+                    }
+                }, delay * 3000);
+            }
+        });
+
         pbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,9 +179,7 @@ public class ScanQRCodeFragment extends Fragment {
                     CommonStatusCodes.getStatusCodeString(resultCode)));
         } else super.onActivityResult(requestCode, resultCode, data);
     }
-
-
-
+    
     public void showToast(String message){
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }

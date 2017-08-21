@@ -11,14 +11,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/ic_qash"
-        android:contentDescription="@string/app_name"/>
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/ic_qash" />
 
     <ImageView
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
+        android:contentDescription="@string/bca"
         android:src="@drawable/ic_bca_white"
-        android:contentDescription="@string/bca"/>
+        android:visibility="gone" />
 
 </android.support.design.widget.CoordinatorLayout>

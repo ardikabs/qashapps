@@ -207,8 +207,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu_main; this adds items to the action bar if it is present.
@@ -217,20 +215,20 @@ public class MainActivity extends BaseActivity {
         return true;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BARCODE_READER_REQUEST_CODE) {
-            if (resultCode == CommonStatusCodes.SUCCESS) {
-                if (data != null) {
-                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-                    Point[] p = barcode.cornerPoints;
-//                    homeTv.setText(barcode.displayValue);
-                    Toast.makeText(MainActivity.this, barcode.displayValue, Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(MainActivity.this, "salah bos", Toast.LENGTH_SHORT).show();
-            } else Log.e("jancok", String.format(getString(R.string.barcode_error_format),
-                    CommonStatusCodes.getStatusCodeString(resultCode)));
-        } else super.onActivityResult(requestCode, resultCode, data);
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if (requestCode == BARCODE_READER_REQUEST_CODE) {
+//            if (resultCode == CommonStatusCodes.SUCCESS) {
+//                if (data != null) {
+//                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
+//                    Point[] p = barcode.cornerPoints;
+////                    homeTv.setText(barcode.displayValue);
+//                    Toast.makeText(MainActivity.this, barcode.displayValue, Toast.LENGTH_SHORT).show();
+//                } else Toast.makeText(MainActivity.this, "salah bos", Toast.LENGTH_SHORT).show();
+//            } else Log.e("jancok", String.format(getString(R.string.barcode_error_format),
+//                    CommonStatusCodes.getStatusCodeString(resultCode)));
+//        } else super.onActivityResult(requestCode, resultCode, data);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

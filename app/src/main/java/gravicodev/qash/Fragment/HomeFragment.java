@@ -1,12 +1,17 @@
 package gravicodev.qash.Fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import gravicodev.qash.Adapter.ListCurrentBalanceAdapter;
 import gravicodev.qash.R;
@@ -16,8 +21,10 @@ public class HomeFragment extends Fragment {
     private ListView listView;
     private ListCurrentBalanceAdapter listCurrentBalanceAdapter;
     private TextView nameNasabah, balanceNasabah, initialName;
+    private SwitchCompat switchQr;
 
-    public HomeFragment() {}
+    public HomeFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,6 +37,7 @@ public class HomeFragment extends Fragment {
         nameNasabah = (TextView) rootView.findViewById(R.id.nameNasabah);
         balanceNasabah = (TextView) rootView.findViewById(R.id.balanceNasabah);
         initialName = (TextView) rootView.findViewById(R.id.initialName);
+        switchQr = (SwitchCompat) rootView.findViewById(R.id.switchQr);
 
         // Data dummies nasabah
         String nasabah = "Rasyadh Abdul Aziz";

@@ -38,16 +38,16 @@
     <string name="start">Got It</string>
 
     <string name="slide_1_title">Banking Account</string>
-    <string name="slide_1_desc">Easy to manage your banking account</string>
+    <string name="slide_1_desc">Ease of managing your banking account and QR-Code.</string>
 
-    <string name="slide_2_title">Generate Qash</string>
-    <string name="slide_2_desc">Make your QR-Code with balance as much as you wish</string>
+    <string name="slide_2_title">Generate QR-Code</string>
+    <string name="slide_2_desc">Create your QR-Code with as much balance as you want.</string>
 
-    <string name="slide_3_title">Scan Qash</string>
-    <string name="slide_3_desc">Use your QR-Code in every transaction with just a simple scan</string>
+    <string name="slide_3_title">Scan QR-Code</string>
+    <string name="slide_3_desc">Use your QR-Code in every transaction with just a simple scan.</string>
 
-    <string name="slide_4_title">Transaction History</string>
-    <string name="slide_4_desc">Get to know all of your QR-Code transaction</string>
+    <string name="slide_4_title">QR-Code History</string>
+    <string name="slide_4_desc">Know all your QR-Code transaction from time to time.</string>
 
     <!-- Login Activity -->
     <string name="login">Log In</string>
@@ -88,6 +88,10 @@
     <string name="generate">Generate</string>
     <string name="generate_name">QR-Code Name</string>
     <string name="generate_balance">QR-Code Balance</string>
+
+    <!-- Scan QR Fragment -->
+    <string name="accepted">Accepted</string>
+    <string name="ammount_accepted">Rp 0</string>
 
     <!-- Information QR Fragment -->
     <string name="information_qash">Qash Information</string>

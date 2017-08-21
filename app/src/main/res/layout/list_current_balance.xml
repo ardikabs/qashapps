@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="16dp"
-    android:paddingStart="16dp"
+    android:paddingBottom="8dp"
     android:paddingEnd="16dp"
+    android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingStart="16dp"
+    android:paddingTop="8dp">
 
     <TextView
         android:id="@+id/curQrName"
@@ -35,7 +35,7 @@
         android:layout_toRightOf="@id/curQrRp"
         android:text="@string/qr_balance" />
 
-    <Switch
+    <android.support.v7.widget.SwitchCompat
         android:id="@+id/switchQr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,6 +43,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="4dp"
         android:layout_toEndOf="@id/curQrName"
-        android:layout_toRightOf="@id/curQrName" />
+        android:layout_toRightOf="@id/curQrName"
+        android:checked="false" />
 
 </RelativeLayout>
