@@ -2,6 +2,7 @@ package gravicodev.qash.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class InformationQRFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_informationqr, container, false);
 
         // Change Title of each fragment
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Transaction");
+        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Information");
 
         String[] name = new String[]{
                 "Belanja", "Gajian", "Uang Saku", "Jajan", "THR", "Testing"
