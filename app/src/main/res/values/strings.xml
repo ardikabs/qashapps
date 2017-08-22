@@ -30,7 +30,7 @@
     <string name="qr_plus_balance">+ Rp.</string>
 
     <string name="qr_created">Created at</string>
-    <string name="qr_info_balance">Balance : Rp</string>
+    <string name="qr_info_balance">Balance : Rp.</string>
     <string name="qr_info_status">Status : </string>
     <string name="qr_info_value_status">Active</string>
     <string name="qr_delete">Delete</string>

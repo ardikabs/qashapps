@@ -16,6 +16,7 @@ public class QMaster {
     public String title;
     public String SourceAccountNumber;
     public Long expired_at;
+    public Object created_at;
 
     private String key;
 
@@ -28,6 +29,7 @@ public class QMaster {
         this.expired_at = expired_at;
         this.title = title;
         this.SourceAccountNumber = SourceAccountNumber;
+        this.created_at = ServerValue.TIMESTAMP;
     }
 
     public void setKey(String key) {

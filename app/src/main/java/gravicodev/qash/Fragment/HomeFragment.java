@@ -125,6 +125,7 @@ public class HomeFragment extends Fragment {
                         mQRKeyList.remove(index);
 
                         mQRbyUserList.remove(key);
+                        listCurrentBalanceAdapter.remove(index);
                         FirebaseUtils.getBaseRef().child("qrcreator")
                                 .child(Uid)
                                 .child(key)

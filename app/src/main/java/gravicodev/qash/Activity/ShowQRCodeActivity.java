@@ -82,7 +82,7 @@ public class ShowQRCodeActivity extends BaseActivity {
         String now = year+month+day;
 
 
-        ArrayList<String> datas = getIntent().getExtras().getStringArrayList("GenerateQR");
+        ArrayList<String> datas = getIntent().getExtras().getStringArrayList("ShowQR");
         name = datas.get(0);
         balance = datas.get(1);
         qrname = "qash_" + name.trim() + "_" + now;

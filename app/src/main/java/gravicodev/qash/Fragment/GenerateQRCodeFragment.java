@@ -202,7 +202,7 @@ public class GenerateQRCodeFragment extends Fragment {
                     FirebaseUtils.getBaseRef().child("qcreator").child(((MainActivity)getActivity()).getUid())
                             .child(key).setValue(true);
                     FirebaseUtils.getBaseRef().child("timestamp").child(((MainActivity)getActivity()).getUid()).removeValue();
-                    
+
                     String msg = qr_name + " created with balance " + ((MainActivity)getActivity()).moneyParserString(qr_balance);
                     ArrayList<String> data = new ArrayList<>();
                     data.add(qr_name);
@@ -251,7 +251,7 @@ public class GenerateQRCodeFragment extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     Intent intent = new Intent(getActivity(), ShowQRCodeActivity.class);
-                    intent.putExtra("GenerateQR", data);
+                    intent.putExtra("ShowQR", data);
                     startActivity(intent);
 
                     qrName.setText("");
