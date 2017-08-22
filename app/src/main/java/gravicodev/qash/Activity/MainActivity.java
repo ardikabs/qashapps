@@ -167,36 +167,10 @@ public class MainActivity extends BaseActivity {
         User user = sessionManager.getUser();
         return user.getUserid();
     }
+    
     public User getUser(){
         User user = sessionManager.getUser();
         return user;
-    }
-
-    public String moneyParser(int data){
-        int delimiter = 10;
-        ArrayList<Integer> hasil = new ArrayList<>();
-        while(true){
-            if(data > 0){
-                hasil.add(data % delimiter);
-                data /= delimiter;
-            }else{
-                break;
-            }
-        }
-
-        String strHasil = "";
-        int x = 1;
-        for(int i=0; i < hasil.size();i++){
-            if(x==3){
-                strHasil = "." + String.valueOf(hasil.get(i)) + strHasil;
-                x = 0;
-            }else{
-                strHasil = String.valueOf(hasil.get(i)) + strHasil;
-            }
-            x++;
-        }
-
-        return "Rp. " +strHasil;
     }
 
     public String moneyParserToInt(String data){
@@ -237,8 +211,6 @@ public class MainActivity extends BaseActivity {
             }
             x++;
         }
-
-        Log.d(TAG,""+moneyParserToInt(strHasil));
 
         return strHasil;
     }
@@ -288,4 +260,5 @@ public class MainActivity extends BaseActivity {
     protected void onStop() {
         super.onStop();
     }
+
 }
