@@ -11,6 +11,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,13 +34,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 import gravicodev.qash.Activity.MainActivity;
 import gravicodev.qash.Activity.ShowQRCodeActivity;
@@ -53,6 +61,7 @@ import static android.graphics.Color.WHITE;
 
 public class GenerateQRCodeFragment extends Fragment {
     private static final String TAG = "GenerateQRCodeFragment";
+    private static final String KEY = "qashcounttoll";
     public final static int WIDTH = 500;
     private Button btnGenerate;
     private AppCompatEditText qrName, qrBalance;
@@ -179,7 +188,14 @@ public class GenerateQRCodeFragment extends Fragment {
                     cal.add(Calendar.MONTH,1);
                     Long expired_date = cal.getTimeInMillis();
 
-                    String key = accNumber+"_"+expired_date;
+//                    String key = shaParser(accNumber+"_"+expired_date);
+                    String key = null;
+                    try {
+                        key = hmacSha256(accNumber+"_"+expired_date,KEY);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        key = shaParser(accNumber+"_"+expired_date);
+                    }
 
                     QMaster qrdata = new QMaster(Integer.parseInt(balance), expired_date,name,accNumber);
 
@@ -188,10 +204,10 @@ public class GenerateQRCodeFragment extends Fragment {
                             .child(key).setValue(true);
                     FirebaseUtils.getBaseRef().child("timestamp").child(((MainActivity)getActivity()).getUid()).removeValue();
 
-                    String msg = name + " created with balance " + ((MainActivity)getActivity()).moneyParser(Integer.parseInt(balance));
+                    String msg = name + " created with balance " + ((MainActivity)getActivity()).moneyParserString(balance);
                     ArrayList<String> data = new ArrayList<>();
                     data.add(name);
-                    data.add(((MainActivity)getActivity()).moneyParser(Integer.parseInt(balance)));
+                    data.add(((MainActivity)getActivity()).moneyParserString(balance));
                     data.add(key);
 
                     alertDialog("Generate Qash Success", msg, "OK", data);
@@ -279,5 +295,59 @@ public class GenerateQRCodeFragment extends Fragment {
         }
 
         return valid;
+    }
+
+    private static String bytesToHexString(byte[] bytes) {
+        // http://stackoverflow.com/questions/332079
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < bytes.length; i++) {
+            String hex = Integer.toHexString(0xFF & bytes[i]);
+            if (hex.length() == 1) {
+                sb.append('0');
+            }
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
+
+    private String shaParser(String input){
+        MessageDigest digest=null;
+        String hash = "";
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            digest.update(input.getBytes());
+
+            hash = bytesToHexString(digest.digest());
+
+        } catch (NoSuchAlgorithmException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        return hash;
+    }
+
+    private static String hmacSha256(String value, String key)
+            throws UnsupportedEncodingException, NoSuchAlgorithmException,
+            InvalidKeyException {
+        String type = "HmacSHA256";
+        SecretKeySpec secret = new SecretKeySpec(key.getBytes(), type);
+        Mac mac = Mac.getInstance(type);
+        mac.init(secret);
+        byte[] bytes = mac.doFinal(value.getBytes());
+        return bytesToHex(bytes);
+    }
+
+    private final static char[] hexArray = "0123456789abcdef".toCharArray();
+
+    private static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        int v;
+        for (int j = 0; j < bytes.length; j++) {
+            v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
     }
 }

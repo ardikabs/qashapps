@@ -239,12 +239,10 @@ public class ShowQRCodeActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        db.removeEventListener(timestampListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        db.removeEventListener(timestampListener);
     }
 }
