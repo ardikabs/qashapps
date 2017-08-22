@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +72,28 @@ public class GenerateQRCodeFragment extends Fragment {
         qrBalance = (AppCompatEditText) rootView.findViewById(R.id.qr_balance);
         btnGenerate = (Button) rootView.findViewById(R.id.btnGenerate);
 
+        qrBalance.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                qrBalance.removeTextChangedListener(this);
+                String input = qrBalance.getText().toString();
+                String inputParser = ((MainActivity)getActivity()).moneyParserString(input);
+                qrBalance.setText(inputParser);
+                qrBalance.setSelection(inputParser.length());
+                qrBalance.addTextChangedListener(this);
+            }
+        });
 
         btnGenerate.setOnClickListener(new View.OnClickListener() {
             @Override
