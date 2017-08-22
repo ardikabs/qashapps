@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -24,6 +25,7 @@ import gravicodev.qash.Barcode.BarcodeCaptureActivity;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -47,12 +49,11 @@ import gravicodev.qash.R;
 
 public class ScanQRCodeFragment extends Fragment {
     private static final String TAG = "ScanQRCodeFragment";
-    private String BeneficieryAccountNumber = "0001-0001-1110";
-    private String msg = "MESSAGE";
     private AppCompatEditText scanBalance, scanKet;
     private Button btnScan, testsuccess;
     private FrameLayout dimmer;
     private LottieAnimationView animSuccess;
+    private TextView ammountAccepted;
 
     public ScanQRCodeFragment() {}
 
@@ -69,35 +70,13 @@ public class ScanQRCodeFragment extends Fragment {
         scanKet = (AppCompatEditText) rootView.findViewById(R.id.scan_ket);
         testsuccess = (Button) rootView.findViewById(R.id.testsucces);
         dimmer = (FrameLayout) rootView.findViewById(R.id.dimmerSuccess);
+        ammountAccepted = (TextView) rootView.findViewById(R.id.ammountAccepted);
         animSuccess = (LottieAnimationView) rootView.findViewById(R.id.animation_success);
 
         testsuccess.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dimmer.setVisibility(View.VISIBLE);
-                animSuccess.playAnimation();
-
-                int delay = 1;
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        dimmer.setVisibility(View.GONE);
-                    }
-                }, delay * 3000);
-
-                FirebaseUtils.getBaseRef().child("qhistory").child("3890532372_1506068812611")
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                QHistory qHistory = dataSnapshot.getValue(QHistory.class);
-                                showToast(String.valueOf(qHistory.used_at));
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                showSuccess(5000);
             }
         });
 
@@ -105,10 +84,12 @@ public class ScanQRCodeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), BarcodeCaptureActivity.class);
+                intent.putExtra("balance",scanBalance.getText().toString().trim());
+                intent.putExtra("description",scanKet.getText().toString().trim());
                 startActivityForResult(intent, 1);
             }
         });
-        
+
         return rootView;
     }
 
@@ -165,8 +146,16 @@ public class ScanQRCodeFragment extends Fragment {
 
     private void proses(Integer balance, DataSnapshot dataSnapshot) {
         final Integer balanceUsed = Integer.parseInt(scanBalance.getText().toString().trim());
-        DatabaseReference dbHistory = FirebaseUtils.getBaseRef().child("qhistory")
-                .child(((MainActivity)getActivity()).getUid());
+        String BeneficieryAccountNumber = ((MainActivity)getActivity()).getUser().accountNumber;
+        String SourceAccountNumber = dataSnapshot.child("SourceAccountNumber").getValue(String.class);
+        // For Sender
+        DatabaseReference dbHistoryOut = FirebaseUtils.getBaseRef().child("qhistory")
+                .child(SourceAccountNumber);
+
+        // For Receiver
+        DatabaseReference dbHistoryIn = FirebaseUtils.getBaseRef().child("qhistory")
+                .child(BeneficieryAccountNumber);
+
         DatabaseReference dbMaster = FirebaseUtils.getBaseRef().child("qmaster")
                 .child(dataSnapshot.getKey());
         DatabaseReference dbTrx = FirebaseUtils.getBaseRef().child("qtransactions")
@@ -184,21 +173,40 @@ public class ScanQRCodeFragment extends Fragment {
             String msg = scanKet.getText().toString().trim();
 
             QHistory qHistory = new QHistory(balanceUsed,qMaster.title,msg);
-            qHistory.setKey(dataSnapshot.getKey());
+
             QTransactions trx = new QTransactions(balanceUsed,qHistory.used_at,msg,((MainActivity)getActivity()).getUser().accountNumber, qMaster.SourceAccountNumber);
 
 
             dbMaster.setValue(qMaster);
 
-            dbHistory.child(dbHistory.push().getKey())
+            qHistory.setStatus("negative");
+
+            dbHistoryOut.child(dbHistoryOut.push().getKey())
                     .setValue(qHistory);
 
+            qHistory.setStatus("positive");
+            dbHistoryIn.child(dbHistoryIn.push().getKey())
+                    .setValue(qHistory);
             dbTrx.setValue(trx);
-
+            showSuccess(balanceUsed);
         }
     }
 
     public void showToast(String message){
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    private void showSuccess(Integer acceptedNumber){
+        ammountAccepted.setText("Rp. "+acceptedNumber);
+        dimmer.setVisibility(View.VISIBLE);
+        animSuccess.playAnimation();
+
+        int delay = 1;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dimmer.setVisibility(View.GONE);
+            }
+        }, delay * 3000);
     }
 }

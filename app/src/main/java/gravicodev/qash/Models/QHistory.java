@@ -15,6 +15,7 @@ public class QHistory {
     public Object used_at;
     public String title;
     public String msg;
+    private String status;
     private String key;
 
     public QHistory(){
@@ -33,6 +34,14 @@ public class QHistory {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Exclude

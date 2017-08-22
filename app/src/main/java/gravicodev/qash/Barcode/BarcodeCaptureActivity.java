@@ -21,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -29,6 +30,7 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+import com.google.android.gms.vision.text.Text;
 
 
 import java.io.IOException;
@@ -53,6 +55,8 @@ public final class BarcodeCaptureActivity extends AppCompatActivity
 
     private CameraSource mCameraSource;
     private CameraSourcePreview mPreview;
+    private TextView balanceRead;
+    private TextView descRead;
 
     /**
      * Initializes the UI and creates the detector pipeline.
@@ -63,6 +67,12 @@ public final class BarcodeCaptureActivity extends AppCompatActivity
         setContentView(R.layout.barcode_capture);
 
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
+        balanceRead = (TextView) findViewById(R.id.balanceRead);
+        descRead = (TextView) findViewById(R.id.descRead);
+
+        Intent intent = getIntent();
+        balanceRead.setText("Rp. "+intent.getStringExtra("balance"));
+        descRead.setText(intent.getStringExtra("description"));
 
         boolean autoFocus = true;
         boolean useFlash = false;

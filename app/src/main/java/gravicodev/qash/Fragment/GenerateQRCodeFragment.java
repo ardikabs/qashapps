@@ -92,9 +92,9 @@ public class GenerateQRCodeFragment extends Fragment {
                         .addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                int balance = dataSnapshot.child("balance").getValue(Integer.class);
+                                int userBalance = dataSnapshot.child("balance").getValue(Integer.class);
 
-                                if(Integer.parseInt(qrbalance) > balance){
+                                if(Integer.parseInt(qrbalance) > userBalance){
                                     alertDialog("Generate Qash Failed",
                                             "Your balance is not enough to create QR-Code.", "CANCEL", data);
                                 }
