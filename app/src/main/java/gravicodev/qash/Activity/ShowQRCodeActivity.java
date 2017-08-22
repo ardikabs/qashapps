@@ -3,6 +3,7 @@ package gravicodev.qash.Activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -10,33 +11,62 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
+import gravicodev.qash.Helper.FirebaseUtils;
+import gravicodev.qash.Models.QMaster;
+import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
+import gravicodev.qash.Session.SessionManager;
 
-public class ShowQRCodeActivity extends AppCompatActivity {
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
+
+public class ShowQRCodeActivity extends BaseActivity {
+    public final static int WIDTH = 1000;
+
     private TextView qrcodeName, qrcodeBalance;
     private Button btnSave;
     private String name, balance, qrname;
+    private ImageView qrcodeView;
+
+    private SessionManager sessionManager;
+    private ValueEventListener timestampListener;
+    private DatabaseReference db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_qrcode);
+
+        sessionManager = new SessionManager(this);
+        sessionManager.checkLogin();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_qrcode);
         toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
@@ -44,15 +74,31 @@ public class ShowQRCodeActivity extends AppCompatActivity {
 
         qrcodeName = (TextView) findViewById(R.id.qrcode_name);
         qrcodeBalance = (TextView) findViewById(R.id.qrcode_balance);
+        qrcodeView = (ImageView) findViewById(R.id.qr_pict);
         btnSave = (Button) findViewById(R.id.btnSaveQR);
 
-        String[] datas = getIntent().getExtras().getStringArray("GenerateQR");
-        name = datas[0];
-        balance = "Rp " + datas[1];
-        qrname = "qash_" + name.trim() + "_" + datas[1].trim();
+        Calendar today = Calendar.getInstance();
+        String day = parseWaktu(Integer.toString(today.get(Calendar.DAY_OF_MONTH))) ;
+        String month = parseWaktu(Integer.toString(today.get(Calendar.MONTH)+1));
+        String year = parseWaktu(Integer.toString(today.get(Calendar.YEAR)));
+        String now = year+month+day;
+
+
+        ArrayList<String> datas = getIntent().getExtras().getStringArrayList("GenerateQR");
+        name = datas.get(0);
+        balance = datas.get(1);
+        qrname = "qash_" + name.trim() + "_" + now;
 
         qrcodeName.setText(name);
         qrcodeBalance.setText(balance);
+
+        // QRCODE BITMAP
+        try {
+            Bitmap bitmap = encodeAsBitmap(datas.get(2));
+            qrcodeView.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -85,8 +131,42 @@ public class ShowQRCodeActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Qash QR-Code Saved", Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
+
+    private String parseWaktu(String time) {
+        if(time.length() == 1)
+        {
+            return "0"+time;
+        } else {
+            return time;
+        }
+    }
+
+
+    Bitmap encodeAsBitmap(String str) throws WriterException {
+        BitMatrix result;
+        try {
+            result = new MultiFormatWriter().encode(str,
+                    BarcodeFormat.QR_CODE, WIDTH, WIDTH, null);
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+            return null;
+        }
+        int w = result.getWidth();
+        int h = result.getHeight();
+        int[] pixels = new int[w * h];
+        for (int y = 0; y < h; y++) {
+            int offset = y * w;
+            for (int x = 0; x < w; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, WIDTH, 0, 0, w, h);
+        return bitmap;
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -154,5 +234,17 @@ public class ShowQRCodeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        db.removeEventListener(timestampListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        db.removeEventListener(timestampListener);
     }
 }

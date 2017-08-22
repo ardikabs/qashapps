@@ -58,7 +58,7 @@
                 android:drawablePadding="16dp"
                 android:drawableStart="@drawable/ic_description"
                 android:hint="@string/scan_ket"
-                android:inputType="text"
+                android:inputType="textCapSentences"
                 android:maxLines="1"
                 android:padding="16dp"
                 android:textColorHint="@android:color/black"

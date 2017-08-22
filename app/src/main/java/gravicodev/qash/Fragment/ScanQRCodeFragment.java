@@ -27,6 +27,8 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
@@ -40,6 +42,7 @@ import java.util.HashMap;
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QHistory;
 import gravicodev.qash.Models.QMaster;
+import gravicodev.qash.Models.QTransactions;
 import gravicodev.qash.R;
 
 public class ScanQRCodeFragment extends Fragment {
@@ -61,7 +64,6 @@ public class ScanQRCodeFragment extends Fragment {
         // Change Title of each fragment
         //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Scan");
 
-        final String key = "QRCODE_1";
         btnScan = (Button) rootView.findViewById(R.id.btnScan);
         scanBalance = (AppCompatEditText) rootView.findViewById(R.id.scan_balance);
         scanKet = (AppCompatEditText) rootView.findViewById(R.id.scan_ket);
@@ -82,6 +84,20 @@ public class ScanQRCodeFragment extends Fragment {
                         dimmer.setVisibility(View.GONE);
                     }
                 }, delay * 3000);
+
+                FirebaseUtils.getBaseRef().child("qhistory").child("3890532372_1506068812611")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                QHistory qHistory = dataSnapshot.getValue(QHistory.class);
+                                showToast(String.valueOf(qHistory.used_at));
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
             }
         });
 
@@ -92,104 +108,96 @@ public class ScanQRCodeFragment extends Fragment {
                 startActivityForResult(intent, 1);
             }
         });
-
-        // Bekas test push notif
-//        pbutton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                FirebaseUtils.getBaseRef().child("qmaster").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(final DataSnapshot dataSnapshot) {
-//                        final QMaster qMaster = dataSnapshot.getValue(QMaster.class);
-//
-//                        Calendar today = Calendar.getInstance();
-//                        Calendar cal = Calendar.getInstance();
-//                        Date expireDate = new Date(qMaster.expired_at);
-//                        cal.setTime(expireDate);
-//                        boolean expired = cal.before(today);
-//
-//                        if(expired){
-//                            //expired
-//                            showToast("QR Code tidak berlaku");
-//
-//                        }
-//                        else{
-//                            if(qMaster.status.equals("active")){
-//                                //proses transfer disini
-//
-//                                FirebaseUtils.getBaseRef().child("qmaster").child(key).runTransaction(new Transaction.Handler() {
-//                                    @Override
-//                                    public Transaction.Result doTransaction(MutableData mutableData) {
-//                                        QMaster qMaster1 = mutableData.getValue(QMaster.class);
-//                                        Integer balanceUsed = 5000;
-//                                        qMaster1.balance -= balanceUsed;
-//
-//                                        Calendar cal = Calendar.getInstance();
-//                                        Long currentDate = cal.getTime().getTime();
-//
-//                                        QHistory qHistory = new QHistory(balanceUsed,currentDate,qMaster1.title,msg, BeneficieryAccountNumber);
-//                                        FirebaseUtils.getBaseRef().child("qhistory").child("user_1").child(key).setValue(qHistory);
-//
-//                                        String trxKey = FirebaseUtils.getBaseRef().child("qtransactions").push().getKey();
-//                                        FirebaseUtils.getBaseRef().child("qtransactions").child("user_1").child(trxKey).setValue(qHistory);
-//
-//                                        mutableData.setValue(qMaster1);
-//                                        FirebaseUtils.getBaseRef().child("qtransactions").child("user_1").addListenerForSingleValueEvent(new ValueEventListener() {
-//                                            @Override
-//                                            public void onDataChange(DataSnapshot dataSnapshot) {
-//                                                for (DataSnapshot ds : dataSnapshot.getChildren()){
-//                                                    ds.getRef().removeValue();
-//                                                }
-//                                            }
-//
-//                                            @Override
-//                                            public void onCancelled(DatabaseError databaseError) {
-//
-//                                            }
-//                                        });
-//                                        return Transaction.success(mutableData);
-//                                    }
-//
-//                                    @Override
-//                                    public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-//
-//                                    }
-//                                });
-//                            }
-//                            else{
-//                                FirebaseUtils.getBaseRef().child("qmaster").child(dataSnapshot.getKey()).child("status").setValue("nonactive");
-//                                showToast("QR Code tidak berlaku");
-//                            }
-//                        }
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//                    }
-//                });
-//
-//            }
-//        });
+        
         return rootView;
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (requestCode == 1) {
             if (resultCode == CommonStatusCodes.SUCCESS) {
                 if (data != null) {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
                     Point[] p = barcode.cornerPoints;
-//                    homeTv.setText(barcode.displayValue);
-                    Toast.makeText(getActivity(), barcode.displayValue, Toast.LENGTH_SHORT).show();
-                } else Toast.makeText(getActivity(), "salah bos", Toast.LENGTH_SHORT).show();
-            } else Log.e("jancok", String.format(getString(R.string.barcode_error_format),
+
+                    FirebaseUtils.getBaseRef()
+                            .child("qmaster")
+                            .child(barcode.displayValue)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+
+                                    Calendar today = Calendar.getInstance();
+                                    Calendar cal = Calendar.getInstance();
+                                    Date expireDate = new Date(qMaster.expired_at);
+                                    cal.setTime(expireDate);
+                                    boolean expired = cal.before(today);
+
+                                    if(expired){
+                                        showToast("Qash sudah tidak berlaku");
+                                    }
+
+                                    else{
+                                        if(qMaster.status.equalsIgnoreCase("active")){
+                                            proses(qMaster.balance,dataSnapshot);
+                                        }
+                                        else{
+                                            showToast("Qash sudah tidak berlaku");
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                }
+                else
+                    showToast("DATA NULL");
+            }
+            else
+                Log.e("QRCODE_ERROR:", String.format(getString(R.string.barcode_error_format),
                     CommonStatusCodes.getStatusCodeString(resultCode)));
         } else super.onActivityResult(requestCode, resultCode, data);
     }
-    
+
+    private void proses(Integer balance, DataSnapshot dataSnapshot) {
+        final Integer balanceUsed = Integer.parseInt(scanBalance.getText().toString().trim());
+        DatabaseReference dbHistory = FirebaseUtils.getBaseRef().child("qhistory")
+                .child(((MainActivity)getActivity()).getUid());
+        DatabaseReference dbMaster = FirebaseUtils.getBaseRef().child("qmaster")
+                .child(dataSnapshot.getKey());
+        DatabaseReference dbTrx = FirebaseUtils.getBaseRef().child("qtransactions")
+                .child(dataSnapshot.getKey());
+
+        if(balanceUsed > balance){
+            showToast("Balance Qash tidak mencukupi");
+        }
+        else{
+            showToast(dataSnapshot.getKey());
+
+            QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+            qMaster.balance -= balanceUsed;
+
+            String msg = scanKet.getText().toString().trim();
+
+            QHistory qHistory = new QHistory(balanceUsed,qMaster.title,msg);
+            qHistory.setKey(dataSnapshot.getKey());
+            QTransactions trx = new QTransactions(balanceUsed,qHistory.used_at,msg,((MainActivity)getActivity()).getUser().accountNumber, qMaster.SourceAccountNumber);
+
+
+            dbMaster.setValue(qMaster);
+
+            dbHistory.child(dbHistory.push().getKey())
+                    .setValue(qHistory);
+
+            dbTrx.setValue(trx);
+
+        }
+    }
+
     public void showToast(String message){
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }

@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
     private ProgressDialog mProgressDialog;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     public void showProgressDialog() {
         if (mProgressDialog == null) {
@@ -31,9 +32,11 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public void userOut(){mAuth.signOut();}
+
     //Get User ID
     public String getUid() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        return mAuth.getCurrentUser().getUid();
     }
 
     public void showToast(String message){

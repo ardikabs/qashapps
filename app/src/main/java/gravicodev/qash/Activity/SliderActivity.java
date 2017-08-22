@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import gravicodev.qash.Preference.PrefManager;
 import gravicodev.qash.R;
+import gravicodev.qash.Session.SessionManager;
 
 public class SliderActivity extends AppCompatActivity {
     private static final String TAG = "SliderActivity";
@@ -30,16 +31,23 @@ public class SliderActivity extends AppCompatActivity {
     private int[] layouts;
     private Button btnSkip, btnNext;
     private PrefManager prefManager;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sessionManager = new SessionManager(this);
 
         // Checking for first time launch - before calling setContentView()
         prefManager = new PrefManager(this);
         if (!prefManager.isFirstTimeLaunch()) {
-            launchHomeScreen();
-            finish();
+            if(sessionManager.isLoggedIn()){
+                launchMainScreen();
+                finish();
+            }else{
+                launchHomeScreen();
+                finish();
+            }
         }
 
         // Making notification bar transparent
@@ -121,6 +129,11 @@ public class SliderActivity extends AppCompatActivity {
     private void launchHomeScreen() {
         prefManager.setFirstTimeLaunch(false);
         startActivity(new Intent(getApplication(), LoginActivity.class));
+        finish();
+    }
+    private void launchMainScreen() {
+        prefManager.setFirstTimeLaunch(false);
+        startActivity(new Intent(getApplication(), MainActivity.class));
         finish();
     }
 

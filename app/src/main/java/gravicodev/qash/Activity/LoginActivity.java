@@ -1,14 +1,25 @@
 package gravicodev.qash.Activity;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.text.TextUtilsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -16,13 +27,20 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import gravicodev.qash.Helper.ApiHelper;
+import gravicodev.qash.Helper.FirebaseUtils;
+import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
+import gravicodev.qash.Session.SessionManager;
 import gravicodev.qash.Volley.VolleyHelper;
 
 public class LoginActivity extends BaseActivity {
     private static final String TAG = "LoginActivity";
     private AppCompatEditText emailLogin, pinLogin;
     private Button btnLogin, btnSignUpNow;
+
+    private SessionManager sessionManager;
+    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +52,15 @@ public class LoginActivity extends BaseActivity {
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnSignUpNow = (Button) findViewById(R.id.btnSignUpNow);
 
+        sessionManager = new SessionManager(this);
+        mAuth = FirebaseAuth.getInstance();
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 loginAccount();
             }
         });
+
 
         btnSignUpNow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,14 +76,50 @@ public class LoginActivity extends BaseActivity {
 
     private void loginAccount(){
         String email = emailLogin.getText().toString().trim();
-        String pin = pinLogin.getText().toString().trim();
+        final String pin = pinLogin.getText().toString().trim();
 
         if (!validateForm(email, pin)){
             return;
         }
+        showProgressDialog();
+        mAuth.signInWithEmailAndPassword(email,pin).
+                addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-        startActivity(new Intent(getApplication(), MainActivity.class));
-        finish();
+                        if(!task.isSuccessful()){
+                            // Unsuccessfull login
+                            hideProgressDialog();
+                            showToast(task.getException().getMessage());
+                            emailLogin.setText("");
+                            pinLogin.setText("");
+                        }
+                        else{
+                            // Successfull login
+                            onAuthSuccess(task.getResult().getUser());
+                        }
+                    }
+                });
+    }
+
+    private void onAuthSuccess(FirebaseUser user) {
+        FirebaseUtils.getBaseRef().child("users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                user.setBalance(dataSnapshot.child("balance").getValue(Integer.class));
+                user.setUserid(dataSnapshot.getKey());
+                sessionManager.logIn(user);
+                startActivity(new Intent (LoginActivity.this,MainActivity.class));
+                finish();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private static boolean isValidEmail(String email) {

@@ -7,41 +7,38 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by supermonster on 7/29/2017.
+ * Created by minimonster on 8/22/2017.
  */
 
-public class QHistory {
+public class QTransactions {
+
     public Integer balance;
     public Object used_at;
-    public String title;
     public String msg;
-    private String key;
+    public String BeneficieryAccountNumber;
+    public String SourceAccountNumber;
 
-    public QHistory(){
+    public QTransactions(){
 
     }
-    public QHistory(Integer balance, String title, String msg){
+    public QTransactions(Integer balance,Object used_at, String msg, String BeneficeryAccountNumber, String SourceAccountNumber){
         this.balance = balance;
-        this.used_at = ServerValue.TIMESTAMP;
-        this.title = title;
+        this.used_at = used_at;
         this.msg = msg;
+        this.BeneficieryAccountNumber = BeneficeryAccountNumber;
+        this.SourceAccountNumber = SourceAccountNumber;
     }
 
-    public String getKey() {
-        return key;
-    }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+
 
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("balance",balance);
         result.put("used_at",used_at);
-        result.put("title",title);
         result.put("msg",msg);
+        result.put("BeneficieryAccountNumber",BeneficieryAccountNumber);
 
         return result;
     }

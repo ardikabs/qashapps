@@ -1,11 +1,9 @@
 package gravicodev.qash.Activity;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -13,30 +11,25 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.vision.barcode.Barcode;
-
 import gravicodev.qash.Adapter.TabFragmentPagerAdapter;
-import gravicodev.qash.Barcode.BarcodeCaptureActivity;
+
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import gravicodev.qash.Adapter.TabFragmentPagerAdapter;
-import gravicodev.qash.Helper.FirebaseUtils;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
+import gravicodev.qash.Session.SessionManager;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -45,13 +38,21 @@ public class MainActivity extends BaseActivity {
     private TabLayout tabLayout;
     private static final int REQUEST_COARSE_LOCATION = 100;
     private static final int BARCODE_READER_REQUEST_CODE = 1;
-    private ChildEventListener notification;
+
+    private HashMap<DatabaseReference, ValueEventListener> valueListenerList = new HashMap<>();
+    private HashMap<DatabaseReference, ChildEventListener> childListenerList = new HashMap<>();
+
+
+    private SessionManager sessionManager;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        sessionManager = new SessionManager(this);
+        sessionManager.checkLogin();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -101,82 +102,6 @@ public class MainActivity extends BaseActivity {
                     1);
         }
 
-//        Intent intent = new Intent(getApplicationContext(), BarcodeCaptureActivity.class);
-//        startActivityForResult(intent, 1);
-
-        notification = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                showToast(dataSnapshot.getKey());
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        notificationPayment();
-    }
-
-    private void notificationPayment() {
-        FirebaseUtils.getBaseRef().child("settings").child("user_1").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                if(dataSnapshot.getKey().equals("notification")){
-                    if(dataSnapshot.getValue(Boolean.class)){
-                        FirebaseUtils.getBaseRef().child("qtransactions").child("user_1").addChildEventListener(notification);
-
-                    }
-                    else{
-                        showToast("Notification Off");
-                        FirebaseUtils.getBaseRef().child("qtransactions").child("user_1").removeEventListener(notification);
-                    }
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                if(dataSnapshot.getKey().equals("notification")){
-                    if(dataSnapshot.getValue(Boolean.class)){
-                        FirebaseUtils.getBaseRef().child("qtransactions").child("user_1").addChildEventListener(notification);
-                    }
-                    else{
-                        showToast("Notification Off");
-                        FirebaseUtils.getBaseRef().child("qtransactions").child("user_1").removeEventListener(notification);
-                    }
-                }
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
     }
 
@@ -215,20 +140,6 @@ public class MainActivity extends BaseActivity {
         return true;
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == BARCODE_READER_REQUEST_CODE) {
-//            if (resultCode == CommonStatusCodes.SUCCESS) {
-//                if (data != null) {
-//                    Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
-//                    Point[] p = barcode.cornerPoints;
-////                    homeTv.setText(barcode.displayValue);
-//                    Toast.makeText(MainActivity.this, barcode.displayValue, Toast.LENGTH_SHORT).show();
-//                } else Toast.makeText(MainActivity.this, "salah bos", Toast.LENGTH_SHORT).show();
-//            } else Log.e("jancok", String.format(getString(R.string.barcode_error_format),
-//                    CommonStatusCodes.getStatusCodeString(resultCode)));
-//        } else super.onActivityResult(requestCode, resultCode, data);
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -242,12 +153,96 @@ public class MainActivity extends BaseActivity {
             startActivity(new Intent(getApplication(), AboutActivity.class));
         }
         else if (id == R.id.action_logout) {
-            Toast.makeText(getApplication(), "Log Out", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(getApplication(), LoginActivity.class));
-            finish();
+            Toast.makeText(getApplication(), "Thank you for using QashApps", Toast.LENGTH_SHORT).show();
+
+            sessionManager.logOut();
+            userOut();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    public String getUid(){
+        User user = sessionManager.getUser();
+        return user.getUserid();
+    }
+    public User getUser(){
+        User user = sessionManager.getUser();
+        return user;
+    }
+
+    public String moneyParser(int data){
+        int delimiter = 10;
+        ArrayList<Integer> hasil = new ArrayList<>();
+        while(true){
+            if(data > 0){
+                hasil.add(data % delimiter);
+                data /= delimiter;
+            }else{
+                break;
+            }
+        }
+
+        String strHasil = "";
+        int x = 1;
+        for(int i=0; i < hasil.size();i++){
+            if(x==3){
+                strHasil = "." + String.valueOf(hasil.get(i)) + strHasil;
+                x = 0;
+            }else{
+                strHasil = String.valueOf(hasil.get(i)) + strHasil;
+            }
+            x++;
+        }
+
+        return "Rp. " +strHasil;
+    }
+
+
+    // Method for adding value listener
+    public void addListener(DatabaseReference db, ValueEventListener value) {
+        this.valueListenerList.put(db,value);
+    }
+
+    // Method for adding child listener
+    public void addChildListener(DatabaseReference db, ChildEventListener value){
+        this.childListenerList.put(db,value);
+    }
+
+    // Method for massal remover of valuelistener
+    public static void removeValueListener(HashMap<DatabaseReference, ValueEventListener> hashMap) {
+
+        for (Map.Entry<DatabaseReference, ValueEventListener> entry : hashMap.entrySet()) {
+
+            DatabaseReference databaseReference = entry.getKey();
+
+            ValueEventListener valueEventListener = entry.getValue();
+
+            databaseReference.removeEventListener(valueEventListener);
+
+        }
+
+    }
+
+    // Method for massal remover of childlistener
+    public static void removeChildListener(HashMap<DatabaseReference, ChildEventListener> hashMap) {
+
+        for (Map.Entry<DatabaseReference, ChildEventListener> entry : hashMap.entrySet()) {
+
+            DatabaseReference databaseReference = entry.getKey();
+
+            ChildEventListener childEventListener = entry.getValue();
+
+            databaseReference.removeEventListener(childEventListener);
+
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        removeValueListener(valueListenerList);
+        removeChildListener(childListenerList);
+    }
 }

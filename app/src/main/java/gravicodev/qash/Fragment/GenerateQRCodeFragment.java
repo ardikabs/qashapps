@@ -31,15 +31,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.security.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
+import gravicodev.qash.Activity.MainActivity;
 import gravicodev.qash.Activity.ShowQRCodeActivity;
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QMaster;
+import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 
 import static android.graphics.Color.BLACK;
@@ -51,6 +55,9 @@ public class GenerateQRCodeFragment extends Fragment {
     private Button btnGenerate;
     private AppCompatEditText qrName, qrBalance;
 
+    private DatabaseReference db;
+    private ValueEventListener timestampListener;
+
     public GenerateQRCodeFragment() {
     }
 
@@ -59,30 +66,19 @@ public class GenerateQRCodeFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_generateqrcode, container, false);
 
-        // Change Title of each fragment
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Generate");
-
-        // Bekas ImageView for test QR-Code
-//        ImageView imageView = (ImageView) rootView.findViewById(R.id.qrCodeIV);
-//        try {
-//            Bitmap bitmap = encodeAsBitmap("471e7f048fb27452c82a10204cd460b2c51e96d994a2bc9ca643d0d8ccff4d24");
-//            imageView.setImageBitmap(bitmap);
-//        } catch (WriterException e) {
-//            e.printStackTrace();
-//        }
-
         qrName = (AppCompatEditText) rootView.findViewById(R.id.qr_name);
         qrBalance = (AppCompatEditText) rootView.findViewById(R.id.qr_balance);
         btnGenerate = (Button) rootView.findViewById(R.id.btnGenerate);
+
 
         btnGenerate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String qrname = qrName.getText().toString().trim();
-                String qrbalance = qrBalance.getText().toString().trim();
-                String[] data = new String[]{
-                        qrname, qrbalance
-                };
+                final String qrbalance = qrBalance.getText().toString().trim();
+                final ArrayList<String> data = new ArrayList<>();
+                data.add(qrname);
+                data.add(qrbalance);
 
                 if (!validateForm(qrname, qrbalance)) {
                     return;
@@ -91,13 +87,27 @@ public class GenerateQRCodeFragment extends Fragment {
                 // status success (true) or failed (false)
                 Boolean status = true; // still static status
 
-                if (status) {
-                    String msg = qrname + " created with balance Rp " + qrbalance;
-                    alertDialog("Generate Qash Success", msg, "OK", data);
-                } else {
-                    alertDialog("Generate Qash Failed",
-                            "Your balance is not enough to create QR-Code.", "CANCEL", data);
-                }
+                FirebaseUtils.getBaseRef().child("users")
+                        .child(((MainActivity)getActivity()).getUid())
+                        .addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int balance = dataSnapshot.child("balance").getValue(Integer.class);
+
+                                if(Integer.parseInt(qrbalance) > balance){
+                                    alertDialog("Generate Qash Failed",
+                                            "Your balance is not enough to create QR-Code.", "CANCEL", data);
+                                }
+                                else{
+                                    firebaseHandler();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
             }
         });
 
@@ -126,49 +136,98 @@ public class GenerateQRCodeFragment extends Fragment {
         return rootView;
     }
 
-    Bitmap encodeAsBitmap(String str) throws WriterException {
-        BitMatrix result;
-        try {
-            result = new MultiFormatWriter().encode(str,
-                    BarcodeFormat.QR_CODE, WIDTH, WIDTH, null);
-        } catch (IllegalArgumentException iae) {
-            // Unsupported format
-            return null;
-        }
-        int w = result.getWidth();
-        int h = result.getHeight();
-        int[] pixels = new int[w * h];
-        for (int y = 0; y < h; y++) {
-            int offset = y * w;
-            for (int x = 0; x < w; x++) {
-                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+    private void firebaseHandler() {
+        db = FirebaseUtils.getBaseRef().child("timestamp").child(((MainActivity)getActivity()).getUid());
+        timestampListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    User user = ((MainActivity)getActivity()).getUser();
+                    Long createdTimestamp = dataSnapshot.getValue(Long.class);
+                    String name = qrName.getText().toString().trim();
+                    String balance = qrBalance.getText().toString().trim();
+                    String accNumber = user.accountNumber;
+
+                    Calendar cal = Calendar.getInstance();
+                    Date expired = new Date(createdTimestamp);
+                    cal.setTime(expired);
+                    cal.add(Calendar.MONTH,1);
+                    Long expired_date = cal.getTimeInMillis();
+
+                    String key = accNumber+"_"+expired_date;
+
+                    QMaster qrdata = new QMaster(Integer.parseInt(balance), expired_date,name,accNumber);
+
+                    FirebaseUtils.getBaseRef().child("qmaster").child(key).setValue(qrdata);
+                    FirebaseUtils.getBaseRef().child("qcreator").child(((MainActivity)getActivity()).getUid())
+                            .child(key).setValue(true);
+                    FirebaseUtils.getBaseRef().child("timestamp").child(((MainActivity)getActivity()).getUid()).removeValue();
+
+                    String msg = name + " created with balance " + ((MainActivity)getActivity()).moneyParser(Integer.parseInt(balance));
+                    ArrayList<String> data = new ArrayList<>();
+                    data.add(name);
+                    data.add(((MainActivity)getActivity()).moneyParser(Integer.parseInt(balance)));
+                    data.add(key);
+
+                    alertDialog("Generate Qash Success", msg, "OK", data);
+                }
+
             }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        db.addValueEventListener(timestampListener);
+        db.setValue(ServerValue.TIMESTAMP);
+
+
+    }
+
+    private String parseWaktu(String time) {
+        if(time.length() == 1)
+        {
+            return "0"+time;
+        } else {
+            return time;
         }
-        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        bitmap.setPixels(pixels, 0, WIDTH, 0, 0, w, h);
-        return bitmap;
     }
 
     public void showToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
-    public void alertDialog(String title, String message, String status, final String[] data) {
+
+
+    public void alertDialog(String title, String message, String status, final ArrayList<String>  data) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setMessage(message);
         alertDialogBuilder.setTitle(title);
 
-        alertDialogBuilder.setPositiveButton(status, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(getActivity(), ShowQRCodeActivity.class);
-                intent.putExtra("GenerateQR", data);
-                startActivity(intent);
+        if(status.equalsIgnoreCase("OK")){
 
-                qrName.setText("");
-                qrBalance.setText("");
-            }
-        });
+            alertDialogBuilder.setPositiveButton(status, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(getActivity(), ShowQRCodeActivity.class);
+                    intent.putExtra("GenerateQR", data);
+                    startActivity(intent);
+
+                    qrName.setText("");
+                    qrBalance.setText("");
+                }
+            });
+
+        }
+        else{
+            alertDialogBuilder.setNegativeButton(status, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+        }
 
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();

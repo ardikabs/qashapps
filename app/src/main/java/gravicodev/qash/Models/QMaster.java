@@ -1,6 +1,7 @@
 package gravicodev.qash.Models;
 
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.ServerValue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,21 +12,22 @@ import java.util.Map;
 
 public class QMaster {
     public Integer balance;
-    public String status;
-    public Long expired_at;
+    public String status = "active";
     public String title;
     public String SourceAccountNumber;
+    public Long expired_at;
+
 
     public QMaster(){
 
     }
-    public QMaster(Integer balance, String status, Long expired_at, String title, String SourceAccountNumber){
+    public QMaster(Integer balance, Long expired_at, String title, String SourceAccountNumber){
         this.balance = balance;
-        this.status = status;
         this.expired_at = expired_at;
         this.title = title;
         this.SourceAccountNumber = SourceAccountNumber;
     }
+
 
     @Exclude
     public Map<String, Object> toMap() {
