@@ -168,9 +168,8 @@ public class GenerateQRCodeFragment extends Fragment {
                 if(dataSnapshot.exists()){
                     User user = ((MainActivity)getActivity()).getUser();
                     Long createdTimestamp = dataSnapshot.getValue(Long.class);
-                    String name = qrName.getText().toString().trim();
-                    String balance = qrBalance.getText().toString().trim();
-                    balance = ((MainActivity)getActivity()).moneyParserToInt(balance);
+                    String qr_name = qrName.getText().toString().trim();
+                    String qr_balance =  ((MainActivity)getActivity()).moneyParserToInt(qrBalance.getText().toString().trim());
                     String accNumber = user.accountNumber;
 
                     Calendar cal = Calendar.getInstance();
@@ -181,17 +180,17 @@ public class GenerateQRCodeFragment extends Fragment {
 
                     String key = accNumber+"_"+expired_date;
 
-                    QMaster qrdata = new QMaster(Integer.parseInt(balance), expired_date,name,accNumber);
+                    QMaster qrdata = new QMaster(Integer.parseInt(qr_balance), expired_date,qr_name,accNumber);
 
                     FirebaseUtils.getBaseRef().child("qmaster").child(key).setValue(qrdata);
                     FirebaseUtils.getBaseRef().child("qcreator").child(((MainActivity)getActivity()).getUid())
                             .child(key).setValue(true);
                     FirebaseUtils.getBaseRef().child("timestamp").child(((MainActivity)getActivity()).getUid()).removeValue();
 
-                    String msg = name + " created with balance " + ((MainActivity)getActivity()).moneyParser(Integer.parseInt(balance));
+                    String msg = qr_name + " created with balance " + ((MainActivity)getActivity()).moneyParser(Integer.parseInt(qr_balance));
                     ArrayList<String> data = new ArrayList<>();
-                    data.add(name);
-                    data.add(((MainActivity)getActivity()).moneyParser(Integer.parseInt(balance)));
+                    data.add(qr_name);
+                    data.add(((MainActivity)getActivity()).moneyParser(Integer.parseInt(qr_balance)));
                     data.add(key);
 
                     alertDialog("Generate Qash Success", msg, "OK", data);

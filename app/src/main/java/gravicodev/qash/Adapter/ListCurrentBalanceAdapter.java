@@ -1,27 +1,34 @@
 package gravicodev.qash.Adapter;
 
 import android.content.Context;
+import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import gravicodev.qash.Helper.FirebaseUtils;
+import gravicodev.qash.Models.QHistory;
+import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.R;
 
 public class ListCurrentBalanceAdapter extends BaseAdapter {
-    private String[] name, balance;
     private LayoutInflater inflater;
+    private List<QMaster> mQMaster;
 
-    public ListCurrentBalanceAdapter(Context context, String[] name, String[] balance) {
+    public ListCurrentBalanceAdapter(Context context, List<QMaster> mQMaster) {
         inflater = LayoutInflater.from(context);
-        this.name = name;
-        this.balance = balance;
+        this.mQMaster = mQMaster;
     }
 
     @Override
     public int getCount() {
-        return name.length;
+        return mQMaster.size();
     }
 
     @Override
@@ -36,26 +43,101 @@ public class ListCurrentBalanceAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         TextView name, balance;
+        SwitchCompat switcher;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
+        QMaster qMaster = mQMaster.get((mQMaster.size()-1)-position);
+        final String key = qMaster.getKey();
+        final String status = qMaster.status;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_current_balance, null);
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.curQrName);
             holder.balance = (TextView) convertView.findViewById(R.id.curQrBalance);
+            holder.switcher = (SwitchCompat) convertView.findViewById(R.id.switchQr);
             convertView.setTag(holder);
         }
         else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.name.setText(name[position]);
-        holder.balance.setText(balance[position]);
+
+        holder.name.setText(qMaster.title);
+        holder.balance.setText(moneyParserString(String.valueOf(qMaster.balance)));
+
+        if(qMaster.status.equalsIgnoreCase("enabled")){
+            holder.switcher.setChecked(true);
+        }
+        else{
+            holder.switcher.setChecked(false);
+        }
+
+        holder.switcher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    if(status.equalsIgnoreCase("enabled")){
+                        FirebaseUtils.getBaseRef().child("qmaster")
+                                .child(key)
+                                .child("status")
+                                .setValue("disabled");
+                    }
+                    else{
+                        FirebaseUtils.getBaseRef().child("qmaster")
+                                .child(key)
+                                .child("status")
+                                .setValue("enabled");
+                    }
+                }
+            }
+        );
 
         return convertView;
     }
+
+    public void refill(QMaster qMaster){
+        mQMaster.add(qMaster);
+        notifyDataSetChanged();
+    }
+
+    public void changeCondition(int index, QMaster qMaster){
+        mQMaster.set(index,qMaster);
+        notifyDataSetChanged();
+    }
+    public void remove(int index){
+        mQMaster.remove(index);
+        notifyDataSetChanged();
+    }
+
+    public QMaster getInfo(int position){
+        QMaster qMaster = mQMaster.get(position);
+        return qMaster;
+    }
+
+    public String moneyParserString(String data){
+        ArrayList<String> input = new ArrayList<>();
+        for(int i = data.length()-1;i>=0;i--){
+            if(!".".equals(String.valueOf(data.charAt(i)))){
+                input.add(String.valueOf(data.charAt(i)));
+            }
+        }
+
+        String strHasil = "";
+        int x = 1;
+        for(int i=0; i < input.size();i++){
+            if(x==3 && i != (input.size()-1)){
+                strHasil = "." + input.get(i) + strHasil;
+                x = 0;
+            }else{
+                strHasil = input.get(i) + strHasil;
+            }
+            x++;
+        }
+
+        return strHasil;
+    }
+
 }

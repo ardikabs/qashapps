@@ -1,33 +1,29 @@
 package gravicodev.qash.Fragment;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
-import gravicodev.qash.Activity.BaseActivity;
 import gravicodev.qash.Activity.MainActivity;
 import gravicodev.qash.Adapter.ListCurrentBalanceAdapter;
 import gravicodev.qash.Helper.FirebaseUtils;
+import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 
@@ -37,6 +33,9 @@ public class HomeFragment extends Fragment {
     private ListCurrentBalanceAdapter listCurrentBalanceAdapter;
     private TextView nameNasabah, balanceNasabah, initialName;
     private SwitchCompat switchQr;
+
+    private List<String> mQRKeyList;
+    private List<String> mQRbyUserList;
 
     public HomeFragment() {
     }
@@ -54,26 +53,13 @@ public class HomeFragment extends Fragment {
         initialName = (TextView) rootView.findViewById(R.id.initialName);
         switchQr = (SwitchCompat) rootView.findViewById(R.id.switchQr);
 
-        // Data dummies nasabah
-        String nasabah = "Rasyadh Abdul Aziz";
-        String saldo = "Rp 20.000.000";
-
-
-        // Data dummies name
-        String[] name = new String[]{
-                "Gajian", "Uang Saku", "Belanja", "Jajan", "THR", "Testing"
-        };
-
-        // Data dummies date
-        String[] date = new String[]{
-                "100.000", "50.000", "20.000", "5.000", "15.000", "0"
-        };
-
         listView = (ListView) rootView.findViewById(R.id.listCurrentBalance);
-        listCurrentBalanceAdapter = new ListCurrentBalanceAdapter(getActivity(), name, date);
+        List<QMaster> emptyList = new ArrayList<>();
+        listCurrentBalanceAdapter = new ListCurrentBalanceAdapter(getActivity(),emptyList );
         listView.setAdapter(listCurrentBalanceAdapter);
-        listView.setDivider(null);
 
+        mQRKeyList = new ArrayList<>();
+        mQRbyUserList = new ArrayList<>();
 
         firebaseHandler();
 
@@ -81,7 +67,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void firebaseHandler() {
-        String Uid = ((MainActivity)getActivity()).getUid();
+        final String Uid = ((MainActivity)getActivity()).getUid();
         ValueEventListener userListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -98,11 +84,97 @@ public class HomeFragment extends Fragment {
             }
         };
 
-        DatabaseReference users = FirebaseUtils.getBaseRef().child("users").child(Uid);
-        users.addValueEventListener(userListener);
+
+        final ChildEventListener qrListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String key = dataSnapshot.getKey();
+                if(mQRbyUserList.contains(key)){
+                    if(!mQRKeyList.contains(key)){
+                        QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+                        qMaster.setKey(key);
+
+                        mQRKeyList.add(key);
+                        listCurrentBalanceAdapter.refill(qMaster);
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                String key = dataSnapshot.getKey();
+                if(mQRbyUserList.contains(key)){
+                    if(mQRKeyList.contains(key)){
+                        QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+                        qMaster.setKey(key);
+
+                        int index = mQRKeyList.indexOf(key);
+                        listCurrentBalanceAdapter.changeCondition(index,qMaster);
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                String key = dataSnapshot.getKey();
+                if(mQRbyUserList.contains(key)){
+                    if(mQRKeyList.contains(key)){
+                        QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+
+                        int index = mQRKeyList.indexOf(key);
+                        mQRKeyList.remove(index);
+
+                        mQRbyUserList.remove(key);
+                        FirebaseUtils.getBaseRef().child("qrcreator")
+                                .child(Uid)
+                                .child(key)
+                                .removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        DatabaseReference dbUsers = FirebaseUtils.getBaseRef().child("users").child(Uid);
+        final DatabaseReference dbQMaster = FirebaseUtils.getBaseRef().child("qmaster");
+
+
+        FirebaseUtils.getBaseRef().child("qcreator").child(Uid)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot ds : dataSnapshot.getChildren()){
+                            if(!mQRbyUserList.contains(ds.getKey())){
+                                mQRbyUserList.add(ds.getKey());
+                            }
+                            dbQMaster.limitToLast(20).addChildEventListener(qrListener);
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+        // Value Listener
+        dbUsers.addValueEventListener(userListener);
 
         // Add Listener
-        ((MainActivity)getActivity()).addListener(users,userListener);
+        ((MainActivity)getActivity()).addListener(dbUsers,userListener);
+        ((MainActivity)getActivity()).addChildListener(dbQMaster,qrListener);
+
     }
 
     private void apiCaller() {

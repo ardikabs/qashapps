@@ -16,6 +16,8 @@
     <string name="err_msg_pin">Pin number can\'t be empty</string>
     <string name="err_msg_min_pin">Pin number must be 6 character</string>
     <string name="err_msg_qrname">QR Name can\'t be empty</string>
+    <string name="err_msg_desc">Description can\'t be empty</string>
+    <string name="err_msg_scanbalance">Balance can\'t be empty</string>
     <string name="err_msg_qrbalance">QR Balance can\'t be empty</string>
     <string name="err_msg_min_qrbalance">QR Balance can\'t less than Rp 10.000</string>
 
@@ -24,7 +26,9 @@
     <string name="qr_balance">0</string>
     <string name="qr_rp">Rp</string>
     <string name="qr_date">1 hour ago</string>
-    <string name="qr_minus_balance">- Rp</string>
+    <string name="qr_minus_balance">- Rp.</string>
+    <string name="qr_plus_balance">+ Rp.</string>
+
     <string name="qr_created">Created at</string>
     <string name="qr_info_balance">Balance : Rp</string>
     <string name="qr_info_status">Status : </string>

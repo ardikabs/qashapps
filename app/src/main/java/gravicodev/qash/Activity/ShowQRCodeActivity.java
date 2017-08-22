@@ -57,8 +57,6 @@ public class ShowQRCodeActivity extends BaseActivity {
     private ImageView qrcodeView;
 
     private SessionManager sessionManager;
-    private ValueEventListener timestampListener;
-    private DatabaseReference db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,12 +237,10 @@ public class ShowQRCodeActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        db.removeEventListener(timestampListener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        db.removeEventListener(timestampListener);
     }
 }

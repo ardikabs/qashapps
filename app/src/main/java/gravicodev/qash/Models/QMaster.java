@@ -12,10 +12,12 @@ import java.util.Map;
 
 public class QMaster {
     public Integer balance;
-    public String status = "active";
+    public String status = "enabled";
     public String title;
     public String SourceAccountNumber;
     public Long expired_at;
+
+    private String key;
 
 
     public QMaster(){
@@ -28,6 +30,13 @@ public class QMaster {
         this.SourceAccountNumber = SourceAccountNumber;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
+    }
 
     @Exclude
     public Map<String, Object> toMap() {

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,7 +53,7 @@ import gravicodev.qash.R;
 public class ScanQRCodeFragment extends Fragment {
     private static final String TAG = "ScanQRCodeFragment";
     private AppCompatEditText scanBalance, scanKet;
-    private Button btnScan, testsuccess;
+    private Button btnScan;
     private FrameLayout dimmer;
     private LottieAnimationView animSuccess;
     private TextView ammountAccepted;
@@ -70,21 +71,20 @@ public class ScanQRCodeFragment extends Fragment {
         btnScan = (Button) rootView.findViewById(R.id.btnScan);
         scanBalance = (AppCompatEditText) rootView.findViewById(R.id.scan_balance);
         scanKet = (AppCompatEditText) rootView.findViewById(R.id.scan_ket);
-        testsuccess = (Button) rootView.findViewById(R.id.testsucces);
         dimmer = (FrameLayout) rootView.findViewById(R.id.dimmerSuccess);
         ammountAccepted = (TextView) rootView.findViewById(R.id.ammountAccepted);
         animSuccess = (LottieAnimationView) rootView.findViewById(R.id.animation_success);
 
-        testsuccess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSuccess(5000);
-            }
-        });
-
         btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String description = scanKet.getText().toString().trim();
+                String balance = scanBalance.getText().toString().trim();
+
+                if(!validateForm(description,balance)){
+                     return;
+                }
+
                 Intent intent = new Intent(getActivity(), BarcodeCaptureActivity.class);
                 intent.putExtra("balance",scanBalance.getText().toString().trim());
                 intent.putExtra("description",scanKet.getText().toString().trim());
@@ -146,7 +146,7 @@ public class ScanQRCodeFragment extends Fragment {
                                     }
 
                                     else{
-                                        if(qMaster.status.equalsIgnoreCase("active")){
+                                        if(qMaster.status.equalsIgnoreCase("enabled")){
                                             proses(qMaster.balance,dataSnapshot);
                                         }
                                         else{
@@ -191,7 +191,6 @@ public class ScanQRCodeFragment extends Fragment {
             showToast("Balance Qash tidak mencukupi");
         }
         else{
-            showToast(dataSnapshot.getKey());
 
             QMaster qMaster = dataSnapshot.getValue(QMaster.class);
             qMaster.balance -= balanceUsed;
@@ -215,6 +214,8 @@ public class ScanQRCodeFragment extends Fragment {
                     .setValue(qHistory);
             dbTrx.setValue(trx);
             showSuccess(balanceUsed);
+            scanBalance.setText("");
+            scanKet.setText("");
         }
     }
 
@@ -223,7 +224,7 @@ public class ScanQRCodeFragment extends Fragment {
     }
 
     private void showSuccess(Integer acceptedNumber){
-        ammountAccepted.setText("Rp. "+acceptedNumber);
+        ammountAccepted.setText("Rp. "+ ((MainActivity)getActivity()).moneyParserString(String.valueOf(acceptedNumber)) );
         dimmer.setVisibility(View.VISIBLE);
         animSuccess.playAnimation();
 
@@ -235,4 +236,28 @@ public class ScanQRCodeFragment extends Fragment {
             }
         }, delay * 3000);
     }
+
+    private boolean validateForm(String description, String balance) {
+        boolean valid = true;
+
+        if (TextUtils.isEmpty(description)) {
+            scanKet.setError(getString(R.string.err_msg_desc));
+            valid = false;
+        } else {
+            scanKet.setError(null);
+        }
+
+        if (TextUtils.isEmpty(balance)) {
+            scanBalance.setError(getString(R.string.err_msg_scanbalance));
+            valid = false;
+        } else if (Integer.parseInt(((MainActivity)getActivity()).moneyParserToInt(balance)) < 10000) {
+            scanBalance.setError(getString(R.string.err_msg_min_qrbalance));
+            valid = false;
+        } else {
+            scanBalance.setError(null);
+        }
+
+        return valid;
+    }
+
 }

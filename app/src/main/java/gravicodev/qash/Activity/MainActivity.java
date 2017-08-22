@@ -40,8 +40,8 @@ public class MainActivity extends BaseActivity {
     private static final int REQUEST_COARSE_LOCATION = 100;
     private static final int BARCODE_READER_REQUEST_CODE = 1;
 
-    private HashMap<DatabaseReference, ValueEventListener> valueListenerList = new HashMap<>();
-    private HashMap<DatabaseReference, ChildEventListener> childListenerList = new HashMap<>();
+    private static  HashMap<DatabaseReference, ValueEventListener> valueListenerList = new HashMap<>();
+    private static HashMap<DatabaseReference, ChildEventListener> childListenerList = new HashMap<>();
 
 
     private SessionManager sessionManager;
@@ -287,7 +287,5 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        removeValueListener(valueListenerList);
-        removeChildListener(childListenerList);
     }
 }
