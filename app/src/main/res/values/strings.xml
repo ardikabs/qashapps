@@ -26,11 +26,12 @@
     <string name="qr_balance">0</string>
     <string name="qr_rp">Rp</string>
     <string name="qr_date">1 hour ago</string>
-    <string name="qr_minus_balance">- Rp.</string>
-    <string name="qr_plus_balance">+ Rp.</string>
+    <string name="qr_minus_balance">- Rp </string>
+    <string name="qr_plus_balance">+ Rp </string>
+    <string name="qr_desc">Description : </string>
 
     <string name="qr_created">Created at</string>
-    <string name="qr_info_balance">Balance : Rp.</string>
+    <string name="qr_info_balance">Balance : Rp </string>
     <string name="qr_info_status">Status : </string>
     <string name="qr_info_value_status">Active</string>
     <string name="qr_delete">Delete</string>

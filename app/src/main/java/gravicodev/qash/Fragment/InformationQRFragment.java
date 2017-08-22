@@ -50,7 +50,6 @@ public class InformationQRFragment extends Fragment {
         List<QMaster> emptyList = new ArrayList<>();
         listInformationQRAdapter = new ListInformationQRAdapter(getActivity(),emptyList);
         listView.setAdapter(listInformationQRAdapter);
-        listView.setDivider(null);
 
         mQRKeyList = new ArrayList<>();
         mQRbyUserList = new ArrayList<>();

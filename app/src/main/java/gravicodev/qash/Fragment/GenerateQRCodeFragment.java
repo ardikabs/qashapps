@@ -238,8 +238,6 @@ public class GenerateQRCodeFragment extends Fragment {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
-
-
     public void alertDialog(String title, String message, String status, final ArrayList<String>  data) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setMessage(message);

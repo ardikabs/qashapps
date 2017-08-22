@@ -1,7 +1,10 @@
 package gravicodev.qash.Adapter;
 
+import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,10 +100,27 @@ public class ListInformationQRAdapter extends BaseAdapter {
         holder.deleteQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseUtils.getBaseRef()
-                        .child("qmaster")
-                        .child(key)
-                        .removeValue();
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setMessage("Are you sure want to delete " + title + " ?");
+                alertDialogBuilder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseUtils.getBaseRef()
+                                .child("qmaster")
+                                .child(key)
+                                .removeValue();
+                    }
+                });
+
+                alertDialogBuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
             }
         });
 
