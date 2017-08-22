@@ -118,7 +118,7 @@ public class GenerateQRCodeFragment extends Fragment {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 int userBalance = dataSnapshot.child("balance").getValue(Integer.class);
 
-                                if(Integer.parseInt(qrbalance) > userBalance){
+                                if(Integer.parseInt(((MainActivity)getActivity()).moneyParserToInt(qrbalance)) > userBalance){
                                     alertDialog("Generate Qash Failed",
                                             "Your balance is not enough to create QR-Code.", "CANCEL", data);
                                 }
@@ -170,6 +170,7 @@ public class GenerateQRCodeFragment extends Fragment {
                     Long createdTimestamp = dataSnapshot.getValue(Long.class);
                     String name = qrName.getText().toString().trim();
                     String balance = qrBalance.getText().toString().trim();
+                    balance = ((MainActivity)getActivity()).moneyParserToInt(balance);
                     String accNumber = user.accountNumber;
 
                     Calendar cal = Calendar.getInstance();
@@ -270,7 +271,7 @@ public class GenerateQRCodeFragment extends Fragment {
         if (TextUtils.isEmpty(qrbalance)) {
             qrBalance.setError(getString(R.string.err_msg_qrbalance));
             valid = false;
-        } else if (Integer.parseInt(qrbalance) < 10000) {
+        } else if (Integer.parseInt(((MainActivity)getActivity()).moneyParserToInt(qrbalance)) < 10000) {
             qrBalance.setError(getString(R.string.err_msg_min_qrbalance));
             valid = false;
         } else {

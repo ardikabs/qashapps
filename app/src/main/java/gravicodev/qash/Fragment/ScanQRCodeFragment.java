@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +92,30 @@ public class ScanQRCodeFragment extends Fragment {
             }
         });
 
+        scanBalance.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                scanBalance.removeTextChangedListener(this);
+                String input = scanBalance.getText().toString();
+                String inputParser = ((MainActivity)getActivity()).moneyParserString(input);
+                scanBalance.setText(inputParser);
+                scanBalance.setSelection(inputParser.length());
+                scanBalance.addTextChangedListener(this);
+            }
+        });
+
+
         return rootView;
     }
 
@@ -145,7 +171,7 @@ public class ScanQRCodeFragment extends Fragment {
     }
 
     private void proses(Integer balance, DataSnapshot dataSnapshot) {
-        final Integer balanceUsed = Integer.parseInt(scanBalance.getText().toString().trim());
+        final Integer balanceUsed = Integer.parseInt(((MainActivity)getActivity()).moneyParserToInt(scanBalance.getText().toString().trim()));
         String BeneficieryAccountNumber = ((MainActivity)getActivity()).getUser().accountNumber;
         String SourceAccountNumber = dataSnapshot.child("SourceAccountNumber").getValue(String.class);
         // For Sender
