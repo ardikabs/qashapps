@@ -3,6 +3,8 @@ package gravicodev.qash.Models;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ServerValue;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +17,7 @@ public class QMaster {
     public String status = "enabled";
     public String title;
     public String SourceAccountNumber;
-    public Long expired_at;
+    public Object expired_at;
     public Object created_at;
 
     private String key;
@@ -51,5 +53,6 @@ public class QMaster {
 
         return result;
     }
+
 
 }

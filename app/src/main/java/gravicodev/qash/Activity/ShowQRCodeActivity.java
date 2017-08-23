@@ -57,6 +57,9 @@ public class ShowQRCodeActivity extends BaseActivity {
     private ImageView qrcodeView;
 
     private SessionManager sessionManager;
+    private ValueEventListener qrListener;
+    private DatabaseReference dbQRCode;
+    private String key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,13 +89,13 @@ public class ShowQRCodeActivity extends BaseActivity {
         name = datas.get(0);
         balance = datas.get(1);
         qrname = "qash_" + name.trim() + "_" + now;
-
+        key = datas.get(2);
         qrcodeName.setText(name);
         qrcodeBalance.setText("Rp " + balance);
 
         // QRCODE BITMAP
         try {
-            Bitmap bitmap = encodeAsBitmap(datas.get(2));
+            Bitmap bitmap = encodeAsBitmap(key);
             qrcodeView.setImageBitmap(bitmap);
         } catch (WriterException e) {
             e.printStackTrace();
@@ -130,6 +133,48 @@ public class ShowQRCodeActivity extends BaseActivity {
             }
         });
 
+        firebaseHandler();
+    }
+
+    private void firebaseHandler() {
+        dbQRCode = FirebaseUtils.getBaseRef().child("qmaster").child(key);
+        qrListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                QMaster qmaster = dataSnapshot.getValue(QMaster.class);
+                qrcodeName.setText(qmaster.title);
+                qrcodeBalance.setText("Rp " + moneyParserString(String.valueOf(qmaster.balance)));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbQRCode.addValueEventListener(qrListener);
+    }
+
+    public String moneyParserString(String data){
+        ArrayList<String> input = new ArrayList<>();
+        for(int i = data.length()-1;i>=0;i--){
+            if(!".".equals(String.valueOf(data.charAt(i)))){
+                input.add(String.valueOf(data.charAt(i)));
+            }
+        }
+
+        String strHasil = "";
+        int x = 1;
+        for(int i=0; i < input.size();i++){
+            if(x==3 && i != (input.size()-1)){
+                strHasil = "." + input.get(i) + strHasil;
+                x = 0;
+            }else{
+                strHasil = input.get(i) + strHasil;
+            }
+            x++;
+        }
+
+        return strHasil;
     }
 
 
@@ -242,5 +287,6 @@ public class ShowQRCodeActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        dbQRCode.removeEventListener(qrListener);
     }
 }

@@ -55,11 +55,11 @@ public class SessionManager {
         editor.putString(PREF_USER_FULLNAME, user.fullname);
         editor.putString(PREF_ACCOUNT_NUMBER, user.accountNumber);
         editor.putInt(PREF_ACCOUNT_BALANCE, user.getBalance());
-        editor.putString(PREF_USER_ID,user.getUserid());
 
         editor.putBoolean(IS_LOGIN,true);
         editor.commit();
     }
+
     public User getUser(){
         String fullname = preferences.getString(PREF_USER_FULLNAME,null);
         String email = preferences.getString(PREF_USER_EMAIL,null);
@@ -71,7 +71,6 @@ public class SessionManager {
         user.setBalance(balanceacc);
         user.setUserid(userid);
 
-
         return user;
     }
 
@@ -82,6 +81,17 @@ public class SessionManager {
         context.startActivity(intent);
 
     }
+
+    public void renew(User user){
+        editor.putString(PREF_USER_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
+        editor.putString(PREF_USER_EMAIL, user.email);
+        editor.putString(PREF_USER_FULLNAME, user.fullname);
+        editor.putString(PREF_ACCOUNT_NUMBER, user.accountNumber);
+        editor.putInt(PREF_ACCOUNT_BALANCE, user.getBalance());
+
+        editor.commit();
+    }
+
     public void checkLogin(){
 
         if(!this.isLoggedIn()){

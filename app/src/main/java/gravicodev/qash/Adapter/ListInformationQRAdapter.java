@@ -12,6 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -107,6 +109,12 @@ public class ListInformationQRAdapter extends BaseAdapter {
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseUtils.getBaseRef()
                                 .child("qmaster")
+                                .child(key)
+                                .removeValue();
+
+                        FirebaseUtils.getBaseRef()
+                                .child("qcreator")
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .child(key)
                                 .removeValue();
                     }

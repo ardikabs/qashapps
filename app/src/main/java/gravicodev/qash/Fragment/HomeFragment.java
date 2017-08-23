@@ -63,6 +63,11 @@ public class HomeFragment extends Fragment {
 
         firebaseHandler();
 
+        User user = ((MainActivity)getActivity()).getUser();
+        nameNasabah.setText(user.fullname);
+        balanceNasabah.setText(moneyParser(user.getBalance()));
+        initialName.setText(user.fullname.substring(0, 1).toUpperCase());
+
         return rootView;
     }
 
@@ -73,9 +78,12 @@ public class HomeFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 user.setBalance(dataSnapshot.child("balance").getValue(Integer.class));
+
                 nameNasabah.setText(user.fullname);
                 balanceNasabah.setText(moneyParser(user.getBalance()));
                 initialName.setText(user.fullname.substring(0, 1).toUpperCase());
+
+                ((MainActivity)getActivity()).renewUser(user);
             }
 
             @Override

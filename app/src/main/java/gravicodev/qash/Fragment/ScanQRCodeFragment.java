@@ -48,6 +48,7 @@ import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QHistory;
 import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.Models.QTransactions;
+import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 
 public class ScanQRCodeFragment extends Fragment {
@@ -127,42 +128,57 @@ public class ScanQRCodeFragment extends Fragment {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
                     Point[] p = barcode.cornerPoints;
 
-                    FirebaseUtils.getBaseRef()
-                            .child("qmaster")
-                            .child(barcode.displayValue)
-                            .addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+                    boolean dot =  barcode.displayValue.contains(".");
+                    boolean comma =  barcode.displayValue.contains(",");
+                    boolean crash =  barcode.displayValue.contains("#");
+                    boolean bracket =  barcode.displayValue.contains("[");
+                    boolean bracket2 =  barcode.displayValue.contains("]");
 
-                                    Calendar today = Calendar.getInstance();
-                                    Calendar cal = Calendar.getInstance();
-                                    Date expireDate = new Date(qMaster.expired_at);
-                                    cal.setTime(expireDate);
-                                    boolean expired = cal.before(today);
+                    if(dot || comma || crash || bracket || bracket2 ){
+                       showToast("QR Code tidak dikenali");
+                    }
+                    else{
+                        FirebaseUtils.getBaseRef()
+                                .child("qmaster")
+                                .child(barcode.displayValue)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if(dataSnapshot.exists()){
+                                            QMaster qMaster = dataSnapshot.getValue(QMaster.class);
 
-                                    if(expired){
-                                        showToast("Qash sudah tidak berlaku");
-                                    }
+                                            Calendar today = Calendar.getInstance();
+                                            Calendar cal = Calendar.getInstance();
+                                            Date expireDate = new Date((Long) qMaster.expired_at);
+                                            cal.setTime(expireDate);
+                                            boolean expired = cal.before(today);
 
-                                    else{
-                                        if(qMaster.status.equalsIgnoreCase("enabled")){
-                                            proses(qMaster.balance,dataSnapshot);
+                                            if(expired){
+                                                showToast("Qash sudah tidak berlaku");
+                                            }
+
+                                            else{
+                                                if(qMaster.status.equalsIgnoreCase("enabled")){
+                                                    proses(qMaster.balance,dataSnapshot);
+                                                }
+                                                else{
+                                                    showToast("Qash sudah tidak berlaku");
+                                                }
+                                            }
                                         }
                                         else{
-                                            showToast("Qash sudah tidak berlaku");
+                                            showToast("QASH tidak dikenali");
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                }
-                            });
+                                    }
+                                });
+                    }
+
                 }
-                else
-                    showToast("DATA NULL");
             }
             else
                 Log.e("QRCODE_ERROR:", String.format(getString(R.string.barcode_error_format),
@@ -184,6 +200,7 @@ public class ScanQRCodeFragment extends Fragment {
 
         DatabaseReference dbMaster = FirebaseUtils.getBaseRef().child("qmaster")
                 .child(dataSnapshot.getKey());
+
         DatabaseReference dbTrx = FirebaseUtils.getBaseRef().child("qtransactions")
                 .child(dataSnapshot.getKey());
 
@@ -213,6 +230,7 @@ public class ScanQRCodeFragment extends Fragment {
             dbHistoryIn.child(dbHistoryIn.push().getKey())
                     .setValue(qHistory);
             dbTrx.setValue(trx);
+
             showSuccess(balanceUsed);
             scanBalance.setText("");
             scanKet.setText("");

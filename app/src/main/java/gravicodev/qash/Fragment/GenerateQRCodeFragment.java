@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
@@ -117,12 +118,14 @@ public class GenerateQRCodeFragment extends Fragment {
                     return;
                 }
 
+                btnGenerate.setEnabled(false);
+
                 // status success (true) or failed (false)
                 Boolean status = true; // still static status
 
                 FirebaseUtils.getBaseRef().child("users")
                         .child(((MainActivity)getActivity()).getUid())
-                        .addValueEventListener(new ValueEventListener() {
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 int userBalance = dataSnapshot.child("balance").getValue(Integer.class);
@@ -141,30 +144,10 @@ public class GenerateQRCodeFragment extends Fragment {
 
                             }
                         });
+
+
             }
         });
-
-        // Bekas setOnClickListenet untuk test push notification
-//        pButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Calendar cal = Calendar.getInstance();
-//                cal.add(Calendar.DATE, 7);
-//                String key = "QRCODE_1";
-//                Integer balance = 150000;
-//                String status = "active";
-//                Long date = cal.getTime().getTime();
-//                String title = "TITLE QRCODE";
-//                String san = "SourceAccountNumber (SOURCE)";
-//
-//                QMaster qMaster = new QMaster(balance, status, date, title, san);
-//                FirebaseUtils.getBaseRef().child("qmaster").child(key).setValue(qMaster);
-//
-//                HashMap<String, Boolean> qrvalue = new HashMap<>();
-//                qrvalue.put(key, true);
-//                FirebaseUtils.getBaseRef().child("qcreator").child("user_1").setValue(qrvalue);
-//            }
-//        });
 
         return rootView;
     }
@@ -187,13 +170,12 @@ public class GenerateQRCodeFragment extends Fragment {
                     cal.add(Calendar.MONTH,1);
                     Long expired_date = cal.getTimeInMillis();
 
-//                    String key = shaParser(accNumber+"_"+expired_date);
                     String key = null;
                     try {
                         key = hmacSha256(accNumber+"_"+expired_date,KEY);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        key = shaParser(accNumber+"_"+expired_date);
+                        key = "!"+shaParser(accNumber+"_"+expired_date);
                     }
 
                     QMaster qrdata = new QMaster(Integer.parseInt(qr_balance), expired_date,qr_name,accNumber);
@@ -201,7 +183,6 @@ public class GenerateQRCodeFragment extends Fragment {
                     FirebaseUtils.getBaseRef().child("qmaster").child(key).setValue(qrdata);
                     FirebaseUtils.getBaseRef().child("qcreator").child(((MainActivity)getActivity()).getUid())
                             .child(key).setValue(true);
-                    FirebaseUtils.getBaseRef().child("timestamp").child(((MainActivity)getActivity()).getUid()).removeValue();
 
                     String msg = qr_name + " created with balance " + ((MainActivity)getActivity()).moneyParserString(qr_balance);
                     ArrayList<String> data = new ArrayList<>();
@@ -209,7 +190,12 @@ public class GenerateQRCodeFragment extends Fragment {
                     data.add(((MainActivity)getActivity()).moneyParserString(qr_balance));
                     data.add(key);
 
+                    FirebaseUtils.getBaseRef().child("timestamp")
+                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .removeValue();
+
                     alertDialog("Generate Qash Success", msg, "OK", data);
+
                 }
 
             }
@@ -221,8 +207,6 @@ public class GenerateQRCodeFragment extends Fragment {
         };
         db.addValueEventListener(timestampListener);
         db.setValue(ServerValue.TIMESTAMP);
-
-
     }
 
     private String parseWaktu(String time) {
@@ -254,6 +238,8 @@ public class GenerateQRCodeFragment extends Fragment {
 
                     qrName.setText("");
                     qrBalance.setText("");
+                    btnGenerate.setEnabled(true);
+                    db.removeEventListener(timestampListener);
                 }
             });
 
@@ -262,7 +248,7 @@ public class GenerateQRCodeFragment extends Fragment {
             alertDialogBuilder.setNegativeButton(status, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
+                    btnGenerate.setEnabled(true);
                 }
             });
         }

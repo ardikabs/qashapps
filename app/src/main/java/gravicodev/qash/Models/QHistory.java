@@ -17,6 +17,7 @@ public class QHistory {
     public String msg;
     private String status;
     private String key;
+    private Boolean checked = false;
 
     public QHistory(){
 
@@ -26,6 +27,14 @@ public class QHistory {
         this.used_at = ServerValue.TIMESTAMP;
         this.title = title;
         this.msg = msg;
+    }
+
+    public Boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(Boolean checked) {
+        this.checked = checked;
     }
 
     public String getKey() {

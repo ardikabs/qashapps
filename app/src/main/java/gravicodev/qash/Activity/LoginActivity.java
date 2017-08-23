@@ -110,7 +110,7 @@ public class LoginActivity extends BaseActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 user.setBalance(dataSnapshot.child("balance").getValue(Integer.class));
-                user.setUserid(dataSnapshot.getKey());
+
                 sessionManager.logIn(user);
                 startActivity(new Intent (LoginActivity.this,MainActivity.class));
                 finish();

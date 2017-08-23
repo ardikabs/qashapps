@@ -21,13 +21,19 @@ import android.widget.Toast;
 import gravicodev.qash.Adapter.TabFragmentPagerAdapter;
 
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import gravicodev.qash.Helper.FirebaseUtils;
+import gravicodev.qash.Models.QHistory;
 import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 import gravicodev.qash.Session.SessionManager;
@@ -103,9 +109,50 @@ public class MainActivity extends BaseActivity {
                     1);
         }
 
+        firebaseWatcher();
 
     }
 
+    private void firebaseWatcher() {
+        FirebaseUtils.getBaseRef().child("qhistory")
+                .child(sessionManager.getUser().accountNumber)
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        QHistory qhistory = dataSnapshot.getValue(QHistory.class);
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+
+    public void renewUser(User user){
+        sessionManager.renew(user);
+    }
+
+    public User getUser(){
+        User user = sessionManager.getUser();
+        return user;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -163,15 +210,6 @@ public class MainActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public String getUid(){
-        User user = sessionManager.getUser();
-        return user.getUserid();
-    }
-    
-    public User getUser(){
-        User user = sessionManager.getUser();
-        return user;
-    }
 
     public String moneyParserToInt(String data){
         ArrayList<String> input = new ArrayList<>();
