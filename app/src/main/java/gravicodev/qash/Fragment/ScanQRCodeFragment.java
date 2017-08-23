@@ -128,15 +128,13 @@ public class ScanQRCodeFragment extends Fragment {
                     Barcode barcode = data.getParcelableExtra(BarcodeCaptureActivity.BarcodeObject);
                     Point[] p = barcode.cornerPoints;
 
-                    boolean dot =  barcode.displayValue.contains(".");
-                    boolean comma =  barcode.displayValue.contains(",");
-                    boolean crash =  barcode.displayValue.contains("#");
-                    boolean bracket =  barcode.displayValue.contains("[");
-                    boolean bracket2 =  barcode.displayValue.contains("]");
-
-                    if(dot || comma || crash || bracket || bracket2 ){
+                    // Check barcode result
+                    // If contain ".", ",", "#","[","]"
+                    if(!checkChildCharacter(barcode.displayValue)){
                        showToast("QR Code tidak dikenali");
                     }
+
+                    // Read barcode in firebase
                     else{
                         FirebaseUtils.getBaseRef()
                                 .child("qmaster")
@@ -275,6 +273,27 @@ public class ScanQRCodeFragment extends Fragment {
             scanBalance.setError(null);
         }
 
+        return valid;
+    }
+
+    private boolean checkChildCharacter(String child){
+        boolean valid = true;
+
+        if(child.contains(".")){
+            valid = false;
+        }
+        else if(child.contains(",")){
+            valid = false;
+        }
+        else if(child.contains("#")){
+            valid = false;
+        }
+        else if(child.contains("[")){
+            valid = false;
+        }
+        else if(child.contains("]")){
+            valid = false;
+        }
         return valid;
     }
 
