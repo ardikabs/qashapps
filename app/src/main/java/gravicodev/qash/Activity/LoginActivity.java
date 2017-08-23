@@ -151,4 +151,9 @@ public class LoginActivity extends BaseActivity {
 
         return valid;
     }
+
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 }
