@@ -47,8 +47,7 @@ public class HistoryFragment extends Fragment {
         listView = (ListView) rootView.findViewById(R.id.listQashHistory);
         listHistoryAdapter = new ListHistoryAdapter(getActivity(),emptyList);
         listView.setAdapter(listHistoryAdapter);
-        listView.setDivider(null);
-        
+
         queryHistory();
         return rootView;
     }

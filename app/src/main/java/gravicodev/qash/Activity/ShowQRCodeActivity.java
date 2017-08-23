@@ -88,7 +88,7 @@ public class ShowQRCodeActivity extends BaseActivity {
         qrname = "qash_" + name.trim() + "_" + now;
 
         qrcodeName.setText(name);
-        qrcodeBalance.setText(balance);
+        qrcodeBalance.setText("Rp " + balance);
 
         // QRCODE BITMAP
         try {

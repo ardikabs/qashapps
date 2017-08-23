@@ -1,8 +1,10 @@
 package gravicodev.qash.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.text.TextUtilsCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
@@ -65,7 +67,7 @@ public class LoginActivity extends BaseActivity {
         btnSignUpNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplication(), "Sign Up", Toast.LENGTH_SHORT).show();
+                showToast("Register your account to internet banking first.");
             }
         });
 

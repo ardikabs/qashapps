@@ -205,7 +205,7 @@ public class HomeFragment extends Fragment {
             x++;
         }
 
-        return "Rp. " +strHasil;
+        return "Rp " +strHasil;
     }
 
 }

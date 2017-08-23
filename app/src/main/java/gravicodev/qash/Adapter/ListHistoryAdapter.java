@@ -42,7 +42,7 @@ public class ListHistoryAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        TextView name, balance, date;
+        TextView name, balance, date, description;
     }
 
     @Override
@@ -57,6 +57,7 @@ public class ListHistoryAdapter extends BaseAdapter {
             holder.name = (TextView) convertView.findViewById(R.id.histQrName);
             holder.balance = (TextView) convertView.findViewById(R.id.histQrBalance);
             holder.date = (TextView) convertView.findViewById(R.id.histQrDate);
+            holder.description = (TextView) convertView.findViewById(R.id.histQrDesc);
             convertView.setTag(holder);
         }
         else {
@@ -69,16 +70,17 @@ public class ListHistoryAdapter extends BaseAdapter {
         String time = timestampConverter((Long) qHistory.used_at);
 
 
-        holder.name.setText(name+" | "+msg);
+        holder.name.setText(name);
         holder.date.setText(time);
+        holder.description.setText("Description : " + msg);
 
         if(status.equalsIgnoreCase("positive")){
-            holder.balance.setText("+ Rp. "+balance);
-            holder.balance.setTextColor(Color.BLUE);
+            holder.balance.setText("+ Rp " + balance);
+            holder.balance.setTextColor(Color.parseColor("#015CAA"));
 
         }
         else{
-            holder.balance.setText("- Rp. "+balance);
+            holder.balance.setText("- Rp "+ balance);
             holder.balance.setTextColor(Color.parseColor("#F07B2D"));
         }
 
