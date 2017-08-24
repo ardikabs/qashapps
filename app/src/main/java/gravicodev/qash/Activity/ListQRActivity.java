@@ -1,17 +1,10 @@
-package gravicodev.qash.Fragment;
+package gravicodev.qash.Activity;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ExpandableListView;
-import android.widget.ImageView;
+import android.support.v7.widget.Toolbar;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -22,44 +15,41 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import gravicodev.qash.Activity.MainActivity;
-import gravicodev.qash.Adapter.ListInformationQRAdapter;
+import gravicodev.qash.Adapter.ListQRAdapter;
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QMaster;
-import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 
-public class InformationQRFragment extends Fragment {
-    private static final String TAG = "TranscationFragment";
+public class ListQRActivity extends BaseActivity {
+    private static final String TAG = "ListQRActivity";
     private ListView listView;
-    private ListInformationQRAdapter listInformationQRAdapter;
+    private ListQRAdapter listQRAdapter;
 
     private List<String> mQRKeyList;
     private List<String> mQRbyUserList;
-    public InformationQRFragment(){}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_informationqr, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_list_qr);
 
-        // Change Title of each fragment
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Information");
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_qashlist);
+        toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+        setSupportActionBar(toolbar);
 
-        listView = (ListView) rootView.findViewById(R.id.listInformationQr);
+        listView = (ListView) findViewById(R.id.listInformationQr);
         List<QMaster> emptyList = new ArrayList<>();
-        listInformationQRAdapter = new ListInformationQRAdapter(getActivity(),emptyList);
-        listView.setAdapter(listInformationQRAdapter);
+        listQRAdapter = new ListQRAdapter(this,emptyList);
+        listView.setAdapter(listQRAdapter);
 
         mQRKeyList = new ArrayList<>();
         mQRbyUserList = new ArrayList<>();
 
         firebaseHandler();
-        return rootView;
     }
 
     private void firebaseHandler() {
-        final String Uid = ((MainActivity)getActivity()).getUid();
+        final String Uid = getUid();
 
         final ChildEventListener qrListener = new ChildEventListener() {
             @Override
@@ -71,7 +61,7 @@ public class InformationQRFragment extends Fragment {
                         qMaster.setKey(key);
 
                         mQRKeyList.add(key);
-                        listInformationQRAdapter.refill(qMaster);
+                        listQRAdapter.refill(qMaster);
                     }
                 }
             }
@@ -85,7 +75,7 @@ public class InformationQRFragment extends Fragment {
                         qMaster.setKey(key);
 
                         int index = mQRKeyList.indexOf(key);
-                        listInformationQRAdapter.changeCondition(index,qMaster);
+                        listQRAdapter.changeCondition(index,qMaster);
                     }
                 }
             }
@@ -101,7 +91,7 @@ public class InformationQRFragment extends Fragment {
                         mQRKeyList.remove(index);
 
                         mQRbyUserList.remove(key);
-                        listInformationQRAdapter.remove(index);
+                        listQRAdapter.remove(index);
                         FirebaseUtils.getBaseRef().child("qrcreator")
                                 .child(Uid)
                                 .child(key)

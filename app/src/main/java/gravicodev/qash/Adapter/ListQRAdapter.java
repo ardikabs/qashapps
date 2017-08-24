@@ -1,6 +1,6 @@
 package gravicodev.qash.Adapter;
 
-import android.app.Application;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,14 +24,12 @@ import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.R;
 
-import static android.R.attr.data;
-
-public class ListInformationQRAdapter extends BaseAdapter {
+public class ListQRAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private List<QMaster> mQMaster;
     private Context context;
 
-    public ListInformationQRAdapter(Context context, List<QMaster> qMasters) {
+    public ListQRAdapter(Activity context, List<QMaster> qMasters) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.mQMaster = qMasters;
@@ -63,7 +61,7 @@ public class ListInformationQRAdapter extends BaseAdapter {
         QMaster qMaster = mQMaster.get((mQMaster.size()-1)-position);
         final String key = qMaster.getKey();
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_information, null);
+            convertView = inflater.inflate(R.layout.list_qr, null);
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.nameInfo);
             holder.date = (TextView) convertView.findViewById(R.id.createdValueInfo);

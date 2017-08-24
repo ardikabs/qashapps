@@ -37,6 +37,8 @@
     <string name="qr_delete">Delete</string>
     <string name="qr_show">Show QR-Code</string>
 
+    <string name="list_info">List more information</string>
+
     <!-- Slider Activity -->
     <string name="next">Next</string>
     <string name="skip">Skip</string>
@@ -102,8 +104,24 @@
     <string name="accepted">Accepted</string>
     <string name="ammount_accepted">Rp 0</string>
 
-    <!-- Information QR Fragment -->
+    <!-- Information Fragment -->
+    <string name="information_more">More Information</string>
     <string name="information_qash">Qash Information</string>
+
+    <!-- Information QR Activity -->
+    <string name="list_qash">Qash List</string>
+
+    <!-- Promotion Activity -->
+    <string name="promotion">Promotion</string>
+
+    <!-- ATM Place Activity-->
+    <string name="atm_place">ATM Place</string>
+
+    <!-- Template Setting Activity -->
+    <string name="template_setting">Template Setting</string>
+    <string name="new_template">Add New Template</string>
+    <string name="create_template">Create Template</string>
+    <string name="list_template">List Template</string>
 
     <!-- Show QR Code Activity -->
     <string name="show_qr">QR-Code</string>
