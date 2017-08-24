@@ -27,6 +27,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +41,7 @@ import gravicodev.qash.Models.QHistory;
 import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 import gravicodev.qash.Session.SessionManager;
+import gravicodev.qash.Volley.VolleyHelper;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
@@ -109,6 +114,19 @@ public class MainActivity extends BaseActivity {
                     1);
         }
 
+
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG,refreshedToken);
+
+        VolleyHelper vh = new VolleyHelper();
+
+        try {
+            vh.sendNotification("123345");
+            vh.getToken();
+            Log.d(TAG,"berhasil");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         firebaseWatcher();
 
     }

@@ -17,6 +17,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -182,5 +183,61 @@ public class VolleyHelper {
         AppController.getInstance().addToRequestQueue(postRequest, tag_json_obj);
 
         return saldo;
+    }
+
+    public void sendNotification(String AccountNumber) throws JSONException {
+        // Tag used to cancel the request
+        String tag_json_obj = "json_obj_req";
+
+        String url = "http://gravicodev.id:4747/sendNotification";
+
+        JSONObject requestJSON = new JSONObject();
+        requestJSON.put("AccountNumber",AccountNumber);
+
+        final String requestBody = requestJSON.toString();
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //...
+                        Boolean status = null;
+                        try {
+                            status = response.getBoolean("status");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Log.d("volley_log",""+status);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //...
+                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+
+            @Override
+            public byte[] getBody() {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                            requestBody, "utf-8");
+                    return null;
+                }
+            }
+        };
+// Adding request to request queue
+        AppController.getInstance().addToRequestQueue(request, tag_json_obj);
     }
 }
