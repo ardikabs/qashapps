@@ -20,6 +20,6 @@
         android:layout_gravity="bottom|center"
         android:contentDescription="@string/bca"
         android:src="@drawable/ic_bca_white"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </android.support.design.widget.CoordinatorLayout>

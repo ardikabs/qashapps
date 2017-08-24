@@ -51,7 +51,7 @@ public class ListQRAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder {
-        TextView name, date, balance, status;
+        TextView name, created, balance, status, expired;
         Button showQR, deleteQR;
     }
 
@@ -64,7 +64,8 @@ public class ListQRAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.list_qr, null);
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.nameInfo);
-            holder.date = (TextView) convertView.findViewById(R.id.createdValueInfo);
+            holder.created = (TextView) convertView.findViewById(R.id.createdValueInfo);
+            holder.expired = (TextView) convertView.findViewById(R.id.expiredValueInfo);
             holder.balance = (TextView) convertView.findViewById(R.id.balanceValueInfo);
             holder.status = (TextView) convertView.findViewById(R.id.statusValueInfo);
             holder.showQR = (Button)convertView.findViewById(R.id.showQr);
@@ -76,7 +77,8 @@ public class ListQRAdapter extends BaseAdapter {
         }
 
         holder.name.setText(qMaster.title);
-        holder.date.setText(timestampTodate((Long) qMaster.created_at));
+        holder.created.setText(timestampTodate((Long) qMaster.created_at));
+        holder.expired.setText(timestampTodate((Long) qMaster.expired_at));
         holder.balance.setText(moneyParserString(String.valueOf(qMaster.balance)));
         holder.status.setText(qMaster.status);
 
