@@ -178,7 +178,7 @@ public class GenerateQRCodeFragment extends Fragment {
                         key = "!"+shaParser(accNumber+"_"+expired_date);
                     }
 
-                    QMaster qrdata = new QMaster(Integer.parseInt(qr_balance), expired_date,qr_name,accNumber);
+                    QMaster qrdata = new QMaster(Integer.parseInt(qr_balance),createdTimestamp, expired_date,qr_name,accNumber);
 
                     FirebaseUtils.getBaseRef().child("qmaster").child(key).setValue(qrdata);
                     FirebaseUtils.getBaseRef().child("qcreator").child(((MainActivity)getActivity()).getUid())

@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.common.StringUtils;
 
 import gravicodev.qash.Activity.LoginActivity;
+import gravicodev.qash.Activity.MainActivity;
 import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 
@@ -79,6 +80,7 @@ public class SessionManager {
         editor.commit();
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
+        ((MainActivity)context).finish();
 
     }
 
@@ -95,8 +97,7 @@ public class SessionManager {
     public void checkLogin(){
 
         if(!this.isLoggedIn()){
-            Intent intent = new Intent(context, LoginActivity.class);
-            context.startActivity(intent);
+            this.logOut();
         }
     }
     public boolean isLoggedIn(){

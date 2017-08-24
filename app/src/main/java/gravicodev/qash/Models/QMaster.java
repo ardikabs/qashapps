@@ -17,8 +17,8 @@ public class QMaster {
     public String status = "enabled";
     public String title;
     public String SourceAccountNumber;
-    public Object expired_at;
-    public Object created_at;
+    public Long expired_at;
+    public Long created_at;
 
     private String key;
 
@@ -26,12 +26,12 @@ public class QMaster {
     public QMaster(){
 
     }
-    public QMaster(Integer balance, Long expired_at, String title, String SourceAccountNumber){
+    public QMaster(Integer balance, Long created_at,Long expired_at, String title, String SourceAccountNumber){
         this.balance = balance;
+        this.created_at = created_at;
         this.expired_at = expired_at;
         this.title = title;
         this.SourceAccountNumber = SourceAccountNumber;
-        this.created_at = ServerValue.TIMESTAMP;
     }
 
     public void setKey(String key) {

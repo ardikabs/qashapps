@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class QHistory {
     public Integer balance;
-    public Object used_at;
+    public Long used_at;
     public String title;
     public String msg;
     private String status;
@@ -24,7 +24,7 @@ public class QHistory {
     }
     public QHistory(Integer balance, String title, String msg){
         this.balance = balance;
-        this.used_at = ServerValue.TIMESTAMP;
+        this.used_at = System.currentTimeMillis();
         this.title = title;
         this.msg = msg;
     }

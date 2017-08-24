@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import gravicodev.qash.Helper.FirebaseUtils;
@@ -50,7 +52,9 @@ public class ListCurrentBalanceAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
-        QMaster qMaster = mQMaster.get((mQMaster.size()-1)-position);
+//        QMaster qMaster = mQMaster.get((mQMaster.size()-1)-position);
+        QMaster qMaster = mQMaster.get(position);
+
         final String key = qMaster.getKey();
         final String status = qMaster.status;
         if (convertView == null) {
@@ -100,6 +104,15 @@ public class ListCurrentBalanceAdapter extends BaseAdapter {
 
     public void refill(QMaster qMaster){
         mQMaster.add(qMaster);
+        Collections.sort(mQMaster, new Comparator<QMaster>() {
+            @Override
+            public int compare(QMaster o1, QMaster o2) {
+                Long ts1 = o1.created_at;
+                Long ts2 = o2.created_at;
+                return ts2.compareTo(ts1);
+            }
+        });
+
         notifyDataSetChanged();
     }
 
@@ -109,6 +122,11 @@ public class ListCurrentBalanceAdapter extends BaseAdapter {
     }
     public void remove(int index){
         mQMaster.remove(index);
+        notifyDataSetChanged();
+    }
+
+    public void addToFirst(QMaster qMaster){
+        mQMaster.add(0,qMaster);
         notifyDataSetChanged();
     }
 

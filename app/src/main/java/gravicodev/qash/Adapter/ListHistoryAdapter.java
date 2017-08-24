@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -49,7 +51,7 @@ public class ListHistoryAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
-        QHistory qHistory = mQHistory.get((mQHistory.size()-1)-position);
+        QHistory qHistory = mQHistory.get(position);
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_history, null);
@@ -67,7 +69,7 @@ public class ListHistoryAdapter extends BaseAdapter {
         String msg = qHistory.msg;
         String balance = moneyParserString(String.valueOf(qHistory.balance)) ;
         String status = qHistory.getStatus();
-        String time = timestampConverter((Long) qHistory.used_at);
+        String time = timestampConverter(qHistory.used_at);
 
 
         holder.name.setText(name);
@@ -89,6 +91,16 @@ public class ListHistoryAdapter extends BaseAdapter {
 
     public void refill(QHistory qHistory){
         mQHistory.add(qHistory);
+
+        Collections.sort(mQHistory, new Comparator<QHistory>() {
+            @Override
+            public int compare(QHistory o1, QHistory o2) {
+                Long ts1 = o1.used_at;
+                Long ts2 = o2.used_at;
+                return ts2.compareTo(ts1);
+            }
+        });
+
         notifyDataSetChanged();
     }
 

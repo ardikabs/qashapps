@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import gravicodev.qash.Activity.MainActivity;
@@ -74,7 +75,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
-                user.setBalance(dataSnapshot.child("balance").getValue(Integer.class));
 
                 nameNasabah.setText(user.fullname);
                 balanceNasabah.setText(moneyParser(user.getBalance()));

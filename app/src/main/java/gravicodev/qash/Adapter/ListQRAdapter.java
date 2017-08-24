@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -58,7 +60,7 @@ public class ListQRAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        QMaster qMaster = mQMaster.get((mQMaster.size()-1)-position);
+        QMaster qMaster = mQMaster.get(position);
         final String key = qMaster.getKey();
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_qr, null);
@@ -137,6 +139,22 @@ public class ListQRAdapter extends BaseAdapter {
 
     public void refill(QMaster qMaster){
         mQMaster.add(qMaster);
+        Collections.sort(mQMaster, new Comparator<QMaster>() {
+            @Override
+            public int compare(QMaster o1, QMaster o2) {
+                Long ts1 = o1.created_at;
+                Long ts2 = o2.created_at;
+                return ts2.compareTo(ts1);
+            }
+        });
+
+        // ## Ascending order
+        // return obj1.firstName.compareToIgnoreCase(obj2.firstName); // To compare string values
+        // return Integer.valueOf(obj1.empId).compareTo(obj2.empId); // To compare integer values
+
+        // ## Descending order
+        // return obj2.firstName.compareToIgnoreCase(obj1.firstName); // To compare string values
+        // return Integer.valueOf(obj2.empId).compareTo(obj1.empId); // To compare integer values
         notifyDataSetChanged();
     }
 

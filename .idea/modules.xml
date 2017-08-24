@@ -4,8 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Qash.iml" filepath="$PROJECT_DIR$/Qash.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/qashapp.iml" filepath="$PROJECT_DIR$/qashapp.iml" />
       <module fileurl="file://$PROJECT_DIR$/qashapps.iml" filepath="$PROJECT_DIR$/qashapps.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qashapps2.iml" filepath="$PROJECT_DIR$/qashapps2.iml" />
     </modules>
   </component>
 </project>
