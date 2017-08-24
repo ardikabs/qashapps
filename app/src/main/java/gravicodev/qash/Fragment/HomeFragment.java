@@ -45,9 +45,6 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Change Title of each fragment
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Qash");
-
         nameNasabah = (TextView) rootView.findViewById(R.id.nameNasabah);
         balanceNasabah = (TextView) rootView.findViewById(R.id.balanceNasabah);
         initialName = (TextView) rootView.findViewById(R.id.initialName);

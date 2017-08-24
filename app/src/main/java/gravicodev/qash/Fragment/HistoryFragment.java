@@ -38,9 +38,6 @@ public class HistoryFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
 
-        // Change Title of each fragment
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("History");
-
         mListHistoryKey = new ArrayList<>();
         List<QHistory> emptyList = new ArrayList<>();
 

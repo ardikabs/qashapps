@@ -66,9 +66,6 @@ public class ScanQRCodeFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_scanqrcode, container, false);
 
-        // Change Title of each fragment
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Scan");
-
         btnScan = (Button) rootView.findViewById(R.id.btnScan);
         scanBalance = (AppCompatEditText) rootView.findViewById(R.id.scan_balance);
         scanKet = (AppCompatEditText) rootView.findViewById(R.id.scan_ket);

@@ -76,18 +76,21 @@ public class MainActivity extends BaseActivity {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
 
+        // Change Icon Tab Layout
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_home);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_generateqr);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_scanqr);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_history);
         tabLayout.getTabAt(4).setIcon(R.drawable.ic_transaction);
 
+        // Change Color Icon Tab Layout
         tabLayout.getTabAt(0).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(2).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(3).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(4).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
 
+        // Change Selected Color Icon Tab Layout
         tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager){
             @Override
             public void onTabSelected(TabLayout.Tab tab){
@@ -103,6 +106,42 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 super.onTabReselected(tab);
+            }
+        });
+
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                // Change Title Action Bar in each fragment
+                switch (position){
+                    case 0 :
+                        getSupportActionBar().setTitle("Qash");
+                        break;
+                    case 1 :
+                        getSupportActionBar().setTitle("Generate");
+                        break;
+                    case 2 :
+                        getSupportActionBar().setTitle("Scan");
+                        break;
+                    case 3 :
+                        getSupportActionBar().setTitle("History");
+                        break;
+                    case 4 :
+                        getSupportActionBar().setTitle("Information");
+                        break;
+                    default :
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
 

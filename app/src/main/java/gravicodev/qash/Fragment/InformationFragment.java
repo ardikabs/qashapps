@@ -34,9 +34,6 @@ public class InformationFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_information, container, false);
 
-        // Change Title of each fragment
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Information");
-
         String[] listname = new String[]{
                 "Qash List", "Promotion", "ATM Place", "Template Setting"
         };
