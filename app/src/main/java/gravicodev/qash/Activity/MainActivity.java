@@ -201,11 +201,6 @@ public class MainActivity extends BaseActivity {
                 });
     }
 
-
-    public void renewUser(User user){
-        sessionManager.renew(user);
-    }
-
     public User getUser(){
         User user = sessionManager.getUser();
         return user;
@@ -356,4 +351,8 @@ public class MainActivity extends BaseActivity {
         super.onStop();
     }
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 }

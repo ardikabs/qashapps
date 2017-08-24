@@ -27,6 +27,7 @@ import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
+import gravicodev.qash.Session.SessionManager;
 
 public class HomeFragment extends Fragment {
     private static final String TAG = "HomeFragment";
@@ -63,7 +64,7 @@ public class HomeFragment extends Fragment {
 
         User user = ((MainActivity)getActivity()).getUser();
         nameNasabah.setText(user.fullname);
-        balanceNasabah.setText(moneyParser(user.getBalance()));
+        balanceNasabah.setText("Rp. "+((MainActivity)getActivity()).moneyParserString(String.valueOf(user.getBalance())));
         initialName.setText(user.fullname.substring(0, 1).toUpperCase());
 
         return rootView;
@@ -75,12 +76,16 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+                try{
+                    nameNasabah.setText(user.fullname);
+                    balanceNasabah.setText("Rp. "+((MainActivity)getActivity()).moneyParserString(String.valueOf(user.getBalance())));
+                    initialName.setText(user.fullname.substring(0, 1).toUpperCase());
+                    new SessionManager(getContext()).renew(user);
+                }
+                catch (NullPointerException ex){
+                }
 
-                nameNasabah.setText(user.fullname);
-                balanceNasabah.setText(moneyParser(user.getBalance()));
-                initialName.setText(user.fullname.substring(0, 1).toUpperCase());
 
-                ((MainActivity)getActivity()).renewUser(user);
             }
 
             @Override
@@ -184,33 +189,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void apiCaller() {
-    }
-
-    private String moneyParser(int data){
-        int delimiter = 10;
-        ArrayList<Integer> hasil = new ArrayList<>();
-        while(true){
-            if(data > 0){
-                hasil.add(data % delimiter);
-                data /= delimiter;
-            }else{
-                break;
-            }
-        }
-
-        String strHasil = "";
-        int x = 1;
-        for(int i=0; i < hasil.size();i++){
-            if(x==3){
-                strHasil = "." + String.valueOf(hasil.get(i)) + strHasil;
-                x = 0;
-            }else{
-                strHasil = String.valueOf(hasil.get(i)) + strHasil;
-            }
-            x++;
-        }
-
-        return "Rp " +strHasil;
     }
 
 }

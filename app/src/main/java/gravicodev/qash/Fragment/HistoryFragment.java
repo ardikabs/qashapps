@@ -78,7 +78,13 @@ public class HistoryFragment extends Fragment {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                String key = dataSnapshot.getKey();
+                QHistory qhistory = dataSnapshot.getValue(QHistory.class);
+                if(mListHistoryKey.contains(key)){
+                    int index = mListHistoryKey.indexOf(key);
+                    mListHistoryKey.remove(key);
+                    listHistoryAdapter.remove(index);
+                }
             }
 
             @Override

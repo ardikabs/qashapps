@@ -109,6 +109,11 @@ public class ListHistoryAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void remove(int index){
+        mQHistory.remove(index);
+        notifyDataSetChanged();
+    }
+
     private String timestampConverter(long timestamp) {
         String relativeTime;
 
