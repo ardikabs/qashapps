@@ -3,12 +3,17 @@ package gravicodev.qash.Session;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.zxing.common.StringUtils;
+
+import java.io.IOException;
 
 import gravicodev.qash.Activity.LoginActivity;
 import gravicodev.qash.Activity.MainActivity;
+import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 
@@ -76,6 +81,15 @@ public class SessionManager {
     }
 
     public void logOut(){
+        try {
+            String token = FirebaseInstanceId.getInstance().getToken();
+            FirebaseUtils.getBaseRef().child("userDevice")
+                    .child(preferences.getString(PREF_ACCOUNT_NUMBER,null))
+                    .child(token).removeValue();
+            FirebaseInstanceId.getInstance().deleteInstanceId();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         editor.clear();
         editor.commit();
         Intent intent = new Intent(context, LoginActivity.class);

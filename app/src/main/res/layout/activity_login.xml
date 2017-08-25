@@ -35,14 +35,14 @@
             android:textColorHint="@android:color/white">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/emailLogin"
+                android:id="@+id/useridLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_email"
                 android:drawablePadding="16dp"
                 android:drawableStart="@drawable/ic_email"
-                android:hint="@string/hint_email"
-                android:inputType="textEmailAddress"
+                android:hint="@string/hint_userid"
+                android:inputType="text"
                 android:maxLines="1"
                 android:padding="16dp"
                 android:textColor="@android:color/white"

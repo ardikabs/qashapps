@@ -62,7 +62,7 @@ import static android.graphics.Color.WHITE;
 
 public class GenerateQRCodeFragment extends Fragment {
     private static final String TAG = "GenerateQRCodeFragment";
-    private static final String KEY = "qashcounttoll";
+    private static final String KEY = "qashcuteteam";
     public final static int WIDTH = 500;
     private Button btnGenerate;
     private AppCompatEditText qrName, qrBalance;

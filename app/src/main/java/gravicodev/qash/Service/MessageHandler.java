@@ -36,6 +36,7 @@ public class MessageHandler extends FirebaseMessagingService {
         String body=remoteMessage.getNotification().getBody();
 
         Intent intent=new Intent(this,MainActivity.class);
+        intent.putExtra("index",3);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 , intent,
                 PendingIntent.FLAG_ONE_SHOT);
         Bitmap notifyImage = BitmapFactory.decodeResource(getResources(), R.drawable.ic_qash);
@@ -43,7 +44,7 @@ public class MessageHandler extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_qash)
                 .setLargeIcon(notifyImage)
-                .setColor(Color.parseColor("#FFE74C3C"))
+                .setColor(Color.parseColor("#00437D"))
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)

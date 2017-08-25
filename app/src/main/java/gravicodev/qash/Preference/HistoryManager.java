@@ -1,4 +1,4 @@
-package gravicodev.qash.Models;
+package gravicodev.qash.Preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,14 +9,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import gravicodev.qash.Models.QHistory;
+
 /**
  * Created by supermonster on 8/24/2017.
  */
 
-public class HomeManager {
+public class HistoryManager {
 
     private final String PREF_NAME;
-    private final String PREF_HOME_DATA;
+    private final String PREF_HISTORY_DATA;
     private final String PREF_KEY_DATA;
 
 
@@ -24,71 +26,71 @@ public class HomeManager {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
-    public HomeManager(Context context){
+    public HistoryManager(Context context){
         this.context = context;
 
-        PREF_NAME = "HomeManager";
+        PREF_NAME = "HistoryManager";
 
-        PREF_HOME_DATA = "DATA";
+        PREF_HISTORY_DATA = "DATA";
         PREF_KEY_DATA = "KEY";
 
         preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = preferences.edit();
     }
 
-    private void saveData(List<QMaster> qrMasters){
+    private void saveData(List<QHistory> qrHistory){
 
         Gson gson = new Gson();
-        String jsonData = gson.toJson(qrMasters);
+        String jsonData = gson.toJson(qrHistory);
 
         // SAVE NEW DATA
-        editor.putString(PREF_HOME_DATA,jsonData);
+        editor.putString(PREF_HISTORY_DATA,jsonData);
         editor.commit();
 
     }
 
     // Data Manager
 
-    public void addData(QMaster newdata){
-        List<QMaster> qrMasters = getData();
+    public void addData(QHistory newdata){
+        List<QHistory> qrHistory = getData();
 
-        if(qrMasters == null){
-            qrMasters = new ArrayList<>();
+        if(qrHistory == null){
+            qrHistory = new ArrayList<>();
         }
-        qrMasters.add(newdata);
-        saveData(qrMasters);
+        qrHistory.add(newdata);
+        saveData(qrHistory);
 
     }
 
-    public void editData(int index, QMaster existdata){
-        List<QMaster> qrMasters = getData();
-        qrMasters.set(index,existdata);
+    public void editData(int index, QHistory existdata){
+        List<QHistory> qrHistory = getData();
+        qrHistory.set(index,existdata);
 
-        saveData(qrMasters);
+        saveData(qrHistory);
     }
 
-    public void removeData(QMaster qMaster){
-        List<QMaster> qMasters = getData();
-        if(qMasters != null){
-            qMasters.remove(qMaster);
-            saveData(qMasters);
+    public void removeData(int index){
+        List<QHistory> qrHistory = getData();
+        if(qrHistory != null){
+            qrHistory.remove(index);
+            saveData(qrHistory);
         }
 
     }
 
-    public ArrayList<QMaster> getData(){
+    public ArrayList<QHistory> getData(){
         Gson gson = new Gson();
-        List<QMaster> qrMasters = new ArrayList<>();
+        List<QHistory> qrMasters = new ArrayList<>();
 
-        String jsonData = preferences.getString(PREF_HOME_DATA,null);
+        String jsonData = preferences.getString(PREF_HISTORY_DATA,null);
         if(jsonData!=null){
-            QMaster[] qmasterItem = gson.fromJson(jsonData,QMaster[].class);
+            QHistory[] qmasterItem = gson.fromJson(jsonData,QHistory[].class);
 
             qrMasters = Arrays.asList(qmasterItem);
-            qrMasters = new ArrayList<QMaster>(qrMasters);
+            qrMasters = new ArrayList<QHistory>(qrMasters);
         }
 
-        return (ArrayList<QMaster>) qrMasters;
+        return (ArrayList<QHistory>) qrMasters;
     }
 
 
@@ -113,10 +115,10 @@ public class HomeManager {
         editor.commit();
     }
 
-    public void removeKeyData(String key){
+    public void removeKeyData(int index){
         List<String> qrkeylist = getKeyList();
         if(qrkeylist!=null){
-            qrkeylist.remove(key);
+            qrkeylist.remove(index);
             saveKeyData(qrkeylist);
         }
     }
@@ -142,6 +144,4 @@ public class HomeManager {
         editor.clear();
         editor.commit();
     }
-
-
 }

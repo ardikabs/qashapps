@@ -12,7 +12,7 @@
     <string name="share">Share</string>
 
     <!-- Error Message -->
-    <string name="err_msg_email">Invalid Email</string>
+    <string name="err_msg_userid">Invalid User ID</string>
     <string name="err_msg_pin">Pin number can\'t be empty</string>
     <string name="err_msg_min_pin">Pin number must be 6 character</string>
     <string name="err_msg_qrname">QR Name can\'t be empty</string>
@@ -59,7 +59,7 @@
 
     <!-- Login Activity -->
     <string name="login">Log In</string>
-    <string name="hint_email">E-mail Address</string>
+    <string name="hint_userid">User ID</string>
     <string name="hint_pin">Pin Number</string>
     <string name="howto_signup">How to sign up ?</string>
 

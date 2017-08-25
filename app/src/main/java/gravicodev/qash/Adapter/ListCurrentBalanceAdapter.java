@@ -125,9 +125,15 @@ public class ListCurrentBalanceAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void addToFirst(QMaster qMaster){
-        mQMaster.add(0,qMaster);
-        notifyDataSetChanged();
+    public int getIndex(String key){
+        int i = 0;
+        for (QMaster qMaster: mQMaster){
+            if(qMaster.getKey().equalsIgnoreCase(key)){
+                return i;
+            }
+            i++;
+        }
+        return 0;
     }
 
     public QMaster getInfo(int position){

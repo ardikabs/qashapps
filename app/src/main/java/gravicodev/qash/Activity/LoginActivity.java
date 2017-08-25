@@ -1,18 +1,13 @@
 package gravicodev.qash.Activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.text.TextUtilsCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -23,13 +18,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.NoSuchAlgorithmException;
+import org.json.JSONException;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import gravicodev.qash.Helper.ApiHelper;
 import gravicodev.qash.Helper.FirebaseUtils;
+import gravicodev.qash.Helper.VolleyCallback;
 import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 import gravicodev.qash.Session.SessionManager;
@@ -37,7 +29,7 @@ import gravicodev.qash.Volley.VolleyHelper;
 
 public class LoginActivity extends BaseActivity {
     private static final String TAG = "LoginActivity";
-    private AppCompatEditText emailLogin, pinLogin;
+    private AppCompatEditText useridLogin, pinLogin;
     private Button btnLogin, btnSignUpNow;
 
     private SessionManager sessionManager;
@@ -49,7 +41,7 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        emailLogin = (AppCompatEditText) findViewById(R.id.emailLogin);
+        useridLogin = (AppCompatEditText) findViewById(R.id.useridLogin);
         pinLogin = (AppCompatEditText) findViewById(R.id.pinLogin);
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnSignUpNow = (Button) findViewById(R.id.btnSignUpNow);
@@ -77,31 +69,43 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void loginAccount(){
-        String email = emailLogin.getText().toString().trim();
-        final String pin = pinLogin.getText().toString().trim();
+        String userid = useridLogin.getText().toString().trim();
+        String pin = pinLogin.getText().toString().trim();
 
-        if (!validateForm(email, pin)){
+        if (!validateForm(userid, pin)){
             return;
         }
         showProgressDialog();
-        mAuth.signInWithEmailAndPassword(email,pin).
-                addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+        VolleyHelper vh = new VolleyHelper();
+        try {
+            vh.login(new VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG,result);
+                    mAuth.signInWithCustomToken(result)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        if(!task.isSuccessful()){
-                            // Unsuccessfull login
-                            hideProgressDialog();
-                            showToast(task.getException().getMessage());
-                            emailLogin.setText("");
-                            pinLogin.setText("");
-                        }
-                        else{
-                            // Successfull login
-                            onAuthSuccess(task.getResult().getUser());
-                        }
-                    }
-                });
+                                    if(task.isSuccessful()){
+                                        //Successfull Login
+                                        onAuthSuccess(task.getResult().getUser());
+                                    }
+                                    else{
+                                        //Unsucessfull Login
+                                        hideProgressDialog();
+                                        showToast(task.getException().getMessage());
+                                        useridLogin.setText("");
+                                        pinLogin.setText("");
+                                    }
+                                }
+                            });
+                }
+            },userid, pin);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void onAuthSuccess(FirebaseUser user) {
@@ -131,12 +135,12 @@ public class LoginActivity extends BaseActivity {
     private boolean validateForm(String email, String pin){
         boolean valid = true;
 
-        if (TextUtils.isEmpty(email) | !isValidEmail(email)){
-            emailLogin.setError(getString(R.string.err_msg_email));
+        if (TextUtils.isEmpty(email)){
+            useridLogin.setError(getString(R.string.err_msg_userid));
             valid = false;
         }
         else {
-            emailLogin.setError(null);
+            useridLogin.setError(null);
         }
 
         if (TextUtils.isEmpty(pin)){
@@ -158,4 +162,5 @@ public class LoginActivity extends BaseActivity {
     public void onBackPressed() {
         moveTaskToBack(true);
     }
+
 }

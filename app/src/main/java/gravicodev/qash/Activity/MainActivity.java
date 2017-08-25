@@ -24,14 +24,12 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,12 +81,28 @@ public class MainActivity extends BaseActivity {
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_history);
         tabLayout.getTabAt(4).setIcon(R.drawable.ic_transaction);
 
-        // Change Color Icon Tab Layout
-        tabLayout.getTabAt(0).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(2).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(3).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(4).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+        Intent intent = getIntent();
+        if(intent.hasExtra("index")){
+            int index = intent.getIntExtra("index",3);
+            Log.d(TAG,"INDEX : "+index);
+            // Change Color Icon Tab Layout
+            tabLayout.getTabAt(0).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+            tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+            tabLayout.getTabAt(2).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+            tabLayout.getTabAt(3).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+            tabLayout.getTabAt(4).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+            tabLayout.getTabAt(index).select();
+        }
+        else{
+            Log.d(TAG,"DIAWAL");
+            // Change Color Icon Tab Layout
+            tabLayout.getTabAt(0).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+            tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+            tabLayout.getTabAt(2).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+            tabLayout.getTabAt(3).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+            tabLayout.getTabAt(4).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
+        }
+
 
         // Change Selected Color Icon Tab Layout
         tabLayout.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager){
@@ -155,22 +169,15 @@ public class MainActivity extends BaseActivity {
 
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG,refreshedToken);
+        FirebaseUtils.getBaseRef().child("userDevice")
+                .child(sessionManager.getUser().accountNumber)
+                .child(refreshedToken).setValue(true);
 
-        VolleyHelper vh = new VolleyHelper();
-
-        try {
-            vh.sendNotification("123345");
-            vh.getToken();
-            Log.d(TAG,"berhasil");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        firebaseWatcher();
+        firebaseHandler();
 
     }
 
-    private void firebaseWatcher() {
+    private void firebaseHandler() {
         FirebaseUtils.getBaseRef().child("qhistory")
                 .child(sessionManager.getUser().accountNumber)
                 .addChildEventListener(new ChildEventListener() {

@@ -39,6 +39,8 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+
 import java.security.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,6 +52,7 @@ import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.Models.QTransactions;
 import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
+import gravicodev.qash.Volley.VolleyHelper;
 
 public class ScanQRCodeFragment extends Fragment {
     private static final String TAG = "ScanQRCodeFragment";
@@ -144,7 +147,7 @@ public class ScanQRCodeFragment extends Fragment {
 
                                             Calendar today = Calendar.getInstance();
                                             Calendar cal = Calendar.getInstance();
-                                            Date expireDate = new Date((Long) qMaster.expired_at);
+                                            Date expireDate = new Date(qMaster.expired_at);
                                             cal.setTime(expireDate);
                                             boolean expired = cal.before(today);
 
@@ -227,6 +230,14 @@ public class ScanQRCodeFragment extends Fragment {
             dbTrx.setValue(trx);
 
             showSuccess(balanceUsed);
+            VolleyHelper vh = new VolleyHelper();
+            try {
+                String title = "QASH "+qMaster.title + " telah digunakan !";
+                String nominal = "Rp. "+((MainActivity)getActivity()).moneyParserString(String.valueOf(balanceUsed));
+                vh.sendNotification(qMaster.SourceAccountNumber,title,nominal);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             scanBalance.setText("");
             scanKet.setText("");
         }
