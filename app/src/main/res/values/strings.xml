@@ -106,8 +106,8 @@
     <string name="ammount_accepted">Rp 0</string>
     <string name="scan_template">Template</string>
 
-    <!-- Information Fragment -->
-    <string name="information_more">More Information</string>
+    <!-- More Fragment -->
+    <string name="more">More Qash</string>
     <string name="information_qash">Qash Information</string>
 
     <!-- Information QR Activity -->

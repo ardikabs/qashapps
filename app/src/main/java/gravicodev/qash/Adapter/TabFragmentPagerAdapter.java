@@ -8,7 +8,7 @@ import gravicodev.qash.Fragment.GenerateQRCodeFragment;
 import gravicodev.qash.Fragment.HistoryFragment;
 import gravicodev.qash.Fragment.HomeFragment;
 import gravicodev.qash.Fragment.ScanQRCodeFragment;
-import gravicodev.qash.Fragment.InformationFragment;
+import gravicodev.qash.Fragment.MoreFragment;
 
 public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
     private static final String TAG = "TabFragmentPagerAdapter";
@@ -38,7 +38,7 @@ public class TabFragmentPagerAdapter extends FragmentPagerAdapter {
                 fragment = new HistoryFragment();
                 break;
             case 4:
-                fragment = new InformationFragment();
+                fragment = new MoreFragment();
                 break;
             default:
                 fragment = null;

@@ -1,7 +1,6 @@
 package gravicodev.qash.Fragment;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,30 +9,25 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import gravicodev.qash.Activity.ATMPlaceActivity;
 import gravicodev.qash.Activity.ListQRActivity;
 import gravicodev.qash.Activity.PromotionActivity;
 import gravicodev.qash.Activity.StorePlaceActivity;
 import gravicodev.qash.Activity.TemplateSettingActivity;
-import gravicodev.qash.Adapter.ListInformationAdapter;
-import gravicodev.qash.Adapter.ListQRAdapter;
-import gravicodev.qash.Models.QMaster;
+import gravicodev.qash.Adapter.ListMoreAdapter;
 import gravicodev.qash.R;
 
-public class InformationFragment extends Fragment {
-    private static final String TAG = "InformationFragment";
+public class MoreFragment extends Fragment {
+    private static final String TAG = "MoreFragment";
     private ListView listView;
-    private ListInformationAdapter listInformationAdapter;
+    private ListMoreAdapter listMoreAdapter;
 
-    public InformationFragment(){}
+    public MoreFragment(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_information, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_more, container, false);
 
         String[] listname = new String[]{
                 "Qash List", "Promotion", "ATM Place", "Store Place","Template Setting"
@@ -45,8 +39,8 @@ public class InformationFragment extends Fragment {
         };
 
         listView = (ListView) rootView.findViewById(R.id.listMoreInfo);
-        listInformationAdapter = new ListInformationAdapter(getActivity(), listname, listdrawable);
-        listView.setAdapter(listInformationAdapter);
+        listMoreAdapter = new ListMoreAdapter(getActivity(), listname, listdrawable);
+        listView.setAdapter(listMoreAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
