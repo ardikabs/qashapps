@@ -13,7 +13,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:text="@string/information_more"
+        android:text="@string/more"
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@color/colorPrimary" />
 

@@ -71,7 +71,7 @@ public class HomeFragment extends Fragment {
 
         User user = ((MainActivity)getActivity()).getUser();
         nameNasabah.setText(user.fullname);
-        balanceNasabah.setText("Rp. "+((MainActivity)getActivity()).moneyParserString(String.valueOf(user.getBalance())));
+        balanceNasabah.setText("Rp "+((MainActivity)getActivity()).moneyParserString(String.valueOf(user.getBalance())));
         initialName.setText(user.fullname.substring(0, 1).toUpperCase());
         nameNasabah.setOnClickListener(new View.OnClickListener() {
             @Override

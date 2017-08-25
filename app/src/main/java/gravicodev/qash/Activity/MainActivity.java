@@ -79,7 +79,7 @@ public class MainActivity extends BaseActivity {
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_generateqr);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_scanqr);
         tabLayout.getTabAt(3).setIcon(R.drawable.ic_history);
-        tabLayout.getTabAt(4).setIcon(R.drawable.ic_transaction);
+        tabLayout.getTabAt(4).setIcon(R.drawable.ic_more);
 
         Intent intent = getIntent();
         if(intent.hasExtra("index")){
@@ -146,7 +146,7 @@ public class MainActivity extends BaseActivity {
                         getSupportActionBar().setTitle("History");
                         break;
                     case 4 :
-                        getSupportActionBar().setTitle("Information");
+                        getSupportActionBar().setTitle("More");
                         break;
                     default :
                         break;
