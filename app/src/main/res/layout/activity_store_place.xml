@@ -6,18 +6,31 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_promotion"
+        android:id="@+id/toolbar_store"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:title="@string/promotion"
+        app:title="@string/store_place"
         app:titleTextColor="@android:color/white" />
 
-    <ListView
-        android:id="@+id/listPromotion"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingRight="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:text="@string/nearest_store"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="@color/colorPrimary" />
+
+    <ListView
+        android:id="@+id/listStore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

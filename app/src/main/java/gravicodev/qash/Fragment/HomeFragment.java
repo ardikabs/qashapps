@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment {
 
         User user = ((MainActivity)getActivity()).getUser();
         nameNasabah.setText(user.fullname);
-        balanceNasabah.setText("Rp. "+((MainActivity)getActivity()).moneyParserString(String.valueOf(user.getBalance())));
+        balanceNasabah.setText("Rp "+((MainActivity)getActivity()).moneyParserString(String.valueOf(user.getBalance())));
         initialName.setText(user.fullname.substring(0, 1).toUpperCase());
 
         return rootView;
@@ -78,7 +78,7 @@ public class HomeFragment extends Fragment {
                 User user = dataSnapshot.getValue(User.class);
                 try{
                     nameNasabah.setText(user.fullname);
-                    balanceNasabah.setText("Rp. "+((MainActivity)getActivity()).moneyParserString(String.valueOf(user.getBalance())));
+                    balanceNasabah.setText("Rp "+((MainActivity)getActivity()).moneyParserString(String.valueOf(user.getBalance())));
                     initialName.setText(user.fullname.substring(0, 1).toUpperCase());
                     new SessionManager(getContext()).renew(user);
                 }

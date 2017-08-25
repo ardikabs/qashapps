@@ -115,9 +115,26 @@
 
     <!-- Promotion Activity -->
     <string name="promotion">Promotion</string>
+    <string name="title_promotion">Qash Promotion</string>
+    <string name="description_promotion">Qash Promotion Today</string>
+    <string name="date_promotion">1 day left</string>
+    <string name="img_desc_promotion">Icon Promotion</string>
 
     <!-- ATM Place Activity-->
     <string name="atm_place">ATM Place</string>
+    <string name="nearest_atm">Nearest ATM</string>
+    <string name="title_atm">ATM</string>
+    <string name="address_atm">ATM Address</string>
+    <string name="distance_atm">1 km</string>
+    <string name="img_desc_atm">Icon ATM</string>
+
+    <!-- Store Place Acitivity -->
+    <string name="store_place">Store Place</string>
+    <string name="nearest_store">Nearest Store</string>
+    <string name="title_store">Store</string>
+    <string name="address_store">Store Address</string>
+    <string name="distance_store">1 km</string>
+    <string name="img_desc_store">Icon Store</string>
 
     <!-- Template Setting Activity -->
     <string name="template_setting">Template Setting</string>

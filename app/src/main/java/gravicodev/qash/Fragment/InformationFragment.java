@@ -16,6 +16,7 @@ import java.util.List;
 import gravicodev.qash.Activity.ATMPlaceActivity;
 import gravicodev.qash.Activity.ListQRActivity;
 import gravicodev.qash.Activity.PromotionActivity;
+import gravicodev.qash.Activity.StorePlaceActivity;
 import gravicodev.qash.Activity.TemplateSettingActivity;
 import gravicodev.qash.Adapter.ListInformationAdapter;
 import gravicodev.qash.Adapter.ListQRAdapter;
@@ -35,12 +36,12 @@ public class InformationFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_information, container, false);
 
         String[] listname = new String[]{
-                "Qash List", "Promotion", "ATM Place", "Template Setting"
+                "Qash List", "Promotion", "ATM Place", "Store Place","Template Setting"
         };
 
         Integer[] listdrawable = new Integer[]{
                  R.drawable.ic_listqr, R.drawable.ic_promotion, R.drawable.ic_place,
-                R.drawable.ic_template
+                R.drawable.ic_store, R.drawable.ic_template
         };
 
         listView = (ListView) rootView.findViewById(R.id.listMoreInfo);
@@ -60,6 +61,9 @@ public class InformationFragment extends Fragment {
                         startActivity(new Intent(getActivity(), ATMPlaceActivity.class));
                         break;
                     case 3 :
+                        startActivity(new Intent(getActivity(), StorePlaceActivity.class));
+                        break;
+                    case 4 :
                         startActivity(new Intent(getActivity(), TemplateSettingActivity.class));
                         break;
                     default:
