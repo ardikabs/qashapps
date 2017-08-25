@@ -104,6 +104,7 @@
     <string name="scan">Scan Qash</string>
     <string name="accepted">Accepted</string>
     <string name="ammount_accepted">Rp 0</string>
+    <string name="scan_template">Template</string>
 
     <!-- Information Fragment -->
     <string name="information_more">More Information</string>

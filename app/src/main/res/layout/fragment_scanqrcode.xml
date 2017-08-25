@@ -66,6 +66,20 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/scan_template"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:textColor="@color/colorPrimary" />
+
+        <Spinner
+            android:id="@+id/spinnerTemplate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp" />
+
         <Button
             android:id="@+id/btnScan"
             android:layout_width="match_parent"

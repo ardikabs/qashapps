@@ -14,7 +14,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,9 +43,11 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.security.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QHistory;
@@ -58,6 +63,7 @@ public class ScanQRCodeFragment extends Fragment {
     private FrameLayout dimmer;
     private LottieAnimationView animSuccess;
     private TextView ammountAccepted;
+    private Spinner spinnerTemplate;
 
     public ScanQRCodeFragment() {}
 
@@ -72,6 +78,37 @@ public class ScanQRCodeFragment extends Fragment {
         dimmer = (FrameLayout) rootView.findViewById(R.id.dimmerSuccess);
         ammountAccepted = (TextView) rootView.findViewById(R.id.ammountAccepted);
         animSuccess = (LottieAnimationView) rootView.findViewById(R.id.animation_success);
+        spinnerTemplate = (Spinner) rootView.findViewById(R.id.spinnerTemplate);
+
+        List<String> templateList = new ArrayList<String>();
+        templateList.add("10000 " + "-" + " Jajan 1");
+        templateList.add("20000 " + "-" + " Jajan 2");
+        templateList.add("30000 " + "-" + " Jajan 3");
+        templateList.add("40000 " + "-" + " Jajan 4");
+        templateList.add("50000 " + "-" + " Jajan 5");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, templateList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTemplate.setAdapter(dataAdapter);
+
+        spinnerTemplate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = parent.getItemAtPosition(position).toString();
+                String[] parts = item.split("-");
+                String balance = parts[0].trim();
+                String ket = parts[1].trim();
+
+                scanBalance.setText(balance);
+                scanKet.setText(ket);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         btnScan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +149,6 @@ public class ScanQRCodeFragment extends Fragment {
                 scanBalance.addTextChangedListener(this);
             }
         });
-
 
         return rootView;
     }
