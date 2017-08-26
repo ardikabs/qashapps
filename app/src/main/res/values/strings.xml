@@ -39,6 +39,8 @@
     <string name="qr_show">Show QR-Code</string>
 
     <string name="list_info">List more information</string>
+    <string name="empty_qr">Your QR-Code list is still empty</string>
+    <string name="empty_history">Your transaction list is still empty</string>
 
     <!-- Slider Activity -->
     <string name="next">Next</string>
@@ -112,6 +114,23 @@
 
     <!-- Information QR Activity -->
     <string name="list_qash">Qash List</string>
+    
+    <!-- Mutation Activity -->
+    <string name="mutation">Mutation</string>
+    <string name="period">Period</string>
+    <string name="start_balance">Start Balance</string>
+    <string name="end_balance">End Balance</string>
+    <string name="credit_mutation">Credit Mutation</string>
+    <string name="debet_mutation">Debet Mutation</string>
+    <string name="qash_credit_mutation">Qash Credit Mutation</string>
+    <string name="qash_debet_mutation">Qash Debet Mutation</string>
+    <string name="circle_mutation">Description Qash Mutation</string>
+    <string name="transaction_name">Transaction Name</string>
+    <string name="trailer">Trailer</string>
+    <string name="transaction_amount">Transaction Amount</string>
+    <string name="transaction_type">Q</string>
+    <string name="transaction_date">Transaction Date</string>
+    <string name="branch_code">Branch Code</string>
 
     <!-- Promotion Activity -->
     <string name="promotion">Promotion</string>

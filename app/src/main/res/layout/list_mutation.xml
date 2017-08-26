@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bgListMutation"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp"
+    android:paddingEnd="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp">
+
+    <FrameLayout
+        android:id="@+id/circleMutation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp">
+
+        <ImageView
+            android:id="@+id/imgCircleMutation"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:contentDescription="@string/circle_mutation"
+            android:src="@drawable/ic_circle" />
+
+        <TextView
+            android:id="@+id/transactionType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/transaction_type"
+            android:textColor="@android:color/white" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/transactionName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/circleMutation"
+        android:layout_toRightOf="@id/circleMutation"
+        android:maxLines="1"
+        android:text="@string/transaction_name"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/transactionAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/transactionName"
+        android:layout_toEndOf="@id/circleMutation"
+        android:layout_toRightOf="@id/circleMutation"
+        android:maxLines="1"
+        android:text="@string/transaction_amount" />
+
+    <TextView
+        android:id="@+id/trailer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/transactionAmount"
+        android:layout_toEndOf="@id/circleMutation"
+        android:layout_toRightOf="@id/circleMutation"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/trailer" />
+
+    <TextView
+        android:id="@+id/transactionDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/transaction_date" />
+
+    <TextView
+        android:id="@+id/branchCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/transactionDate"
+        android:text="@string/branch_code" />
+
+</RelativeLayout>

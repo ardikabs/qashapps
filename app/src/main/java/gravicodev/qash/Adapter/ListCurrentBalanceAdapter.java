@@ -69,7 +69,6 @@ public class ListCurrentBalanceAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-
         holder.name.setText(qMaster.title);
         holder.balance.setText(moneyParserString(String.valueOf(qMaster.balance)));
 

@@ -15,6 +15,37 @@
         app:title="@string/list_qash"
         app:titleTextColor="@android:color/white" />
 
+    <FrameLayout
+        android:id="@+id/emptyQashList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:contentDescription="@string/empty_qr"
+                android:src="@drawable/ic_qash_gray" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/empty_qr"
+                android:textAppearance="?android:textAppearanceMedium" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
     <ListView
         android:id="@+id/listInformationQr"
         android:layout_width="match_parent"

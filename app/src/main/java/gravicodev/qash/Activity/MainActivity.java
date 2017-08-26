@@ -347,7 +347,6 @@ public class MainActivity extends BaseActivity {
         return strHasil;
     }
 
-
     // Method for adding value listener
     public void addListener(DatabaseReference db, ValueEventListener value) {
         this.valueListenerList.put(db,value);
