@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.vision.Frame;
 
+import java.util.ArrayList;
+
 import gravicodev.qash.R;
 
 public class ListMutationAdapter extends BaseAdapter {
@@ -74,7 +76,7 @@ public class ListMutationAdapter extends BaseAdapter {
 
         holder.transactionName.setText(name[position]);
         holder.trailer.setText(trailer[position]);
-        holder.transactionAmount.setText(amount[position]);
+        holder.transactionAmount.setText("Rp " + moneyParserString(String.valueOf(amount[position])));
         holder.transactionType.setText(type[position]);
         holder.transactionDate.setText(date[position]);
         holder.branchCode.setText(branch[position]);
@@ -87,5 +89,28 @@ public class ListMutationAdapter extends BaseAdapter {
         }
 
         return convertView;
+    }
+
+    public String moneyParserString(String data){
+        ArrayList<String> input = new ArrayList<>();
+        for(int i = data.length()-1;i>=0;i--){
+            if(!".".equals(String.valueOf(data.charAt(i)))){
+                input.add(String.valueOf(data.charAt(i)));
+            }
+        }
+
+        String strHasil = "";
+        int x = 1;
+        for(int i=0; i < input.size();i++){
+            if(x==3 && i != (input.size()-1)){
+                strHasil = "." + input.get(i) + strHasil;
+                x = 0;
+            }else{
+                strHasil = input.get(i) + strHasil;
+            }
+            x++;
+        }
+
+        return strHasil;
     }
 }

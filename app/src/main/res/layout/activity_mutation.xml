@@ -15,7 +15,7 @@
         app:title="@string/mutation"
         app:titleTextColor="@android:color/white" />
 
-    <RelativeLayout
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#efefef"
@@ -26,131 +26,154 @@
         android:paddingStart="16dp"
         android:paddingTop="8dp">
 
-        <TextView
-            android:id="@+id/period"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/period" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/periodValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/period"
-            android:layout_toRightOf="@id/period"
-            android:text="@string/qr_balance" />
+            <TextView
+                android:id="@+id/period"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/period" />
 
-        <TextView
-            android:id="@+id/startBalance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/period"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/start_balance" />
+            <TextView
+                android:id="@+id/periodValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/qr_balance" />
 
-        <TextView
-            android:id="@+id/startBalanceValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/periodValue"
-            android:layout_toEndOf="@id/startBalance"
-            android:layout_toRightOf="@id/startBalance"
-            android:text="@string/qr_balance" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/creditMutation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/startBalance"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/credit_mutation" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/creditMutationValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/startBalanceValue"
-            android:layout_toEndOf="@id/creditMutation"
-            android:layout_toRightOf="@id/creditMutation"
-            android:text="@string/qr_balance" />
+            <TextView
+                android:id="@+id/startBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/start_balance" />
 
-        <TextView
-            android:id="@+id/debetMutation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/creditMutation"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/debet_mutation" />
+            <TextView
+                android:id="@+id/startBalanceValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/qr_balance" />
 
-        <TextView
-            android:id="@+id/debetMutationValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/creditMutationValue"
-            android:layout_toEndOf="@id/debetMutation"
-            android:layout_toRightOf="@id/debetMutation"
-            android:text="@string/qr_balance" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/qashCreditMutation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/debetMutation"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/qash_credit_mutation" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/qashCreditMutationValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/debetMutation"
-            android:layout_toEndOf="@id/qashCreditMutation"
-            android:layout_toRightOf="@id/qashCreditMutation"
-            android:text="@string/qr_balance" />
+            <TextView
+                android:id="@+id/creditMutation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/credit_mutation" />
 
-        <TextView
-            android:id="@+id/qashDebetMutation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/qashCreditMutation"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/qash_debet_mutation" />
+            <TextView
+                android:id="@+id/creditMutationValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/qr_balance" />
 
-        <TextView
-            android:id="@+id/qashDebetMutationValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/qashCreditMutationValue"
-            android:layout_toEndOf="@id/qashDebetMutation"
-            android:layout_toRightOf="@id/qashDebetMutation"
-            android:text="@string/qr_balance" />
+        </TableRow>
 
-        <TextView
-            android:id="@+id/endBalance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/qashDebetMutation"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:text="@string/end_balance" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/endBalanceValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/qashDebetMutationValue"
-            android:layout_toEndOf="@id/endBalance"
-            android:layout_toRightOf="@id/endBalance"
-            android:text="@string/qr_balance" />
+            <TextView
+                android:id="@+id/debetMutation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/debet_mutation" />
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/debetMutationValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/qr_balance" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/qashCreditMutation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/qash_credit_mutation" />
+
+            <TextView
+                android:id="@+id/qashCreditMutationValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/qr_balance" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/qashDebetMutation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/qash_debet_mutation" />
+
+            <TextView
+                android:id="@+id/qashDebetMutationValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/qr_balance" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/endBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/end_balance" />
+
+            <TextView
+                android:id="@+id/endBalanceValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/qr_balance" />
+
+        </TableRow>
+
+    </TableLayout>
 
     <View
         android:layout_width="match_parent"

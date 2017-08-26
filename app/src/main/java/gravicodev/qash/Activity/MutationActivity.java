@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import gravicodev.qash.Adapter.ListMutationAdapter;
 import gravicodev.qash.R;
 
@@ -45,12 +47,12 @@ public class MutationActivity extends AppCompatActivity {
 
         // Dummy mutation
         period.setText("29 Jan 2017 - 01 Feb 2017");
-        startBalance.setText("1000000");
-        endBalance.setText("2400000");
-        qashCreditMutation.setText("500000");
-        qashDebetMutation.setText("100000");
-        creditMutation.setText("1000000");
-        debetMutation.setText("0");
+        startBalance.setText("Rp " + moneyParserString("1000000"));
+        endBalance.setText("Rp " + moneyParserString("2400000"));
+        qashCreditMutation.setText("Rp " + moneyParserString("500000"));
+        qashDebetMutation.setText("Rp " + moneyParserString("100000"));
+        creditMutation.setText("Rp " + moneyParserString("1000000"));
+        debetMutation.setText("Rp " + moneyParserString("0"));
 
         listView = (ListView) findViewById(R.id.listMutation);
 
@@ -86,5 +88,28 @@ public class MutationActivity extends AppCompatActivity {
 
         listMutationAdapter = new ListMutationAdapter(this, name, trailer, amount, type, date, branch);
         listView.setAdapter(listMutationAdapter);
+    }
+
+    public String moneyParserString(String data){
+        ArrayList<String> input = new ArrayList<>();
+        for(int i = data.length()-1;i>=0;i--){
+            if(!".".equals(String.valueOf(data.charAt(i)))){
+                input.add(String.valueOf(data.charAt(i)));
+            }
+        }
+
+        String strHasil = "";
+        int x = 1;
+        for(int i=0; i < input.size();i++){
+            if(x==3 && i != (input.size()-1)){
+                strHasil = "." + input.get(i) + strHasil;
+                x = 0;
+            }else{
+                strHasil = input.get(i) + strHasil;
+            }
+            x++;
+        }
+
+        return strHasil;
     }
 }
