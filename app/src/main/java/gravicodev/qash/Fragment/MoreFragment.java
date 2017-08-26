@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import gravicodev.qash.Activity.ATMPlaceActivity;
 import gravicodev.qash.Activity.ListQRActivity;
+import gravicodev.qash.Activity.MutationActivity;
 import gravicodev.qash.Activity.PromotionActivity;
 import gravicodev.qash.Activity.StorePlaceActivity;
 import gravicodev.qash.Activity.TemplateSettingActivity;
@@ -30,12 +31,12 @@ public class MoreFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_more, container, false);
 
         String[] listname = new String[]{
-                "Qash List", "Promotion", "ATM Place", "Store Place","Template Setting"
+                "Qash List", "Qash Mutation", "Promotion", "ATM Place", "Store Place","Template Setting"
         };
 
         Integer[] listdrawable = new Integer[]{
-                 R.drawable.ic_listqr, R.drawable.ic_promotion, R.drawable.ic_place,
-                R.drawable.ic_store, R.drawable.ic_template
+                 R.drawable.ic_listqr, R.drawable.ic_promotion, R.drawable.ic_promotion,
+                R.drawable.ic_place, R.drawable.ic_store, R.drawable.ic_template
         };
 
         listView = (ListView) rootView.findViewById(R.id.listMoreInfo);
@@ -49,15 +50,18 @@ public class MoreFragment extends Fragment {
                         startActivity(new Intent(getActivity(), ListQRActivity.class));
                         break;
                     case 1 :
-                        startActivity(new Intent(getActivity(), PromotionActivity.class));
+                        startActivity(new Intent(getActivity(), MutationActivity.class));
                         break;
                     case 2 :
-                        startActivity(new Intent(getActivity(), ATMPlaceActivity.class));
+                        startActivity(new Intent(getActivity(), PromotionActivity.class));
                         break;
                     case 3 :
-                        startActivity(new Intent(getActivity(), StorePlaceActivity.class));
+                        startActivity(new Intent(getActivity(), ATMPlaceActivity.class));
                         break;
                     case 4 :
+                        startActivity(new Intent(getActivity(), StorePlaceActivity.class));
+                        break;
+                    case 5 :
                         startActivity(new Intent(getActivity(), TemplateSettingActivity.class));
                         break;
                     default:
