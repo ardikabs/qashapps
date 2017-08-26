@@ -7,23 +7,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.google.android.gms.vision.Frame;
 
 import java.util.ArrayList;
 
 import gravicodev.qash.R;
 
-public class ListMutationAdapter extends BaseAdapter {
+public class ListAccStatementAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private String[] name, trailer, amount, type, date, branch;
 
-    public ListMutationAdapter(Activity context, String[] name, String[] trailer, String[] amount
+    public ListAccStatementAdapter(Activity context, String[] name, String[] trailer, String[] amount
             , String[] type, String[] date, String[] branch){
         this.context = context;
         inflater = LayoutInflater.from(context);
@@ -60,7 +55,7 @@ public class ListMutationAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.list_mutation, null);
+            convertView = inflater.inflate(R.layout.list_accstatement, null);
             holder = new ViewHolder();
             holder.transactionName = (TextView) convertView.findViewById(R.id.transactionName);
             holder.trailer = (TextView) convertView.findViewById(R.id.trailer);

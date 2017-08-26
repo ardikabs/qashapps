@@ -86,7 +86,7 @@ public class TemplateSettingActivity extends BaseActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()){
-                            showToast("Template telah tersedia");
+                            showToast("Template already available");
                         }
                         else{
                             HashMap<String, Object> data = new HashMap<>();
@@ -101,7 +101,7 @@ public class TemplateSettingActivity extends BaseActivity {
                                     .setValue(data);
                             descTemplate.setText("");
                             balanceTemplate.setText("");
-                            showToast("Template telah ditambahkan");
+                            showToast("Template successfully added !");
                         }
                     }
 

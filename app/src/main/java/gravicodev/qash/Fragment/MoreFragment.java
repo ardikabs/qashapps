@@ -11,7 +11,7 @@ import android.widget.GridView;
 
 import gravicodev.qash.Activity.ATMPlaceActivity;
 import gravicodev.qash.Activity.ListQRActivity;
-import gravicodev.qash.Activity.MutationActivity;
+import gravicodev.qash.Activity.AccStatementActivity;
 import gravicodev.qash.Activity.PromotionActivity;
 import gravicodev.qash.Activity.StorePlaceActivity;
 import gravicodev.qash.Activity.TemplateSettingActivity;
@@ -50,7 +50,7 @@ public class MoreFragment extends Fragment {
                         startActivity(new Intent(getActivity(), ListQRActivity.class));
                         break;
                     case 1 :
-                        startActivity(new Intent(getActivity(), MutationActivity.class));
+                        startActivity(new Intent(getActivity(), AccStatementActivity.class));
                         break;
                     case 2 :
                         startActivity(new Intent(getActivity(), PromotionActivity.class));

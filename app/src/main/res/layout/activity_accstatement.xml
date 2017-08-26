@@ -6,13 +6,13 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_mutation"
+        android:id="@+id/toolbar_AccStatement"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:title="@string/mutation"
+        app:title="@string/accstatement"
         app:titleTextColor="@android:color/white" />
 
     <TableLayout
@@ -73,35 +73,14 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/creditMutation"
+                android:id="@+id/creditAccStatement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/credit_mutation" />
+                android:text="@string/credit_accstatement" />
 
             <TextView
-                android:id="@+id/creditMutationValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="@string/qr_balance" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/debetMutation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/debet_mutation" />
-
-            <TextView
-                android:id="@+id/debetMutationValue"
+                android:id="@+id/creditAccStatementValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -115,14 +94,14 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/qashCreditMutation"
+                android:id="@+id/debetAccStatement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/qash_credit_mutation" />
+                android:text="@string/debet_accstatement" />
 
             <TextView
-                android:id="@+id/qashCreditMutationValue"
+                android:id="@+id/debetAccStatementValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -136,14 +115,35 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/qashDebetMutation"
+                android:id="@+id/qashCreditAccStatement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/qash_debet_mutation" />
+                android:text="@string/qash_credit_accstatement" />
 
             <TextView
-                android:id="@+id/qashDebetMutationValue"
+                android:id="@+id/qashCreditAccStatementValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="@string/qr_balance" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/qashDebetAccStatement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/qash_debet_accstatement" />
+
+            <TextView
+                android:id="@+id/qashDebetAccStatementValue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -182,7 +182,7 @@
         android:minHeight="1dp" />
 
     <ListView
-        android:id="@+id/listMutation"
+        android:id="@+id/listAccStatement"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

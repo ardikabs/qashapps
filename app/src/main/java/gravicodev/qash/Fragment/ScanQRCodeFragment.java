@@ -208,7 +208,7 @@ public class ScanQRCodeFragment extends Fragment {
                     // Check barcode result
                     // If contain ".", ",", "#","[","]"
                     if(!checkChildCharacter(barcode.displayValue)){
-                       showToast("QR Code tidak dikenali");
+                       showToast("QR Code not recognized !");
                     }
 
                     // Read barcode in firebase
@@ -231,7 +231,7 @@ public class ScanQRCodeFragment extends Fragment {
                                                 }
                                                 else{
                                                     // Fail to Decode
-                                                    showToast("QASH tidak dikenali");
+                                                    showToast("Qash not recognized !");
                                                 }
                                             }
                                             else{
@@ -246,13 +246,13 @@ public class ScanQRCodeFragment extends Fragment {
                                                 }
                                                 else{
                                                     // Fail to Decode
-                                                    showToast("QASH tidak dikenali");
+                                                    showToast("Qash not recognized !");
                                                 }
                                             }
 
                                         }
                                         else{
-                                            showToast("QASH tidak dikenali");
+                                            showToast("Qash not recognized !");
                                         }
                                     }
 
@@ -279,7 +279,7 @@ public class ScanQRCodeFragment extends Fragment {
         boolean expired = cal.before(today);
 
         if(expired){
-            showToast("Qash sudah tidak berlaku");
+            showToast("Qash is no longer valid !");
         }
 
         else{
@@ -287,7 +287,7 @@ public class ScanQRCodeFragment extends Fragment {
                 prosesToFirebase(qMaster.balance,dataSnapshot);
             }
             else{
-                showToast("Qash sudah tidak berlaku");
+                showToast("Qash is no longer active !");
             }
         }
     }
@@ -311,7 +311,7 @@ public class ScanQRCodeFragment extends Fragment {
                 .child(dataSnapshot.getKey());
 
         if(balanceUsed > balance){
-            showToast("Balance Qash tidak mencukupi");
+            showToast("Qash Balance is not enough !");
         }
         else{
 
@@ -340,7 +340,7 @@ public class ScanQRCodeFragment extends Fragment {
             showSuccess(balanceUsed);
             VolleyHelper vh = new VolleyHelper();
             try {
-                String title = "QASH "+qMaster.title + " telah digunakan !";
+                String title = "Qash "+qMaster.title + " has been used !";
                 String nominal = "Rp. "+((MainActivity)getActivity()).moneyParserString(String.valueOf(balanceUsed));
                 vh.sendNotification(qMaster.SourceAccountNumber,title,nominal);
             } catch (JSONException e) {
