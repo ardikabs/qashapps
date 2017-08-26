@@ -86,40 +86,25 @@ public class TemplateSettingActivity extends BaseActivity {
             public void onClick(View v) {
                 final String desc = descTemplate.getText().toString().trim();
                 final String balance = balanceTemplate.getText().toString().trim();
-                final String key = desc.replaceAll("\\s+","")+"_"+moneyParserToInt(balance);
+                final String key = FirebaseUtils.getBaseRef().child("settings").child(getUid()).child("templates").push().getKey();
                 if(!validateForm(desc,balance)){
                     return;
                 }
 
-                FirebaseUtils.getBaseRef().child("settings").child(getUid()).child("templates")
-                        .child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            showToast("Template already available");
-                        }
-                        else{
-                            HashMap<String, Object> data = new HashMap<>();
-                            data.put("desc",desc);
-                            data.put("balance",moneyParserToInt(balance));
-                            data.put("created_at", System.currentTimeMillis());
-                            FirebaseUtils.getBaseRef()
-                                    .child("settings")
-                                    .child(getUid())
-                                    .child("templates")
-                                    .child(key)
-                                    .setValue(data);
-                            descTemplate.setText("");
-                            balanceTemplate.setText("");
-                            showToast("Template successfully added !");
-                        }
-                    }
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("desc",desc);
+                data.put("balance",moneyParserToInt(balance));
+                data.put("created_at", System.currentTimeMillis());
+                FirebaseUtils.getBaseRef()
+                        .child("settings")
+                        .child(getUid())
+                        .child("templates")
+                        .child(key)
+                        .setValue(data);
+                descTemplate.setText("");
+                balanceTemplate.setText("");
+                showToast("Template successfully added !");
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
             }
         });
 
@@ -156,32 +141,37 @@ public class TemplateSettingActivity extends BaseActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
                 HashMap<String,Object> data = new HashMap<>();
+                data.put("key",key);
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     data.put(ds.getKey(),ds.getValue());
                 }
                 mTemplateKeyList.add(key);
                 listTemplateAdapter.refill(data);
-
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
                 HashMap<String,Object> data = new HashMap<>();
+                data.put("key",key);
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     data.put(ds.getKey(),ds.getValue());
                 }
                 if(mTemplateKeyList.contains(key)){
-                    listTemplateAdapter.change(key,data);
+                    int index = listTemplateAdapter.getIndex(key);
+                    listTemplateAdapter.change(index,data);
                 }
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 String key = dataSnapshot.getKey();
-                int index = mTemplateKeyList.indexOf(key);
-                mTemplateKeyList.remove(index);
-                listTemplateAdapter.remove(index);
+                if(mTemplateKeyList.contains(key)){
+                    int index = listTemplateAdapter.getIndex(key);
+                    mTemplateKeyList.remove(key);
+                    listTemplateAdapter.remove(index);
+                }
+
             }
 
             @Override
@@ -197,6 +187,7 @@ public class TemplateSettingActivity extends BaseActivity {
 
         db.addChildEventListener(childListener);
     }
+
     private boolean validateForm(String description, String balance) {
         boolean valid = true;
 
@@ -277,7 +268,7 @@ public class TemplateSettingActivity extends BaseActivity {
         HashMap<String,Object> dataSelected = listTemplateAdapter.getData(index);
         String desc = (String) dataSelected.get("desc");
         String balance = (String) dataSelected.get("balance");
-        final String key = desc.replaceAll("\\s+","")+"_"+balance;
+        final String key = (String) dataSelected.get("key");
         switch (item.getItemId()){
             case R.id.action_update :
                 Intent intent = new Intent(this,UpdateTemplateActivity.class);
@@ -319,12 +310,18 @@ public class TemplateSettingActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        db.removeEventListener(childListener);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.removeEventListener(childListener);
+
     }
 }

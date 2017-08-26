@@ -86,8 +86,7 @@ public class ListTemplateAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void change(String key, HashMap<String,Object> template){
-        int index = mTemplateList.indexOf(key);
+    public void change(int index, HashMap<String,Object> template){
         mTemplateList.set(index,template);
         notifyDataSetChanged();
     }
@@ -95,6 +94,18 @@ public class ListTemplateAdapter extends BaseAdapter {
     public void remove(int index){
         mTemplateList.remove(index);
         notifyDataSetChanged();
+    }
+
+    public int getIndex(String key){
+        int i = 0;
+        for(HashMap<String,Object> data : mTemplateList){
+            String keyData = (String) data.get("key");
+            if(keyData.equalsIgnoreCase(key)){
+                return i;
+            }
+            i++;
+        }
+        return 0;
     }
 
     public HashMap<String,Object> getData(int index){

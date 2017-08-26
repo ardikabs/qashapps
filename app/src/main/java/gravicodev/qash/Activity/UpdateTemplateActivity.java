@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 
@@ -47,7 +49,7 @@ public class UpdateTemplateActivity extends BaseActivity {
         Intent intent = getIntent();
         final String balance = intent.getStringExtra("balance");
         final String desc = intent.getStringExtra("desc");
-        final String keyBefore = intent.getStringExtra("key");
+        final String key = intent.getStringExtra("key");
 
         balanceTemplate.setText(moneyParserString(balance));
         descTemplate.setText(desc);
@@ -55,19 +57,12 @@ public class UpdateTemplateActivity extends BaseActivity {
         btnUpdateTemplate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!validateForm(desc,balance)){
+                String updateBalance = balanceTemplate.getText().toString().trim();
+                String updateDesc = descTemplate.getText().toString().trim();
+
+                if(!validateForm(updateDesc,updateBalance)){
                     return;
                 }
-                FirebaseUtils.getBaseRef()
-                        .child("settings")
-                        .child(getUid())
-                        .child("templates")
-                        .child(keyBefore)
-                        .removeValue();
-
-                String updateDesc = descTemplate.getText().toString().trim();
-                String updateBalance = balanceTemplate.getText().toString().trim();
-                String keyUpdate = updateDesc.replaceAll("\\s+","")+"_"+moneyParserToInt(updateBalance);
 
                 HashMap<String, Object> data = new HashMap<>();
                 data.put("desc",updateDesc);
@@ -78,10 +73,33 @@ public class UpdateTemplateActivity extends BaseActivity {
                         .child("settings")
                         .child(getUid())
                         .child("templates")
-                        .child(keyUpdate)
+                        .child(key)
                         .setValue(data);
                 showToast("Template successfully updated !");
                 finish();
+            }
+        });
+
+        balanceTemplate.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                balanceTemplate.removeTextChangedListener(this);
+                String input = balanceTemplate.getText().toString();
+                String inputParser = moneyParserString(input);
+                balanceTemplate.setText(inputParser);
+                balanceTemplate.setSelection(inputParser.length());
+                balanceTemplate.addTextChangedListener(this);
             }
         });
 
