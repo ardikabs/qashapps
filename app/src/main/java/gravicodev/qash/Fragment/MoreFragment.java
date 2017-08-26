@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.GridView;
 
 import gravicodev.qash.Activity.ATMPlaceActivity;
 import gravicodev.qash.Activity.ListQRActivity;
@@ -15,13 +15,13 @@ import gravicodev.qash.Activity.MutationActivity;
 import gravicodev.qash.Activity.PromotionActivity;
 import gravicodev.qash.Activity.StorePlaceActivity;
 import gravicodev.qash.Activity.TemplateSettingActivity;
-import gravicodev.qash.Adapter.ListMoreAdapter;
+import gravicodev.qash.Adapter.ListMoreGridAdapter;
 import gravicodev.qash.R;
 
 public class MoreFragment extends Fragment {
     private static final String TAG = "MoreFragment";
-    private ListView listView;
-    private ListMoreAdapter listMoreAdapter;
+    private GridView gridView;
+    private ListMoreGridAdapter listMoreGridAdapter;
 
     public MoreFragment(){}
 
@@ -39,10 +39,10 @@ public class MoreFragment extends Fragment {
                 R.drawable.ic_place, R.drawable.ic_store, R.drawable.ic_template
         };
 
-        listView = (ListView) rootView.findViewById(R.id.listMoreInfo);
-        listMoreAdapter = new ListMoreAdapter(getActivity(), listname, listdrawable);
-        listView.setAdapter(listMoreAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gridView = (GridView) rootView.findViewById(R.id.gridMore);
+        listMoreGridAdapter = new ListMoreGridAdapter(getActivity(), listname, listdrawable);
+        gridView.setAdapter(listMoreGridAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){

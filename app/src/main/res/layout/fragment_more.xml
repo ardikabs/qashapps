@@ -17,9 +17,11 @@
         android:textAppearance="?android:textAppearanceMedium"
         android:textColor="@color/colorPrimary" />
 
-    <ListView
-        android:id="@+id/listMoreInfo"
+    <GridView
+        android:id="@+id/gridMore"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:numColumns="3"
+        android:stretchMode="columnWidth"/>
 
 </LinearLayout>
