@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import gravicodev.qash.R;
 
@@ -17,6 +19,7 @@ public class ListAccStatementAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private String[] name, trailer, amount, type, date, branch;
+    private List<HashMap<String,String>> mAccountStatement;
 
     public ListAccStatementAdapter(Activity context, String[] name, String[] trailer, String[] amount
             , String[] type, String[] date, String[] branch){
@@ -30,9 +33,14 @@ public class ListAccStatementAdapter extends BaseAdapter {
         this.branch = branch;
     }
 
+    public ListAccStatementAdapter(Activity context, List<HashMap<String,String>> mAccountStatement){
+        this.context = context;
+        inflater = LayoutInflater.from(context);
+        this.mAccountStatement = mAccountStatement;
+    }
     @Override
     public int getCount() {
-        return name.length;
+        return mAccountStatement.size();
     }
 
     @Override
@@ -46,14 +54,13 @@ public class ListAccStatementAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder{
-        TextView transactionName, trailer, transactionAmount, transactionType, transactionDate,
-                branchCode;
+        TextView transactionName, trailer, transactionAmount, transactionType, transactionDate;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-
+        HashMap<String,String> data = mAccountStatement.get(position);
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_accstatement, null);
             holder = new ViewHolder();
@@ -62,28 +69,32 @@ public class ListAccStatementAdapter extends BaseAdapter {
             holder.transactionAmount = (TextView) convertView.findViewById(R.id.transactionAmount);
             holder.transactionType = (TextView) convertView.findViewById(R.id.transactionType);
             holder.transactionDate = (TextView) convertView.findViewById(R.id.transactionDate);
-            holder.branchCode = (TextView) convertView.findViewById(R.id.branchCode);
             convertView.setTag(holder);
         }
         else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.transactionName.setText(name[position]);
-        holder.trailer.setText(trailer[position]);
-        holder.transactionAmount.setText("Rp " + moneyParserString(String.valueOf(amount[position])));
-        holder.transactionType.setText(type[position]);
-        holder.transactionDate.setText(date[position]);
-        holder.branchCode.setText(branch[position]);
+        holder.transactionName.setText(data.get("name"));
+        holder.trailer.setText(data.get("trailer"));
+        holder.transactionAmount.setText("Rp " + moneyParserString(String.valueOf(data.get("amount"))));
+        holder.transactionType.setText(data.get("type"));
+        holder.transactionDate.setText(data.get("date"));
 
-        String identifier = "Qash";
-        Boolean found = trailer[position].contains(identifier);
+        String identifier = "Pay By Qash";
+        Boolean found = data.get("trailer").contains(identifier);
 
         if (found){
             holder.transactionName.setTextColor(Color.parseColor("#015CAA"));
         }
 
         return convertView;
+    }
+
+
+    public void refill(HashMap<String,String> data){
+        mAccountStatement.add(data);
+        notifyDataSetChanged();
     }
 
     public String moneyParserString(String data){

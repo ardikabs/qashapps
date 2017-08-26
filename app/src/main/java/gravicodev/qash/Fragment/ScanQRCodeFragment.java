@@ -24,6 +24,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
+import gravicodev.qash.Activity.BaseActivity;
 import gravicodev.qash.Activity.MainActivity;
 import gravicodev.qash.Barcode.BarcodeCaptureActivity;
 import android.widget.Button;
@@ -51,9 +52,11 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 import gravicodev.qash.Helper.FirebaseUtils;
+import gravicodev.qash.Helper.VolleyCallback;
 import gravicodev.qash.Models.QHistory;
 import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.Models.QTransactions;
+import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 import gravicodev.qash.Volley.VolleyHelper;
 
@@ -297,17 +300,17 @@ public class ScanQRCodeFragment extends Fragment {
         String BeneficieryAccountNumber = ((MainActivity)getActivity()).getUser().accountNumber;
         String SourceAccountNumber = dataSnapshot.child("SourceAccountNumber").getValue(String.class);
         // For Sender
-        DatabaseReference dbHistoryOut = FirebaseUtils.getBaseRef().child("qhistory")
+        final DatabaseReference dbHistoryOut = FirebaseUtils.getBaseRef().child("qhistory")
                 .child(SourceAccountNumber);
 
         // For Receiver
-        DatabaseReference dbHistoryIn = FirebaseUtils.getBaseRef().child("qhistory")
+        final DatabaseReference dbHistoryIn = FirebaseUtils.getBaseRef().child("qhistory")
                 .child(BeneficieryAccountNumber);
 
-        DatabaseReference dbMaster = FirebaseUtils.getBaseRef().child("qmaster")
+        final DatabaseReference dbMaster = FirebaseUtils.getBaseRef().child("qmaster")
                 .child(dataSnapshot.getKey());
 
-        DatabaseReference dbTrx = FirebaseUtils.getBaseRef().child("qtransactions")
+        final DatabaseReference dbTrx = FirebaseUtils.getBaseRef().child("qtransactions")
                 .child(dataSnapshot.getKey());
 
         if(balanceUsed > balance){
@@ -315,39 +318,47 @@ public class ScanQRCodeFragment extends Fragment {
         }
         else{
 
-            QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+            final QMaster qMaster = dataSnapshot.getValue(QMaster.class);
             qMaster.balance -= balanceUsed;
 
             String msg = scanKet.getText().toString().trim();
 
-            QHistory qHistory = new QHistory(balanceUsed,qMaster.title,msg);
+            final QHistory qHistory = new QHistory(balanceUsed,qMaster.title,msg);
 
-            QTransactions trx = new QTransactions(balanceUsed,qHistory.used_at,msg,((MainActivity)getActivity()).getUser().accountNumber, qMaster.SourceAccountNumber);
+            final QTransactions trx = new QTransactions(balanceUsed,qHistory.used_at,msg,((MainActivity)getActivity()).getUser().accountNumber, qMaster.SourceAccountNumber);
 
-
-            dbMaster.setValue(qMaster);
-
-            qHistory.setStatus("negative");
-
-            dbHistoryOut.child(dbHistoryOut.push().getKey())
-                    .setValue(qHistory);
-
-            qHistory.setStatus("positive");
-            dbHistoryIn.child(dbHistoryIn.push().getKey())
-                    .setValue(qHistory);
-            dbTrx.setValue(trx);
-
-            showSuccess(balanceUsed);
-            VolleyHelper vh = new VolleyHelper();
+            ((BaseActivity)getActivity()).showReceivingDialog();
+            final VolleyHelper vh = new VolleyHelper();
             try {
-                String title = "Qash "+qMaster.title + " has been used !";
-                String nominal = "Rp "+((MainActivity)getActivity()).moneyParserString(String.valueOf(balanceUsed));
-                vh.sendNotification(qMaster.SourceAccountNumber,title,nominal);
+                vh.doTransfer(new VolleyCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        if(result.equalsIgnoreCase("Success")){
+                            dbMaster.setValue(qMaster);
+
+                            qHistory.setStatus("negative");
+
+                            dbHistoryOut.child(dbHistoryOut.push().getKey())
+                                    .setValue(qHistory);
+
+                            qHistory.setStatus("positive");
+                            dbHistoryIn.child(dbHistoryIn.push().getKey())
+                                    .setValue(qHistory);
+                            dbTrx.setValue(trx);
+                            showSuccess(balanceUsed, qMaster);
+                        }
+                        else{
+                            ((BaseActivity)getActivity()).hideReceivingDialog();
+                            showToast("Transaction Fail, Please Try Again !");
+                        }
+                        Log.d(TAG,result);
+                    }
+                },qMaster.SourceAccountNumber,((MainActivity)getActivity()).getUser().accountNumber, String.valueOf(balanceUsed)+".00",msg);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            scanBalance.setText("");
-            scanKet.setText("");
+
+
         }
     }
 
@@ -355,7 +366,8 @@ public class ScanQRCodeFragment extends Fragment {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
-    private void showSuccess(Integer acceptedNumber){
+    private void showSuccess(Integer acceptedNumber, QMaster qMaster){
+        ((BaseActivity)getActivity()).hideReceivingDialog();
         ammountAccepted.setText("Rp. "+ ((MainActivity)getActivity()).moneyParserString(String.valueOf(acceptedNumber)) );
         dimmer.setVisibility(View.VISIBLE);
         animSuccess.playAnimation();
@@ -367,6 +379,31 @@ public class ScanQRCodeFragment extends Fragment {
                 dimmer.setVisibility(View.GONE);
             }
         }, delay * 3000);
+
+
+        VolleyHelper vh = new VolleyHelper();
+        try {
+            String title = "Qash "+qMaster.title + " has been used !";
+            String nominal = "Rp "+((MainActivity)getActivity()).moneyParserString(String.valueOf(acceptedNumber));
+            vh.sendNotification(qMaster.SourceAccountNumber,title,nominal);
+
+            vh.getSaldo(new VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    User user = ((MainActivity)getActivity()).getUser();
+                    user.setBalance(Integer.parseInt(result.split("\\.")[0]));
+                    String Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    FirebaseUtils.getBaseRef().child("users")
+                            .child(Uid)
+                            .child("balance")
+                            .setValue(user.getBalance());
+                }
+            }, ((MainActivity)getActivity()).getUser().accountNumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        scanBalance.setText("");
+        scanKet.setText("");
     }
 
     private boolean validateForm(String description, String balance) {

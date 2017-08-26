@@ -414,7 +414,8 @@ public class MainActivity extends BaseActivity {
 
                     FirebaseUtils.getBaseRef().child("users")
                             .child(getUid())
-                            .setValue(user);
+                            .child("balance")
+                            .setValue(user.getBalance());
 
                 }
             },accountNumber);

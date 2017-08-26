@@ -10,13 +10,22 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import gravicodev.qash.Adapter.ListAccStatementAdapter;
 import gravicodev.qash.Helper.VolleyCallback;
+import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.R;
+import gravicodev.qash.Session.SessionManager;
 import gravicodev.qash.Volley.VolleyHelper;
 
 public class AccStatementActivity extends AppCompatActivity {
@@ -26,10 +35,14 @@ public class AccStatementActivity extends AppCompatActivity {
             creditMutation, debetMutation;
     private ListAccStatementAdapter listAccStatementAdapter;
 
+    private SessionManager sessionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accstatement);
+
+        sessionManager = new SessionManager(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_AccStatement);
         toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
@@ -91,7 +104,9 @@ public class AccStatementActivity extends AppCompatActivity {
                 "0000", "Qash", "Qash"
         };
 
-        listAccStatementAdapter = new ListAccStatementAdapter(this, name, trailer, amount, type, date, branch);
+//        listAccStatementAdapter = new ListAccStatementAdapter(this, name, trailer, amount, type, date, branch);
+        List<HashMap<String,String>> emptyList = new ArrayList<>();
+        listAccStatementAdapter = new ListAccStatementAdapter(this,emptyList);
         listView.setAdapter(listAccStatementAdapter);
 
         VolleyHelper vh = new VolleyHelper();
@@ -99,9 +114,74 @@ public class AccStatementActivity extends AppCompatActivity {
             vh.getStatement(new VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.d(TAG,result);
+                    Gson gson = new Gson();
+                    HashMap<String,String> dataFromAPI = gson.fromJson(result,HashMap.class);
+                    String[] tempTime = dataFromAPI.get("StartDate").split("-");
+                    String startdate = tempTime[2]+"-"+tempTime[1]+"-"+tempTime[0];
+                    tempTime = dataFromAPI.get("EndDate").split("-");
+                    String enddate = tempTime[2]+"-"+tempTime[1]+"-"+tempTime[0];;
+                    String firstBalance = dataFromAPI.get("StartBalance");
+                    int credit = 0;
+                    int debit =0;
+                    int creditQ = 0;
+                    int debitQ=0;
+
+                    JSONObject obj = null;
+                    try {
+                        obj = new JSONObject(result);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    JSONArray data = null;
+                    try {
+                        data = obj.getJSONArray("Data");
+                        for(int i = 0; i<data.length();i++){
+//                            name, trailer, amount, type, date
+                            HashMap<String,String> mydata = new HashMap<>();
+                            String trailer = data.getJSONObject(i).getString("Trailer");
+                            String amount = data.getJSONObject(i).getString("TransactionAmount");
+                            String trxName = data.getJSONObject(i).getString("TransactionName");
+                            String date = data.getJSONObject(i).getString("TransactionDate");
+                            String type = data.getJSONObject(i).getString("TransactionType");
+                            if(trailer.indexOf("Pay By Qash") >=0){
+                                if(data.getJSONObject(i).getString("TransactionType").equalsIgnoreCase("D")){
+                                    creditQ += Integer.parseInt(amount.split("\\.")[0]);
+                                    type = "Q"+type;
+                                }
+                                else{
+                                    debitQ += Integer.parseInt(amount.split("\\.")[0]);
+                                    type = "Q"+type;
+                                }
+                            }
+                            if(data.getJSONObject(i).getString("TransactionType").equalsIgnoreCase("D")){
+                                credit += Integer.parseInt(amount.split("\\.")[0]);
+                            }
+                            else{
+                                debit += Integer.parseInt(amount.split("\\.")[0]);
+                            }
+                            mydata.put("amount",amount.split("\\.")[0]);
+                            mydata.put("name",trxName);
+                            mydata.put("date",date);
+                            mydata.put("type",type);
+                            mydata.put("trailer",trailer);
+                            listAccStatementAdapter.refill(mydata);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    int endbalance = Integer.parseInt(firstBalance.split("\\.")[0]) + credit - debit;
+                    period.setText(startdate +" - "+enddate);
+                    startBalance.setText("Rp " + moneyParserString(firstBalance.split("\\.")[0]));
+                    endBalance.setText("Rp " + moneyParserString(String.valueOf(endbalance)));
+                    qashCreditMutation.setText("Rp " + moneyParserString(String.valueOf(creditQ)));
+                    qashDebetMutation.setText("Rp " + moneyParserString(String.valueOf(debitQ)));
+                    creditMutation.setText("Rp " + moneyParserString(String.valueOf(credit)));
+                    debetMutation.setText("Rp " + moneyParserString(String.valueOf(debit)));
                 }
-            },"8220001092");
+            },sessionManager.getUser().accountNumber);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -128,5 +208,6 @@ public class AccStatementActivity extends AppCompatActivity {
         }
 
         return strHasil;
+
     }
 }

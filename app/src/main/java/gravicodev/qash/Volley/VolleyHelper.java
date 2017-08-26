@@ -262,7 +262,7 @@ public class VolleyHelper {
         requestJSON.put("Amount",amount);
         requestJSON.put("BeneficiaryAccountNumber",dest);
         requestJSON.put("Remark1",desc);
-        requestJSON.put("Remark2","QashApp");
+        requestJSON.put("Remark2","Pay By Qash");
 
         final String requestBody = requestJSON.toString();
 
@@ -281,7 +281,7 @@ public class VolleyHelper {
                         Log.d("cok",status);
                         if(status.compareTo("Success") == 0) {
                             try {
-                                callback.onSuccess(response.getString("TransactionID"));
+                                callback.onSuccess(response.getString("Status"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -351,11 +351,7 @@ public class VolleyHelper {
                             e.printStackTrace();
                         }
                         if(status == true) {
-                            try {
-                                callback.onSuccess(response.getString("Data"));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            callback.onSuccess(response.toString());
                         }
                         else{
                             Log.d("VOLLEY","GAGAL");
@@ -397,7 +393,7 @@ public class VolleyHelper {
         // Tag used to cancel the request
         String tag_json_obj = "json_obj_req";
 
-        String url = "http://gravicodev.id:4747/sendNotification";
+        String url = "http://finhacks.gravicodev.id:4747/sendNotification";
 
         JSONObject requestJSON = new JSONObject();
         requestJSON.put("AccountNumber",AccountNumber);
@@ -457,9 +453,7 @@ public class VolleyHelper {
         // Tag used to cancel the request
         String tag_json_obj = "json_obj_req";
 
-        String url = "http://gravicodev.id:4747/login";
-
-
+        String url = "http://finhacks.gravicodev.id:4747/login";
 
         JSONObject requestJSON = new JSONObject();
         requestJSON.put("Userid",userid);
@@ -467,6 +461,7 @@ public class VolleyHelper {
             requestJSON.put("Password",hmacSha256(passwd,KEY));
         } catch (Exception e) {
             e.printStackTrace();
+            requestJSON.put("Password","1");
         }
         requestJSON.put("SecretKey",KEY);
 
@@ -492,7 +487,7 @@ public class VolleyHelper {
                             }
                         }
                         else{
-                            Log.d("VOLLEY","GAGAL");
+                            callback.onSuccess("gagal");
                         }
                         Log.d("volley_log",""+status);
                     }

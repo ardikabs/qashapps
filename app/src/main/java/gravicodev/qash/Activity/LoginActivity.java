@@ -79,24 +79,32 @@ public class LoginActivity extends BaseActivity {
                 @Override
                 public void onSuccess(String result) {
                     Log.d(TAG,result);
-                    mAuth.signInWithCustomToken(result)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(!result.equalsIgnoreCase("gagal")){
+                        mAuth.signInWithCustomToken(result)
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
 
-                                    if(task.isSuccessful()){
-                                        //Successfull Login
-                                        onAuthSuccess(task.getResult().getUser());
+                                        if(task.isSuccessful()){
+                                            //Successfull Login
+                                            onAuthSuccess(task.getResult().getUser());
+                                        }
+                                        else{
+                                            //Unsucessfull Login
+                                            hideProgressDialog();
+                                            showToast(task.getException().getMessage());
+                                            useridLogin.setText("");
+                                            pinLogin.setText("");
+                                        }
                                     }
-                                    else{
-                                        //Unsucessfull Login
-                                        hideProgressDialog();
-                                        showToast(task.getException().getMessage());
-                                        useridLogin.setText("");
-                                        pinLogin.setText("");
-                                    }
-                                }
-                            });
+                                });
+                    }
+                    else{
+                        hideProgressDialog();
+                        showToast("Login Invalid");
+                        useridLogin.setText("");
+                        pinLogin.setText("");
+                    }
                 }
             },userid, pin);
         } catch (JSONException e) {
