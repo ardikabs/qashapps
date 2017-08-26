@@ -27,8 +27,6 @@ public class MessageHandler extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
         showNotification(remoteMessage);
     }
     private void showNotification(RemoteMessage remoteMessage){

@@ -5,14 +5,19 @@ import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 import gravicodev.qash.Adapter.ListAccStatementAdapter;
+import gravicodev.qash.Helper.VolleyCallback;
 import gravicodev.qash.R;
+import gravicodev.qash.Volley.VolleyHelper;
 
 public class AccStatementActivity extends AppCompatActivity {
     private static final String TAG = "AccStatementActivity";
@@ -88,6 +93,18 @@ public class AccStatementActivity extends AppCompatActivity {
 
         listAccStatementAdapter = new ListAccStatementAdapter(this, name, trailer, amount, type, date, branch);
         listView.setAdapter(listAccStatementAdapter);
+
+        VolleyHelper vh = new VolleyHelper();
+        try {
+            vh.getStatement(new VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG,result);
+                }
+            },"8220001092");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public String moneyParserString(String data){
