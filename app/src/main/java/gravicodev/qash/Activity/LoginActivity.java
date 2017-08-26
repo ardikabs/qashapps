@@ -109,13 +109,32 @@ public class LoginActivity extends BaseActivity {
         FirebaseUtils.getBaseRef().child("users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
+                final User user = dataSnapshot.getValue(User.class);
                 user.setBalance(dataSnapshot.child("balance").getValue(Integer.class));
-                hideProgressDialog();
-                sessionManager.logIn(user);
-                startActivity(new Intent (LoginActivity.this,MainActivity.class));
-                finish();
+                user.setUserid(dataSnapshot.getKey());
+                String fullname = user.fullname;
+                String accountNumber = user.accountNumber;
+                VolleyHelper vh = new VolleyHelper();
+                try {
+                    vh.validateName(new VolleyCallback() {
+                        @Override
+                        public void onSuccess(String result) {
+                            if(result.equalsIgnoreCase("benar")){
+                                hideProgressDialog();
+                                sessionManager.logIn(user);
+                                startActivity(new Intent (LoginActivity.this,MainActivity.class));
+                                finish();
+                            }
+                            else{
+                                hideProgressDialog();
+                                showToast("Login Invalid");
+                            }
 
+                        }
+                    },accountNumber,fullname);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

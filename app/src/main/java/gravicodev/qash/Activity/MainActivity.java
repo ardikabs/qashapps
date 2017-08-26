@@ -178,17 +178,7 @@ public class MainActivity extends BaseActivity {
                 .child(sessionManager.getUser().accountNumber)
                 .child(refreshedToken).setValue(true);
 
-        VolleyHelper vh = new VolleyHelper();
-        try {
-            vh.validateName(new VolleyCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    Log.d(TAG,result);
-                }
-            },"8220001092","finhacks48 A");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
 
 //        try {
 //            vh.doTransfer(new VolleyCallback() {
@@ -413,14 +403,21 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        String accountNumber = sessionManager.getUser().accountNumber;
         VolleyHelper vh = new VolleyHelper();
         try {
             vh.getSaldo(new VolleyCallback() {
                 @Override
                 public void onSuccess(String result) {
-                    Log.d(TAG,moneyParserFromAPI(result));
+                    User user = sessionManager.getUser();
+                    user.setBalance(Integer.parseInt(result.split("\\.")[0]));
+
+                    FirebaseUtils.getBaseRef().child("users")
+                            .child(getUid())
+                            .setValue(user);
+
                 }
-            },"8220001092");
+            },accountNumber);
         } catch (JSONException e) {
             e.printStackTrace();
         }
