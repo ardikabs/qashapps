@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.R;
@@ -36,7 +37,7 @@ public class ListTemplateAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return position;
     }
 
     @Override
@@ -94,6 +95,10 @@ public class ListTemplateAdapter extends BaseAdapter {
     public void remove(int index){
         mTemplateList.remove(index);
         notifyDataSetChanged();
+    }
+
+    public HashMap<String,Object> getData(int index){
+        return mTemplateList.get(index);
     }
 
     public String moneyParserString(String data){

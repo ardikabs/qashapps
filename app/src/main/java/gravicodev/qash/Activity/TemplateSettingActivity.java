@@ -1,7 +1,11 @@
 package gravicodev.qash.Activity;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
@@ -9,7 +13,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -68,6 +76,8 @@ public class TemplateSettingActivity extends BaseActivity {
         List<HashMap<String,Object>> emptyList = new ArrayList<>();
         listTemplateAdapter = new ListTemplateAdapter(this, emptyList);
         listView.setAdapter(listTemplateAdapter);
+
+        registerForContextMenu(listView);
 
         mTemplateKeyList = new ArrayList<>();
 
@@ -250,6 +260,60 @@ public class TemplateSettingActivity extends BaseActivity {
         }
 
         return strHasil;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_template, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item){
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int index = info.position;
+        View view = info.targetView;
+        HashMap<String,Object> dataSelected = listTemplateAdapter.getData(index);
+        String desc = (String) dataSelected.get("desc");
+        String balance = (String) dataSelected.get("balance");
+        final String key = desc.replaceAll("\\s+","")+"_"+balance;
+        switch (item.getItemId()){
+            case R.id.action_update :
+                Intent intent = new Intent(this,UpdateTemplateActivity.class);
+                intent.putExtra("key",key);
+                intent.putExtra("desc",desc);
+                intent.putExtra("balance",balance);
+                startActivity(intent);
+
+                return true;
+            case R.id.action_delete :
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setMessage("Are you sure want to delete this template ?");
+                alertDialogBuilder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseUtils.getBaseRef().child("settings")
+                                .child(getUid())
+                                .child("templates")
+                                .child(key).removeValue();
+                    }
+                });
+
+                alertDialogBuilder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
     @Override

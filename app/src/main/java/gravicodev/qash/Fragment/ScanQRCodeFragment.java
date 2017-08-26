@@ -341,7 +341,7 @@ public class ScanQRCodeFragment extends Fragment {
             VolleyHelper vh = new VolleyHelper();
             try {
                 String title = "Qash "+qMaster.title + " has been used !";
-                String nominal = "Rp. "+((MainActivity)getActivity()).moneyParserString(String.valueOf(balanceUsed));
+                String nominal = "Rp "+((MainActivity)getActivity()).moneyParserString(String.valueOf(balanceUsed));
                 vh.sendNotification(qMaster.SourceAccountNumber,title,nominal);
             } catch (JSONException e) {
                 e.printStackTrace();

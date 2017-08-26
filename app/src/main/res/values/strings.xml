@@ -10,6 +10,8 @@
     <string name="logout">Log Out</string>
     <string name="about">About</string>
     <string name="share">Share</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
 
     <!-- Error Message -->
     <string name="err_msg_userid">Invalid User ID</string>
@@ -114,7 +116,7 @@
 
     <!-- Information QR Activity -->
     <string name="list_qash">Qash List</string>
-    
+
     <!-- Account Statement Activity -->
     <string name="accstatement">Account Statement</string>
     <string name="period">Period</string>
@@ -160,6 +162,9 @@
     <string name="new_template">Add New Template</string>
     <string name="create_template">Create Template</string>
     <string name="list_template">List Template</string>
+
+    <!-- Update Template Acitivity -->
+    <string name="update_template">Update Template</string>
 
     <!-- Show QR Code Activity -->
     <string name="show_qr">QR-Code</string>

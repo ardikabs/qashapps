@@ -31,7 +31,7 @@ public class MoreFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_more, container, false);
 
         String[] listname = new String[]{
-                "Qash List", "Mutation", "Promotion", "ATM Place", "Store Place","Template Setting"
+                "Qash List", "Account Statement", "Promotion", "ATM Place", "Store Place","Template Setting"
         };
 
         Integer[] listdrawable = new Integer[]{
