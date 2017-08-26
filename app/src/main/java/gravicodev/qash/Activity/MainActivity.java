@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -27,9 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,12 +33,14 @@ import java.util.Map;
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QHistory;
 import gravicodev.qash.Models.User;
+import gravicodev.qash.Preference.QHistoryManager;
+import gravicodev.qash.Preference.QMasterManager;
 import gravicodev.qash.R;
 import gravicodev.qash.Session.SessionManager;
-import gravicodev.qash.Volley.VolleyHelper;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
+    public static final String KEY = "qashcuteteam";
     private Toolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -84,7 +82,6 @@ public class MainActivity extends BaseActivity {
         Intent intent = getIntent();
         if(intent.hasExtra("index")){
             int index = intent.getIntExtra("index",3);
-            Log.d(TAG,"INDEX : "+index);
             // Change Color Icon Tab Layout
             tabLayout.getTabAt(0).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
             tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
@@ -94,7 +91,6 @@ public class MainActivity extends BaseActivity {
             tabLayout.getTabAt(index).select();
         }
         else{
-            Log.d(TAG,"DIAWAL");
             // Change Color Icon Tab Layout
             tabLayout.getTabAt(0).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
             tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
@@ -261,7 +257,8 @@ public class MainActivity extends BaseActivity {
         }
         else if (id == R.id.action_logout) {
             Toast.makeText(getApplication(), "Thank you for using QashApps", Toast.LENGTH_SHORT).show();
-
+            new QMasterManager(this).delete();
+            new QHistoryManager(this).delete();
             sessionManager.logOut();
             userOut();
         }

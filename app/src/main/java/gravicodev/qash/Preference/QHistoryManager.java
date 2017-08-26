@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import gravicodev.qash.Models.QHistory;
@@ -15,7 +17,7 @@ import gravicodev.qash.Models.QHistory;
  * Created by supermonster on 8/24/2017.
  */
 
-public class HistoryManager {
+public class QHistoryManager {
 
     private final String PREF_NAME;
     private final String PREF_HISTORY_DATA;
@@ -26,10 +28,10 @@ public class HistoryManager {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
-    public HistoryManager(Context context){
+    public QHistoryManager(Context context){
         this.context = context;
 
-        PREF_NAME = "HistoryManager";
+        PREF_NAME = "QHistoryManager";
 
         PREF_HISTORY_DATA = "DATA";
         PREF_KEY_DATA = "KEY";
@@ -58,6 +60,15 @@ public class HistoryManager {
             qrHistory = new ArrayList<>();
         }
         qrHistory.add(newdata);
+        Collections.sort(qrHistory, new Comparator<QHistory>() {
+            @Override
+            public int compare(QHistory o1, QHistory o2) {
+                Long ts1 = o1.used_at;
+                Long ts2 = o2.used_at;
+                return ts2.compareTo(ts1);
+            }
+        });
+
         saveData(qrHistory);
 
     }
@@ -65,7 +76,6 @@ public class HistoryManager {
     public void editData(int index, QHistory existdata){
         List<QHistory> qrHistory = getData();
         qrHistory.set(index,existdata);
-
         saveData(qrHistory);
     }
 
@@ -115,10 +125,10 @@ public class HistoryManager {
         editor.commit();
     }
 
-    public void removeKeyData(int index){
+    public void removeKeyData(String key){
         List<String> qrkeylist = getKeyList();
         if(qrkeylist!=null){
-            qrkeylist.remove(index);
+            qrkeylist.remove(key);
             saveKeyData(qrkeylist);
         }
     }

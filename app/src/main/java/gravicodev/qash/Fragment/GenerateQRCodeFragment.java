@@ -226,6 +226,7 @@ public class GenerateQRCodeFragment extends Fragment {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setMessage(message);
         alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setCancelable(false);
 
         if(status.equalsIgnoreCase("OK")){
 
@@ -236,6 +237,16 @@ public class GenerateQRCodeFragment extends Fragment {
                     intent.putExtra("ShowQR", data);
                     startActivity(intent);
 
+                    qrName.setText("");
+                    qrBalance.setText("");
+                    btnGenerate.setEnabled(true);
+                    db.removeEventListener(timestampListener);
+                }
+            });
+
+            alertDialogBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
                     qrName.setText("");
                     qrBalance.setText("");
                     btnGenerate.setEnabled(true);

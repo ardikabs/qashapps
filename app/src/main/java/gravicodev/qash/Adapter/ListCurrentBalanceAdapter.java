@@ -120,6 +120,7 @@ public class ListCurrentBalanceAdapter extends BaseAdapter {
         mQMaster.set(index,qMaster);
         notifyDataSetChanged();
     }
+
     public void remove(int index){
         mQMaster.remove(index);
         notifyDataSetChanged();
@@ -134,11 +135,6 @@ public class ListCurrentBalanceAdapter extends BaseAdapter {
             i++;
         }
         return 0;
-    }
-
-    public QMaster getInfo(int position){
-        QMaster qMaster = mQMaster.get(position);
-        return qMaster;
     }
 
     public String moneyParserString(String data){

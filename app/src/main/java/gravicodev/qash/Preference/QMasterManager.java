@@ -17,7 +17,7 @@ import gravicodev.qash.Models.QMaster;
  * Created by supermonster on 8/24/2017.
  */
 
-public class HomeManager {
+public class QMasterManager {
 
     private final String PREF_NAME;
     private final String PREF_HOME_DATA;
@@ -28,10 +28,10 @@ public class HomeManager {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
-    public HomeManager(Context context){
+    public QMasterManager(Context context){
         this.context = context;
 
-        PREF_NAME = "HomeManager";
+        PREF_NAME = "QMasterManager";
 
         PREF_HOME_DATA = "DATA";
         PREF_KEY_DATA = "KEY";
@@ -125,10 +125,10 @@ public class HomeManager {
         editor.commit();
     }
 
-    public void removeKeyData(int index){
+    public void removeKeyData(String key){
         List<String> qrkeylist = getKeyList();
         if(qrkeylist!=null){
-            qrkeylist.remove(index);
+            qrkeylist.remove(key);
             saveKeyData(qrkeylist);
         }
     }

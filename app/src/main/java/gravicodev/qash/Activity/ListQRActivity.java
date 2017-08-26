@@ -19,6 +19,7 @@ import java.util.List;
 import gravicodev.qash.Adapter.ListQRAdapter;
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QMaster;
+import gravicodev.qash.Preference.QMasterManager;
 import gravicodev.qash.R;
 
 public class ListQRActivity extends BaseActivity {
@@ -28,11 +29,13 @@ public class ListQRActivity extends BaseActivity {
 
     private List<String> mQRKeyList;
     private List<String> mQRbyUserList;
+    private QMasterManager qMasterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_qr);
+        qMasterManager = new QMasterManager(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_qashlist);
         toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
@@ -45,12 +48,17 @@ public class ListQRActivity extends BaseActivity {
             }
         });
 
+        mQRKeyList = new ArrayList<>();
+        List<QMaster> initList = new ArrayList<>();
+        if(!qMasterManager.getData().isEmpty()){
+            initList = qMasterManager.getData();
+            mQRKeyList = qMasterManager.getKeyList();
+        }
+
         listView = (ListView) findViewById(R.id.listInformationQr);
-        List<QMaster> emptyList = new ArrayList<>();
-        listQRAdapter = new ListQRAdapter(this,emptyList);
+        listQRAdapter = new ListQRAdapter(this,initList);
         listView.setAdapter(listQRAdapter);
 
-        mQRKeyList = new ArrayList<>();
         mQRbyUserList = new ArrayList<>();
 
         firebaseHandler();
@@ -59,17 +67,26 @@ public class ListQRActivity extends BaseActivity {
     private void firebaseHandler() {
         final String Uid = getUid();
 
+        final DatabaseReference dbQMaster = FirebaseUtils.getBaseRef().child("qmaster");
+        DatabaseReference dbQCreator = FirebaseUtils.getBaseRef().child("qcreator").child(Uid);
+
         final ChildEventListener qrListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
+                QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+                qMaster.setKey(key);
                 if(mQRbyUserList.contains(key)){
                     if(!mQRKeyList.contains(key)){
-                        QMaster qMaster = dataSnapshot.getValue(QMaster.class);
-                        qMaster.setKey(key);
-
-                        mQRKeyList.add(key);
                         listQRAdapter.refill(qMaster);
+                        qMasterManager.addData(qMaster);
+                        qMasterManager.addKeyList(key);
+                        mQRKeyList = qMasterManager.getKeyList();
+                    }
+                    else{
+                        int index = listQRAdapter.getIndex(key);
+                        listQRAdapter.changeCondition(index,qMaster);
+                        qMasterManager.editData(index,qMaster);
                     }
                 }
             }
@@ -82,8 +99,9 @@ public class ListQRActivity extends BaseActivity {
                         QMaster qMaster = dataSnapshot.getValue(QMaster.class);
                         qMaster.setKey(key);
 
-                        int index = mQRKeyList.indexOf(key);
+                        int index = listQRAdapter.getIndex(key);
                         listQRAdapter.changeCondition(index,qMaster);
+                        qMasterManager.editData(index,qMaster);
                     }
                 }
             }
@@ -93,17 +111,17 @@ public class ListQRActivity extends BaseActivity {
                 String key = dataSnapshot.getKey();
                 if(mQRbyUserList.contains(key)){
                     if(mQRKeyList.contains(key)){
-                        QMaster qMaster = dataSnapshot.getValue(QMaster.class);
-
-                        int index = mQRKeyList.indexOf(key);
-                        mQRKeyList.remove(index);
-
+                        int index = listQRAdapter.getIndex(key);
                         mQRbyUserList.remove(key);
+
                         listQRAdapter.remove(index);
                         FirebaseUtils.getBaseRef().child("qrcreator")
                                 .child(Uid)
                                 .child(key)
                                 .removeValue();
+                        qMasterManager.removeData(index);
+                        qMasterManager.removeKeyData(key);
+                        mQRKeyList = qMasterManager.getKeyList();
                     }
                 }
             }
@@ -118,28 +136,46 @@ public class ListQRActivity extends BaseActivity {
 
             }
         };
+        ValueEventListener qrUserListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(!mQRbyUserList.contains(ds.getKey())){
+                        mQRbyUserList.add(ds.getKey());
+                    }
+                    dbQMaster.limitToLast(20).addChildEventListener(qrListener);
 
-        final DatabaseReference dbQMaster = FirebaseUtils.getBaseRef().child("qmaster");
+                }
 
+            }
 
-        FirebaseUtils.getBaseRef().child("qcreator").child(Uid)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot ds : dataSnapshot.getChildren()){
-                            if(!mQRbyUserList.contains(ds.getKey())){
-                                mQRbyUserList.add(ds.getKey());
-                            }
-                            dbQMaster.limitToLast(20).addChildEventListener(qrListener);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
+            }
+        };
+
+        dbQMaster.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(mQRKeyList.size() > mQRbyUserList.size()){
+                    for(String key: mQRKeyList){
+                        if(!mQRbyUserList.contains(key)){
+                            int index = listQRAdapter.getIndex(key);
+                            listQRAdapter.remove(index);
+                            qMasterManager.removeData(index);
+                            qMasterManager.removeKeyData(key);
+                            mQRKeyList = qMasterManager.getKeyList();
                         }
-
                     }
+                }
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+            }
+        });
+        dbQCreator.addValueEventListener(qrUserListener);
     }
 }

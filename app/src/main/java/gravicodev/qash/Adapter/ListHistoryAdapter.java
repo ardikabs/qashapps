@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import gravicodev.qash.Models.QHistory;
+import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.R;
 
 public class ListHistoryAdapter extends BaseAdapter {
@@ -112,6 +113,17 @@ public class ListHistoryAdapter extends BaseAdapter {
     public void remove(int index){
         mQHistory.remove(index);
         notifyDataSetChanged();
+    }
+
+    public int getIndex(String key){
+        int i = 0;
+        for (QHistory qHistory: mQHistory){
+            if(qHistory.getKey().equalsIgnoreCase(key)){
+                return i;
+            }
+            i++;
+        }
+        return 0;
     }
 
     private String timestampConverter(long timestamp) {

@@ -5,7 +5,6 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -26,36 +25,35 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
 import gravicodev.qash.Activity.MainActivity;
-import gravicodev.qash.Activity.SliderActivity;
 import gravicodev.qash.Barcode.BarcodeCaptureActivity;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.google.android.gms.vision.text.Text;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 
-import java.security.Timestamp;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QHistory;
 import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.Models.QTransactions;
-import gravicodev.qash.Models.User;
 import gravicodev.qash.R;
 import gravicodev.qash.Volley.VolleyHelper;
 
@@ -67,14 +65,15 @@ public class ScanQRCodeFragment extends Fragment {
     private LottieAnimationView animSuccess;
     private TextView ammountAccepted;
     private Spinner spinnerTemplate;
-
+    private List<String> templateList;
+    private ArrayList<HashMap<String,String>> templateData;
+    private int check = 1;
     public ScanQRCodeFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_scanqrcode, container, false);
-
         btnScan = (Button) rootView.findViewById(R.id.btnScan);
         scanBalance = (AppCompatEditText) rootView.findViewById(R.id.scan_balance);
         scanKet = (AppCompatEditText) rootView.findViewById(R.id.scan_ket);
@@ -83,28 +82,32 @@ public class ScanQRCodeFragment extends Fragment {
         animSuccess = (LottieAnimationView) rootView.findViewById(R.id.animation_success);
         spinnerTemplate = (Spinner) rootView.findViewById(R.id.spinnerTemplate);
 
-        List<String> templateList = new ArrayList<String>();
-        templateList.add("10000 " + "-" + " Jajan 1");
-        templateList.add("20000 " + "-" + " Jajan 2");
-        templateList.add("30000 " + "-" + " Jajan 3");
-        templateList.add("40000 " + "-" + " Jajan 4");
-        templateList.add("50000 " + "-" + " Jajan 5");
+        templateList = new ArrayList<>();
+        templateData = new ArrayList<>();
+        HashMap<String,String> initData = new HashMap<>();
+        templateList.add("Choose Your Template");
+        templateData.add(initData);
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_spinner_item, templateList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTemplate.setAdapter(dataAdapter);
-
         spinnerTemplate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getItemAtPosition(position).toString();
-                String[] parts = item.split("-");
-                String balance = parts[0].trim();
-                String ket = parts[1].trim();
-
-                scanBalance.setText(balance);
-                scanKet.setText(ket);
+                if(position>0){
+                    String item = parent.getItemAtPosition(position).toString();
+                    int index = templateList.indexOf(item);
+                    HashMap<String,String> data = templateData.get(index);
+                    String balance = data.get("balance");
+                    String desc = data.get("desc");
+                    scanBalance.setText(((MainActivity)getActivity()).moneyParserString(balance));
+                    scanKet.setText(desc);
+                }
+                else{
+                    scanBalance.setText("");
+                    scanKet.setText("");
+                }
             }
 
             @Override
@@ -153,7 +156,45 @@ public class ScanQRCodeFragment extends Fragment {
             }
         });
 
+        firebaseHandler();
         return rootView;
+    }
+
+    private void firebaseHandler() {
+        String Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        ValueEventListener valueTemplateListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                templateData.clear();
+                templateList.clear();
+                HashMap<String,String> initData = new HashMap<>();
+                templateList.add("Choose Your Template");
+                templateData.add(initData);
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    String balance  = ds.child("balance").getValue(String.class);
+                    String desc = ds.child("desc").getValue(String.class);
+                    String key = desc+" "+"(Rp "+((MainActivity)getActivity()).moneyParserString(balance)+")";
+                    templateList.add(key);
+
+                    HashMap<String,String> data = new HashMap<>();
+                    data.put("desc",desc);
+                    data.put("balance",balance);
+                    templateData.add(data);
+                }
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item, templateList);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerTemplate.setAdapter(dataAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        DatabaseReference dbTemplateUser = FirebaseUtils.getBaseRef().child("settings")
+                .child(Uid).child("templates");
+        dbTemplateUser.addValueEventListener(valueTemplateListener);
     }
 
     @Override
@@ -180,25 +221,35 @@ public class ScanQRCodeFragment extends Fragment {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         if(dataSnapshot.exists()){
                                             QMaster qMaster = dataSnapshot.getValue(QMaster.class);
-
-                                            Calendar today = Calendar.getInstance();
-                                            Calendar cal = Calendar.getInstance();
-                                            Date expireDate = new Date(qMaster.expired_at);
-                                            cal.setTime(expireDate);
-                                            boolean expired = cal.before(today);
-
-                                            if(expired){
-                                                showToast("Qash sudah tidak berlaku");
-                                            }
-
-                                            else{
-                                                if(qMaster.status.equalsIgnoreCase("enabled")){
-                                                    proses(qMaster.balance,dataSnapshot);
+                                            String keyValidation = "";
+                                            if(dataSnapshot.getKey().contains("!")){
+                                                String data[] = dataSnapshot.getKey().split("!");
+                                                keyValidation = shaParser(qMaster.SourceAccountNumber+"_"+qMaster.expired_at);
+                                                if(keyValidation.equalsIgnoreCase(data[1])){
+                                                    // Success to Decode
+                                                    preProsesToFirebase(qMaster,dataSnapshot);
                                                 }
                                                 else{
-                                                    showToast("Qash sudah tidak berlaku");
+                                                    // Fail to Decode
+                                                    showToast("QASH tidak dikenali");
                                                 }
                                             }
+                                            else{
+                                                try {
+                                                    keyValidation = hmacSha256(qMaster.SourceAccountNumber+"_"+qMaster.expired_at,((MainActivity)getActivity()).KEY);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                if(keyValidation.equalsIgnoreCase(dataSnapshot.getKey())){
+                                                    // Success to Decode
+                                                    preProsesToFirebase(qMaster,dataSnapshot);
+                                                }
+                                                else{
+                                                    // Fail to Decode
+                                                    showToast("QASH tidak dikenali");
+                                                }
+                                            }
+
                                         }
                                         else{
                                             showToast("QASH tidak dikenali");
@@ -220,7 +271,28 @@ public class ScanQRCodeFragment extends Fragment {
         } else super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void proses(Integer balance, DataSnapshot dataSnapshot) {
+    private void preProsesToFirebase(QMaster qMaster, DataSnapshot dataSnapshot){
+        Calendar today = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
+        Date expireDate = new Date(qMaster.expired_at);
+        cal.setTime(expireDate);
+        boolean expired = cal.before(today);
+
+        if(expired){
+            showToast("Qash sudah tidak berlaku");
+        }
+
+        else{
+            if(qMaster.status.equalsIgnoreCase("enabled")){
+                prosesToFirebase(qMaster.balance,dataSnapshot);
+            }
+            else{
+                showToast("Qash sudah tidak berlaku");
+            }
+        }
+    }
+
+    private void prosesToFirebase(Integer balance, DataSnapshot dataSnapshot) {
         final Integer balanceUsed = Integer.parseInt(((MainActivity)getActivity()).moneyParserToInt(scanBalance.getText().toString().trim()));
         String BeneficieryAccountNumber = ((MainActivity)getActivity()).getUser().accountNumber;
         String SourceAccountNumber = dataSnapshot.child("SourceAccountNumber").getValue(String.class);
@@ -339,6 +411,60 @@ public class ScanQRCodeFragment extends Fragment {
             valid = false;
         }
         return valid;
+    }
+
+    private static String bytesToHexString(byte[] bytes) {
+        // http://stackoverflow.com/questions/332079
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < bytes.length; i++) {
+            String hex = Integer.toHexString(0xFF & bytes[i]);
+            if (hex.length() == 1) {
+                sb.append('0');
+            }
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
+
+    private String shaParser(String input){
+        MessageDigest digest=null;
+        String hash = "";
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            digest.update(input.getBytes());
+
+            hash = bytesToHexString(digest.digest());
+
+        } catch (NoSuchAlgorithmException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        return hash;
+    }
+
+    private static String hmacSha256(String value, String key)
+            throws UnsupportedEncodingException, NoSuchAlgorithmException,
+            InvalidKeyException {
+        String type = "HmacSHA256";
+        SecretKeySpec secret = new SecretKeySpec(key.getBytes(), type);
+        Mac mac = Mac.getInstance(type);
+        mac.init(secret);
+        byte[] bytes = mac.doFinal(value.getBytes());
+        return bytesToHex(bytes);
+    }
+
+    private final static char[] hexArray = "0123456789abcdef".toCharArray();
+
+    private static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        int v;
+        for (int j = 0; j < bytes.length; j++) {
+            v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
     }
 
 }
