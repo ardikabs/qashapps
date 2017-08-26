@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import gravicodev.qash.Adapter.TabFragmentPagerAdapter;
 
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -176,28 +177,6 @@ public class MainActivity extends BaseActivity {
                 .child(sessionManager.getUser().accountNumber)
                 .child(refreshedToken).setValue(true);
 
-        VolleyHelper vh = new VolleyHelper();
-        try {
-            vh.getSaldo(new VolleyCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    Log.d(TAG,result);
-                }
-            },"8220000118");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            vh.getStatement(new VolleyCallback() {
-                @Override
-                public void onSuccess(String result) {
-                    Log.d(TAG,result);
-                }
-            },"8220000118");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
 //        try {
 //            vh.doTransfer(new VolleyCallback() {
@@ -350,6 +329,30 @@ public class MainActivity extends BaseActivity {
         return strHasil;
     }
 
+    public String moneyParserFromAPI(String data){
+        ArrayList<String> input = new ArrayList<>();
+        String[] money = data.split("\\.");
+        for(int i = money[0].length()-1;i>=0;i--){
+            if(!".".equals(String.valueOf(data.charAt(i)))){
+                input.add(String.valueOf(data.charAt(i)));
+            }
+        }
+
+        String strHasil = "";
+        int x = 1;
+        for(int i=0; i < input.size();i++){
+            if(x==3 && i != (input.size()-1)){
+                strHasil = "." + input.get(i) + strHasil;
+                x = 0;
+            }else{
+                strHasil = input.get(i) + strHasil;
+            }
+            x++;
+        }
+
+        return strHasil+","+money[1];
+    }
+
     // Method for adding value listener
     public void addListener(DatabaseReference db, ValueEventListener value) {
         this.valueListenerList.put(db,value);
@@ -393,6 +396,22 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        VolleyHelper vh = new VolleyHelper();
+        try {
+            vh.getSaldo(new VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG,moneyParserFromAPI(result));
+                }
+            },"8220001092");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
