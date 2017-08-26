@@ -243,4 +243,6 @@ public class HomeFragment extends Fragment {
     private void apiCaller() {
     }
 
+
+
 }
