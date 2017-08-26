@@ -70,51 +70,52 @@ public class ATMPlaceActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }else{
-            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            final double[] longitude = {location.getLongitude()};
-            final double[] latitude = {location.getLatitude()};
-
-            final LocationListener locationListener = new LocationListener() {
-                public void onLocationChanged(Location location) {
-                    longitude[0] = location.getLongitude();
-                    latitude[0] = location.getLatitude();
-                }
-
-                @Override
-                public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                }
-
-                @Override
-                public void onProviderEnabled(String s) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String s) {
-
-                }
-            };
-
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
-
-            Log.d(TAG,""+longitude[0]);
-            Log.d(TAG,""+latitude[0]);
-
-            VolleyHelper vh = new VolleyHelper();
-            try {
-                vh.getATM(new VolleyCallback() {
-                    @Override
-                    public void onSuccess(String result) {
-                        Log.d(TAG,result);
-                    }
-                },""+latitude[0], ""+longitude[0]);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
         }
+//        else{
+//            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+//            Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//            final double[] longitude = {location.getLongitude()};
+//            final double[] latitude = {location.getLatitude()};
+//
+//            final LocationListener locationListener = new LocationListener() {
+//                public void onLocationChanged(Location location) {
+//                    longitude[0] = location.getLongitude();
+//                    latitude[0] = location.getLatitude();
+//                }
+//
+//                @Override
+//                public void onStatusChanged(String s, int i, Bundle bundle) {
+//
+//                }
+//
+//                @Override
+//                public void onProviderEnabled(String s) {
+//
+//                }
+//
+//                @Override
+//                public void onProviderDisabled(String s) {
+//
+//                }
+//            };
+//
+//            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
+//
+//            Log.d(TAG,""+longitude[0]);
+//            Log.d(TAG,""+latitude[0]);
+//
+//            VolleyHelper vh = new VolleyHelper();
+//            try {
+//                vh.getATM(new VolleyCallback() {
+//                    @Override
+//                    public void onSuccess(String result) {
+//                        Log.d(TAG,result);
+//                    }
+//                },""+latitude[0], ""+longitude[0]);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
     @Override

@@ -16,15 +16,15 @@ public class PushMessage extends FirebaseInstanceIdService {
     private static final String TAG = "PushMessage";
     @Override
     public void onTokenRefresh() {
-        FirebaseUtils.getBaseRef().child("userDevice")
-                .child(new SessionManager(this).getUser().accountNumber)
-                .child(new SessionManager(this).getDeviceId()).removeValue();
+//        FirebaseUtils.getBaseRef().child("userDevice")
+//                .child(new SessionManager(this).getUser().accountNumber)
+//                .child(new SessionManager(this).getDeviceId()).removeValue();
 
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        FirebaseUtils.getBaseRef().child("userDevice")
-                .child(new SessionManager(this).getUser().accountNumber)
-                .child(refreshedToken).setValue(true);
+//        FirebaseUtils.getBaseRef().child("userDevice")
+//                .child(new SessionManager(this).getUser().accountNumber)
+//                .child(refreshedToken).setValue(true);
         Log.d(TAG, "Refreshed token: " + refreshedToken);
 
         //Ketika ada token baru. send ke db firebase beserta nomer rekening pemilik token tersebut.
