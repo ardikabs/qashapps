@@ -178,6 +178,17 @@ public class MainActivity extends BaseActivity {
                 .child(sessionManager.getUser().accountNumber)
                 .child(refreshedToken).setValue(true);
 
+        VolleyHelper vh = new VolleyHelper();
+        try {
+            vh.validateName(new VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG,result);
+                }
+            },"8220001092","finhacks48 A");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 //        try {
 //            vh.doTransfer(new VolleyCallback() {
