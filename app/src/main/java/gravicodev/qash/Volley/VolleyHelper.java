@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,6 +23,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -37,80 +39,43 @@ public class VolleyHelper {
     public static final String TAG = AppController.class
             .getSimpleName();
 
-    public int getToken(){
-        int saldo = 0;
-
+    public void getSaldo(final VolleyCallback callback, String accountNumber) throws JSONException {
         // Tag used to cancel the request
         String tag_json_obj = "json_obj_req";
 
-        String url = "https://sandbox.bca.co.id/api/oauth/token";
-
-        StringRequest postRequest=new StringRequest(Request.Method.POST,url,new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                JSONObject obj = null;
-                String access_token = null;
-                try {
-                    obj = new JSONObject(response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    access_token = obj.getString("access_token");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                ApiHelper.access_token = access_token;
-                Log.d("volley_log",ApiHelper.access_token);
-            }
-        },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Log.d("error:",volleyError.toString());
-
-                    }
-                }){
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("grant_type", "client_credentials");
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/x-www-form-urlencoded");
-                headers.put("Authorization", "Basic YWI3ZjA4ZWQtY2VhYS00ZDgzLTllMDktZjZiMDc2MGE0Y2U5OjNjZmEwMjU2LTAzYmYtNDcxZC04ZWRiLTFhYjc3OTZkOGQzZA==");
-                return headers;
-            }
+        String url = "http://finhacks.gravicodev.id/index.php";
 
 
-        };
-// Adding request to request queue
-        AppController.getInstance().addToRequestQueue(postRequest, tag_json_obj);
 
-        return saldo;
-    }
+        JSONObject requestJSON = new JSONObject();
+        requestJSON.put("AccountNumber",accountNumber);
+        requestJSON.put("method","getBalance");
 
-    public int getSaldo(String corporateID, String accountNumber){
-        int saldo = 0;
-
-        // Tag used to cancel the request
-        String tag_json_obj = "json_obj_req";
-
-        String url = "https://sandbox.bca.co.id/banking/v2/corporates/BCAAPI2016/accounts/0201245680";
-
-
+        final String requestBody = requestJSON.toString();
 
         JsonObjectRequest request = new JsonObjectRequest(
-                Request.Method.GET, url, null,
+                Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         //...
+                        Boolean status = null;
+                        try {
+                            status = response.getBoolean("Status");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if(status == true) {
+                            try {
+                                callback.onSuccess(response.getString("AvailableBalance"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else{
+                            Log.d("VOLLEY","GAGAL");
+                        }
+                        Log.d("volley_log",""+status);
                     }
                 },
                 new Response.ErrorListener() {
@@ -123,72 +88,172 @@ public class VolleyHelper {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/x-www-form-urlencoded");
-                headers.put("Authorization", "Basic YWI3ZjA4ZWQtY2VhYS00ZDgzLTllMDktZjZiMDc2MGE0Y2U5OjNjZmEwMjU2LTAzYmYtNDcxZC04ZWRiLTFhYjc3OTZkOGQzZA==");
+                headers.put("Content-Type", "application/json");
                 return headers;
+            }
+
+
+            @Override
+            public byte[] getBody() {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                            requestBody, "utf-8");
+                    return null;
+                }
             }
         };
 // Adding request to request queue
         AppController.getInstance().addToRequestQueue(request, tag_json_obj);
-
-        return saldo;
     }
 
-    public int doTransfer(){
-        int saldo = 0;
-
+    public void doTransfer(final VolleyCallback callback, String source,String dest,String amount, String desc) throws JSONException {
         // Tag used to cancel the request
         String tag_json_obj = "json_obj_req";
 
-        String url = "https://sandbox.bca.co.id/api/oauth/token";
+        String url = "http://finhacks.gravicodev.id/index.php";
 
-        StringRequest postRequest=new StringRequest(Request.Method.POST,url,new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                JSONObject obj = null;
-                String access_token = null;
-                try {
-                    obj = new JSONObject(response);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    access_token = obj.getString("access_token");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Log.d("volley_log",access_token);
-            }
-        },
+        JSONObject requestJSON = new JSONObject();
+        requestJSON.put("method","doTransfer");
+        requestJSON.put("AccountNumber",source);
+        Random rnd = new Random();
+        int transactionID = 10000000 + rnd.nextInt(90000000);
+        requestJSON.put("TransactionID",String.valueOf(transactionID));
+        requestJSON.put("ReferenceID","12345678/PO/2017");
+        Log.d("yoi",String.valueOf(transactionID));
+        requestJSON.put("Amount",amount);
+        requestJSON.put("BeneficiaryAccountNumber",dest);
+        requestJSON.put("Remark1",desc);
+        requestJSON.put("Remark2","QashApp");
+
+        final String requestBody = requestJSON.toString();
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //...
+                        String status = null;
+                        try {
+                            status = response.getString("Status");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Log.d("cok",status);
+                        if(status.compareTo("Success") == 0) {
+                            try {
+                                callback.onSuccess(response.getString("TransactionID"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else{
+                            Log.d("VOLLEY","GAGAL");
+                        }
+                        Log.d("volley_log",""+status);
+                    }
+                },
                 new Response.ErrorListener() {
                     @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Log.d("error:",volleyError.toString());
-
+                    public void onErrorResponse(VolleyError error) {
+                        //...
                     }
-                }){
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("grant_type", "client_credentials");
-                return params;
-            }
-
+                })
+        {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/x-www-form-urlencoded");
-                headers.put("Authorization", "Basic YWI3ZjA4ZWQtY2VhYS00ZDgzLTllMDktZjZiMDc2MGE0Y2U5OjNjZmEwMjU2LTAzYmYtNDcxZC04ZWRiLTFhYjc3OTZkOGQzZA==");
+                headers.put("Content-Type", "application/json");
                 return headers;
             }
 
 
+            @Override
+            public byte[] getBody() {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                            requestBody, "utf-8");
+                    return null;
+                }
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(10000,DefaultRetryPolicy.DEFAULT_MAX_RETRIES,DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+// Adding request to request queue
+        AppController.getInstance().addToRequestQueue(request, tag_json_obj);
+    }
+
+    public void getStatement(final VolleyCallback callback, String accountNumber) throws JSONException {
+        // Tag used to cancel the request
+        String tag_json_obj = "json_obj_req";
+
+        String url = "http://finhacks.gravicodev.id/index.php";
+
+
+
+        JSONObject requestJSON = new JSONObject();
+        requestJSON.put("AccountNumber",accountNumber);
+        requestJSON.put("method","getStatement");
+
+        final String requestBody = requestJSON.toString();
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //...
+                        Boolean status = null;
+                        try {
+                            status = response.getBoolean("Status");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        if(status == true) {
+                            try {
+                                callback.onSuccess(response.getString("Data"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else{
+                            Log.d("VOLLEY","GAGAL");
+                        }
+                        Log.d("volley_log",""+status);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        //...
+                    }
+                })
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+
+            @Override
+            public byte[] getBody() {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
+                            requestBody, "utf-8");
+                    return null;
+                }
+            }
         };
 // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(postRequest, tag_json_obj);
-
-        return saldo;
+        AppController.getInstance().addToRequestQueue(request, tag_json_obj);
     }
 
     public void sendNotification(String AccountNumber, String title, String body) throws JSONException {

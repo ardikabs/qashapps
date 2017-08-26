@@ -63,9 +63,6 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
-        VolleyHelper vh = new VolleyHelper();
-        vh.getToken();
-
     }
 
     private void loginAccount(){

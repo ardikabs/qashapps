@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 import gravicodev.qash.R;
 
-public class ListMoreAdapter extends BaseAdapter {
+public class ListMoreGridAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private Context context;
     private String[] listname;
     private Integer[] listdrawable;
 
-    public ListMoreAdapter(Context context, String[] listname, Integer[] listdrawable){
+    public ListMoreGridAdapter(Context context, String[] listname, Integer[] listdrawable){
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.listname = listname;
@@ -30,15 +30,15 @@ public class ListMoreAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return position;
+        return null;
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return 0;
     }
 
-    private static class ViewHolder {
+    private static class ViewHolder{
         TextView name;
         ImageView img;
     }
@@ -46,15 +46,16 @@ public class ListMoreAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+
         if (convertView == null){
-            convertView = inflater.inflate(R.layout.list_more, null);
-            holder = new ListMoreAdapter.ViewHolder();
-            holder.name = (TextView) convertView.findViewById(R.id.textListInfo);
-            holder.img = (ImageView) convertView.findViewById(R.id.iconListInfo);
+            convertView = inflater.inflate(R.layout.list_more_grid, null);
+            holder = new ListMoreGridAdapter.ViewHolder();
+            holder.name = (TextView) convertView.findViewById(R.id.text);
+            holder.img = (ImageView) convertView.findViewById(R.id.img);
             convertView.setTag(holder);
         }
         else {
-            holder = (ListMoreAdapter.ViewHolder) convertView.getTag();
+            holder = (ListMoreGridAdapter.ViewHolder) convertView.getTag();
         }
 
         holder.name.setText(listname[position]);

@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import gravicodev.qash.Adapter.TabFragmentPagerAdapter;
 
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,8 +30,10 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import gravicodev.qash.Helper.FirebaseUtils;
+import gravicodev.qash.Helper.VolleyCallback;
 import gravicodev.qash.Models.QHistory;
 import gravicodev.qash.Models.User;
 import gravicodev.qash.Preference.QHistoryManager;
@@ -168,6 +171,40 @@ public class MainActivity extends BaseActivity {
         FirebaseUtils.getBaseRef().child("userDevice")
                 .child(sessionManager.getUser().accountNumber)
                 .child(refreshedToken).setValue(true);
+
+        VolleyHelper vh = new VolleyHelper();
+        try {
+            vh.getSaldo(new VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG,result);
+                }
+            },"8220000118");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            vh.getStatement(new VolleyCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    Log.d(TAG,result);
+                }
+            },"8220000118");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+//        try {
+//            vh.doTransfer(new VolleyCallback() {
+//                @Override
+//                public void onSuccess(String result) {
+//                    Log.d(TAG,result);
+//                }
+//            },"8220000118","8220000011","100000.00","Tes aja");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 
         firebaseHandler();
 

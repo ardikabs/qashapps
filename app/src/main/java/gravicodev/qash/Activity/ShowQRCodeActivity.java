@@ -210,6 +210,7 @@ public class ShowQRCodeActivity extends BaseActivity {
         bitmap.setPixels(pixels, 0, WIDTH, 0, 0, w, h);
         return bitmap;
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
