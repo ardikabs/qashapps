@@ -39,6 +39,8 @@
     <string name="qr_show">Show QR-Code</string>
 
     <string name="list_info">List more information</string>
+    <string name="empty_qr">Your QR-Code list is still empty</string>
+    <string name="empty_history">Your transaction list is still empty</string>
 
     <!-- Slider Activity -->
     <string name="next">Next</string>
