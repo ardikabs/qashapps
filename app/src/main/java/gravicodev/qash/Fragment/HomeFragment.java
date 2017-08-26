@@ -93,7 +93,6 @@ public class HomeFragment extends Fragment {
         final ChildEventListener qrListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG,"JALAN 2");
                 String key = dataSnapshot.getKey();
                 QMaster qMaster = dataSnapshot.getValue(QMaster.class);
                 qMaster.setKey(key);
@@ -196,6 +195,7 @@ public class HomeFragment extends Fragment {
                         mQRbyUserList.add(ds.getKey());
                     }
                 }
+                // Listener to sum the total of QR owned by user
                 dbQMaster.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -217,6 +217,8 @@ public class HomeFragment extends Fragment {
 
                     }
                 });
+
+                // Event Listener QR Master owned by user
                 dbQMaster.limitToLast(20).addChildEventListener(qrListener);
 
             }
@@ -226,8 +228,6 @@ public class HomeFragment extends Fragment {
 
             }
         } ;
-
-        // Listener to sum the total of QR owned by user
 
         // Value Listener
         dbUsers.addValueEventListener(userListener);
