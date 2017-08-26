@@ -29,6 +29,7 @@ public class SessionManager {
     private final String PREF_USER_FULLNAME;
     private final String PREF_ACCOUNT_NUMBER;
     private final String PREF_ACCOUNT_BALANCE;
+    private final String PREF_DEVICE_ID;
 
     private final String IS_LOGIN;
 
@@ -47,6 +48,7 @@ public class SessionManager {
         PREF_ACCOUNT_NUMBER = context.getString(R.string.accnum);
         PREF_ACCOUNT_BALANCE = context.getString(R.string.balanceacc);
 
+        PREF_DEVICE_ID = context.getString(R.string.deviceid);
         IS_LOGIN = "isLoggedIn";
 
 
@@ -114,9 +116,18 @@ public class SessionManager {
             this.logOut();
         }
     }
+
     public boolean isLoggedIn(){
         return preferences.getBoolean(IS_LOGIN,false);
     }
 
+    public void setDeviceId(String id){
+        editor.putString(PREF_DEVICE_ID,id);
+        editor.commit();
+    }
+
+    public String getDeviceId(){
+        return preferences.getString(PREF_DEVICE_ID,null);
+    }
 
 }

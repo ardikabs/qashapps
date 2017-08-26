@@ -172,6 +172,7 @@ public class MainActivity extends BaseActivity {
 
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        sessionManager.setDeviceId(refreshedToken);
         FirebaseUtils.getBaseRef().child("userDevice")
                 .child(sessionManager.getUser().accountNumber)
                 .child(refreshedToken).setValue(true);

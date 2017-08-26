@@ -82,6 +82,7 @@
     <string name="fullname">Fullname</string>
     <string name="accnum">Account Number</string>
     <string name="balanceacc">Account Balance</string>
+    <string name="deviceid">Device ID</string>
 
     <!-- Home Fragment -->
     <string name="name_nasabah">Nasabah Name</string>
