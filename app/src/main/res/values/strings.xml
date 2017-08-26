@@ -115,16 +115,16 @@
     <!-- Information QR Activity -->
     <string name="list_qash">Qash List</string>
     
-    <!-- Mutation Activity -->
-    <string name="mutation">Mutation</string>
+    <!-- Account Statement Activity -->
+    <string name="accstatement">Account Statement</string>
     <string name="period">Period</string>
     <string name="start_balance">Start Balance</string>
     <string name="end_balance">End Balance</string>
-    <string name="credit_mutation">Credit Mutation</string>
-    <string name="debet_mutation">Debet Mutation</string>
-    <string name="qash_credit_mutation">Qash Credit Mutation</string>
-    <string name="qash_debet_mutation">Qash Debet Mutation</string>
-    <string name="circle_mutation">Description Qash Mutation</string>
+    <string name="credit_accstatement">Credit</string>
+    <string name="debet_accstatement">Debet</string>
+    <string name="qash_credit_accstatement">Qash Credit</string>
+    <string name="qash_debet_accstatement">Qash Debet</string>
+    <string name="circle_accstatement">Description Qash</string>
     <string name="transaction_name">Transaction Name</string>
     <string name="trailer">Trailer</string>
     <string name="transaction_amount">Transaction Amount</string>

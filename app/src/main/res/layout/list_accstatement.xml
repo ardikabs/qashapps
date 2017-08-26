@@ -22,7 +22,7 @@
             android:id="@+id/imgCircleMutation"
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:contentDescription="@string/circle_mutation"
+            android:contentDescription="@string/circle_accstatement"
             android:src="@drawable/ic_circle" />
 
         <TextView

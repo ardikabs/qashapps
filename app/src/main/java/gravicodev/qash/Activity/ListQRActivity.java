@@ -4,9 +4,12 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.google.android.gms.vision.Frame;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,25 +22,28 @@ import java.util.List;
 import gravicodev.qash.Adapter.ListQRAdapter;
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QMaster;
+import gravicodev.qash.Preference.QMasterManager;
 import gravicodev.qash.R;
 
 public class ListQRActivity extends BaseActivity {
     private static final String TAG = "ListQRActivity";
     private ListView listView;
+    private FrameLayout emptyLayout;
     private ListQRAdapter listQRAdapter;
 
     private List<String> mQRKeyList;
     private List<String> mQRbyUserList;
+    private QMasterManager qMasterManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_qr);
+        qMasterManager = new QMasterManager(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_qashlist);
         toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
         setSupportActionBar(toolbar);
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -45,12 +51,25 @@ public class ListQRActivity extends BaseActivity {
             }
         });
 
+        emptyLayout = (FrameLayout) findViewById(R.id.emptyQashList);
         listView = (ListView) findViewById(R.id.listInformationQr);
-        List<QMaster> emptyList = new ArrayList<>();
-        listQRAdapter = new ListQRAdapter(this,emptyList);
-        listView.setAdapter(listQRAdapter);
 
         mQRKeyList = new ArrayList<>();
+        List<QMaster> initList = new ArrayList<>();
+        if(!qMasterManager.getData().isEmpty()){
+            initList = qMasterManager.getData();
+            mQRKeyList = qMasterManager.getKeyList();
+            listView.setVisibility(View.VISIBLE);
+            emptyLayout.setVisibility(View.GONE);
+        }
+        else{
+            listView.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
+
+
+        listQRAdapter = new ListQRAdapter(this,initList);
+        listView.setAdapter(listQRAdapter);
         mQRbyUserList = new ArrayList<>();
 
         firebaseHandler();
@@ -59,18 +78,26 @@ public class ListQRActivity extends BaseActivity {
     private void firebaseHandler() {
         final String Uid = getUid();
 
+        final DatabaseReference dbQMaster = FirebaseUtils.getBaseRef().child("qmaster");
+        DatabaseReference dbQCreator = FirebaseUtils.getBaseRef().child("qcreator").child(Uid);
+
         final ChildEventListener qrListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
+                QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+                qMaster.setKey(key);
                 if(mQRbyUserList.contains(key)){
                     if(!mQRKeyList.contains(key)){
-                        QMaster qMaster = dataSnapshot.getValue(QMaster.class);
-                        qMaster.setKey(key);
-
-                        mQRKeyList.add(key);
                         listQRAdapter.refill(qMaster);
+                        mQRKeyList = qMasterManager.getKeyList();
                     }
+                    else{
+                        int index = listQRAdapter.getIndex(key);
+                        listQRAdapter.changeCondition(index,qMaster);
+                    }
+                    listView.setVisibility(View.VISIBLE);
+                    emptyLayout.setVisibility(View.GONE);
                 }
             }
 
@@ -82,7 +109,7 @@ public class ListQRActivity extends BaseActivity {
                         QMaster qMaster = dataSnapshot.getValue(QMaster.class);
                         qMaster.setKey(key);
 
-                        int index = mQRKeyList.indexOf(key);
+                        int index = listQRAdapter.getIndex(key);
                         listQRAdapter.changeCondition(index,qMaster);
                     }
                 }
@@ -93,17 +120,20 @@ public class ListQRActivity extends BaseActivity {
                 String key = dataSnapshot.getKey();
                 if(mQRbyUserList.contains(key)){
                     if(mQRKeyList.contains(key)){
-                        QMaster qMaster = dataSnapshot.getValue(QMaster.class);
-
-                        int index = mQRKeyList.indexOf(key);
-                        mQRKeyList.remove(index);
-
+                        Log.d(TAG, String.valueOf(mQRKeyList));
+                        int index = listQRAdapter.getIndex(key);
                         mQRbyUserList.remove(key);
                         listQRAdapter.remove(index);
-                        FirebaseUtils.getBaseRef().child("qrcreator")
-                                .child(Uid)
-                                .child(key)
-                                .removeValue();
+                        mQRKeyList = qMasterManager.getKeyList();
+                        Log.d(TAG, String.valueOf(mQRKeyList));
+                        if(mQRKeyList.size()!=0){
+                            listView.setVisibility(View.VISIBLE);
+                            emptyLayout.setVisibility(View.GONE);
+                        }
+                        else{
+                            listView.setVisibility(View.GONE);
+                            emptyLayout.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
@@ -118,22 +148,28 @@ public class ListQRActivity extends BaseActivity {
 
             }
         };
-
-        final DatabaseReference dbQMaster = FirebaseUtils.getBaseRef().child("qmaster");
-
-
-        FirebaseUtils.getBaseRef().child("qcreator").child(Uid)
-                .addValueEventListener(new ValueEventListener() {
+        ValueEventListener qrUserListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(!mQRbyUserList.contains(ds.getKey())){
+                        mQRbyUserList.add(ds.getKey());
+                    }
+                }
+                dbQMaster.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for(DataSnapshot ds : dataSnapshot.getChildren()){
-                            if(!mQRbyUserList.contains(ds.getKey())){
-                                mQRbyUserList.add(ds.getKey());
+                        if(mQRKeyList.size() > mQRbyUserList.size()){
+                            for(String key: mQRKeyList){
+                                if(!mQRbyUserList.contains(key)){
+                                    int index = listQRAdapter.getIndex(key);
+                                    listQRAdapter.remove(index);
+                                    qMasterManager.removeData(index);
+                                    qMasterManager.removeKeyData(key);
+                                    mQRKeyList = qMasterManager.getKeyList();
+                                }
                             }
-                            dbQMaster.limitToLast(20).addChildEventListener(qrListener);
-
                         }
-
                     }
 
                     @Override
@@ -141,5 +177,17 @@ public class ListQRActivity extends BaseActivity {
 
                     }
                 });
+                dbQMaster.limitToLast(20).addChildEventListener(qrListener);
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        dbQCreator.addValueEventListener(qrUserListener);
     }
 }

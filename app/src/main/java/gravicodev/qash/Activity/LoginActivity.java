@@ -129,10 +129,10 @@ public class LoginActivity extends BaseActivity {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private boolean validateForm(String email, String pin){
+    private boolean validateForm(String userid, String pin){
         boolean valid = true;
 
-        if (TextUtils.isEmpty(email)){
+        if (TextUtils.isEmpty(userid) || isValidEmail(userid)){
             useridLogin.setError(getString(R.string.err_msg_userid));
             valid = false;
         }

@@ -11,22 +11,22 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import gravicodev.qash.Adapter.ListMutationAdapter;
+import gravicodev.qash.Adapter.ListAccStatementAdapter;
 import gravicodev.qash.R;
 
-public class MutationActivity extends AppCompatActivity {
-    private static final String TAG = "MutationActivity";
+public class AccStatementActivity extends AppCompatActivity {
+    private static final String TAG = "AccStatementActivity";
     private ListView listView;
     private TextView period, startBalance, endBalance, qashCreditMutation, qashDebetMutation,
             creditMutation, debetMutation;
-    private ListMutationAdapter listMutationAdapter;
+    private ListAccStatementAdapter listAccStatementAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mutation);
+        setContentView(R.layout.activity_accstatement);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_mutation);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_AccStatement);
         toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
         setSupportActionBar(toolbar);
 
@@ -40,10 +40,10 @@ public class MutationActivity extends AppCompatActivity {
         period = (TextView) findViewById(R.id.periodValue);
         startBalance = (TextView) findViewById(R.id.startBalanceValue);
         endBalance = (TextView) findViewById(R.id.endBalanceValue);
-        qashCreditMutation = (TextView) findViewById(R.id.qashCreditMutationValue);
-        qashDebetMutation = (TextView) findViewById(R.id.qashDebetMutationValue);
-        creditMutation = (TextView) findViewById(R.id.creditMutationValue);
-        debetMutation = (TextView) findViewById(R.id.debetMutationValue);
+        qashCreditMutation = (TextView) findViewById(R.id.qashCreditAccStatementValue);
+        qashDebetMutation = (TextView) findViewById(R.id.qashDebetAccStatementValue);
+        creditMutation = (TextView) findViewById(R.id.creditAccStatementValue);
+        debetMutation = (TextView) findViewById(R.id.debetAccStatementValue);
 
         // Dummy mutation
         period.setText("29 Jan 2017 - 01 Feb 2017");
@@ -54,7 +54,7 @@ public class MutationActivity extends AppCompatActivity {
         creditMutation.setText("Rp " + moneyParserString("1000000"));
         debetMutation.setText("Rp " + moneyParserString("0"));
 
-        listView = (ListView) findViewById(R.id.listMutation);
+        listView = (ListView) findViewById(R.id.listAccStatement);
 
         // Dummy data date
         String[] date = new String[]{
@@ -86,8 +86,8 @@ public class MutationActivity extends AppCompatActivity {
                 "0000", "Qash", "Qash"
         };
 
-        listMutationAdapter = new ListMutationAdapter(this, name, trailer, amount, type, date, branch);
-        listView.setAdapter(listMutationAdapter);
+        listAccStatementAdapter = new ListAccStatementAdapter(this, name, trailer, amount, type, date, branch);
+        listView.setAdapter(listAccStatementAdapter);
     }
 
     public String moneyParserString(String data){

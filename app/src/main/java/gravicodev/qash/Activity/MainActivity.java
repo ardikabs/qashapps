@@ -30,7 +30,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,20 +39,23 @@ import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Helper.VolleyCallback;
 import gravicodev.qash.Models.QHistory;
 import gravicodev.qash.Models.User;
+import gravicodev.qash.Preference.QHistoryManager;
+import gravicodev.qash.Preference.QMasterManager;
 import gravicodev.qash.R;
 import gravicodev.qash.Session.SessionManager;
 import gravicodev.qash.Volley.VolleyHelper;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
+    public static final String KEY = "qashcuteteam";
     private Toolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private static final int REQUEST_COARSE_LOCATION = 100;
     private static final int BARCODE_READER_REQUEST_CODE = 1;
 
-    private static  HashMap<DatabaseReference, ValueEventListener> valueListenerList = new HashMap<>();
-    private static HashMap<DatabaseReference, ChildEventListener> childListenerList = new HashMap<>();
+    public HashMap<DatabaseReference, ValueEventListener> valueListenerList = new HashMap<>();
+    public HashMap<DatabaseReference, ChildEventListener> childListenerList = new HashMap<>();
 
 
     private SessionManager sessionManager;
@@ -296,7 +298,8 @@ public class MainActivity extends BaseActivity {
         }
         else if (id == R.id.action_logout) {
             Toast.makeText(getApplication(), "Thank you for using QashApps", Toast.LENGTH_SHORT).show();
-
+            new QMasterManager(this).delete();
+            new QHistoryManager(this).delete();
             sessionManager.logOut();
             userOut();
         }
@@ -358,7 +361,7 @@ public class MainActivity extends BaseActivity {
     }
 
     // Method for massal remover of valuelistener
-    public static void removeValueListener(HashMap<DatabaseReference, ValueEventListener> hashMap) {
+    public void removeValueListener(HashMap<DatabaseReference, ValueEventListener> hashMap) {
 
         for (Map.Entry<DatabaseReference, ValueEventListener> entry : hashMap.entrySet()) {
 
@@ -373,7 +376,7 @@ public class MainActivity extends BaseActivity {
     }
 
     // Method for massal remover of childlistener
-    public static void removeChildListener(HashMap<DatabaseReference, ChildEventListener> hashMap) {
+    public void removeChildListener(HashMap<DatabaseReference, ChildEventListener> hashMap) {
 
         for (Map.Entry<DatabaseReference, ChildEventListener> entry : hashMap.entrySet()) {
 

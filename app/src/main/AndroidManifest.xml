@@ -107,7 +107,7 @@
                 android:value=".Activity.MainActivity" />
         </activity>
         <activity
-            android:name=".Activity.MutationActivity"
+            android:name=".Activity.AccStatementActivity"
             android:parentActivityName=".Activity.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
