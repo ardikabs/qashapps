@@ -114,7 +114,7 @@
     <string name="list_qash">Qash List</string>
     
     <!-- Mutation Activity -->
-    <string name="mutation">Qash Mutation</string>
+    <string name="mutation">Mutation</string>
     <string name="period">Period : </string>
     <string name="start_balance">Start Balance : </string>
     <string name="end_balance">End Balance : </string>
