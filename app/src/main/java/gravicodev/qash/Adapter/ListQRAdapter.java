@@ -110,15 +110,16 @@ public class ListQRAdapter extends BaseAdapter {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseUtils.getBaseRef()
-                                .child("qmaster")
-                                .child(key)
-                                .removeValue();
-
-                        FirebaseUtils.getBaseRef()
                                 .child("qcreator")
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .child(key)
                                 .removeValue();
+
+                        FirebaseUtils.getBaseRef()
+                                .child("qmaster")
+                                .child(key)
+                                .removeValue();
+
                     }
                 });
 

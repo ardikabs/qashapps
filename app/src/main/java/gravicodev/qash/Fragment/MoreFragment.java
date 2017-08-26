@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import gravicodev.qash.Activity.ATMPlaceActivity;
 import gravicodev.qash.Activity.ListQRActivity;
+import gravicodev.qash.Activity.MainActivity;
 import gravicodev.qash.Activity.MutationActivity;
 import gravicodev.qash.Activity.PromotionActivity;
 import gravicodev.qash.Activity.StorePlaceActivity;

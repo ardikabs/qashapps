@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -25,6 +26,7 @@ import gravicodev.qash.R;
 public class HistoryFragment extends Fragment {
     private static final String TAG = "HistoryFragment";
     private ListView listView;
+    private FrameLayout emptyLayout;
     private ListHistoryAdapter listHistoryAdapter;
 
     private List<String> mListHistoryKey;
@@ -36,14 +38,22 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
+        emptyLayout = (FrameLayout) rootView.findViewById(R.id.emptyHistory);
+        listView = (ListView) rootView.findViewById(R.id.listQashHistory);
+
         qHistoryManager = new QHistoryManager(getContext());
         mListHistoryKey = new ArrayList<>();
         List<QHistory> initList = new ArrayList<>();
         if(!qHistoryManager.getData().isEmpty()){
             initList = qHistoryManager.getData();
             mListHistoryKey = qHistoryManager.getKeyList();
+            listView.setVisibility(View.VISIBLE);
+            emptyLayout.setVisibility(View.GONE);
         }
-        listView = (ListView) rootView.findViewById(R.id.listQashHistory);
+        else{
+            listView.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
         listHistoryAdapter = new ListHistoryAdapter(getActivity(),initList);
         listView.setAdapter(listHistoryAdapter);
 
@@ -70,6 +80,15 @@ public class HistoryFragment extends Fragment {
                         listHistoryAdapter.changeCondition(index,qHistory);
                         qHistoryManager.editData(index,qHistory);
                     }
+
+                    if(mListHistoryKey.size()!=0){
+                        listView.setVisibility(View.VISIBLE);
+                        emptyLayout.setVisibility(View.GONE);
+                    }
+                    else{
+                        listView.setVisibility(View.GONE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
@@ -94,6 +113,15 @@ public class HistoryFragment extends Fragment {
                     qHistoryManager.removeData(index);
                     qHistoryManager.removeKeyData(key);
                     mListHistoryKey = qHistoryManager.getKeyList();
+
+                    if(mListHistoryKey.size()!=0){
+                        listView.setVisibility(View.VISIBLE);
+                        emptyLayout.setVisibility(View.GONE);
+                    }
+                    else{
+                        listView.setVisibility(View.GONE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 

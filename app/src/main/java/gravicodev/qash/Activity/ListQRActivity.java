@@ -4,9 +4,12 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.google.android.gms.vision.Frame;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,6 +28,7 @@ import gravicodev.qash.R;
 public class ListQRActivity extends BaseActivity {
     private static final String TAG = "ListQRActivity";
     private ListView listView;
+    private FrameLayout emptyLayout;
     private ListQRAdapter listQRAdapter;
 
     private List<String> mQRKeyList;
@@ -40,7 +44,6 @@ public class ListQRActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_qashlist);
         toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
         setSupportActionBar(toolbar);
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,17 +51,25 @@ public class ListQRActivity extends BaseActivity {
             }
         });
 
+        emptyLayout = (FrameLayout) findViewById(R.id.emptyQashList);
+        listView = (ListView) findViewById(R.id.listInformationQr);
+
         mQRKeyList = new ArrayList<>();
         List<QMaster> initList = new ArrayList<>();
         if(!qMasterManager.getData().isEmpty()){
             initList = qMasterManager.getData();
             mQRKeyList = qMasterManager.getKeyList();
+            listView.setVisibility(View.VISIBLE);
+            emptyLayout.setVisibility(View.GONE);
+        }
+        else{
+            listView.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
         }
 
-        listView = (ListView) findViewById(R.id.listInformationQr);
+
         listQRAdapter = new ListQRAdapter(this,initList);
         listView.setAdapter(listQRAdapter);
-
         mQRbyUserList = new ArrayList<>();
 
         firebaseHandler();
@@ -79,15 +90,14 @@ public class ListQRActivity extends BaseActivity {
                 if(mQRbyUserList.contains(key)){
                     if(!mQRKeyList.contains(key)){
                         listQRAdapter.refill(qMaster);
-                        qMasterManager.addData(qMaster);
-                        qMasterManager.addKeyList(key);
                         mQRKeyList = qMasterManager.getKeyList();
                     }
                     else{
                         int index = listQRAdapter.getIndex(key);
                         listQRAdapter.changeCondition(index,qMaster);
-                        qMasterManager.editData(index,qMaster);
                     }
+                    listView.setVisibility(View.VISIBLE);
+                    emptyLayout.setVisibility(View.GONE);
                 }
             }
 
@@ -101,7 +111,6 @@ public class ListQRActivity extends BaseActivity {
 
                         int index = listQRAdapter.getIndex(key);
                         listQRAdapter.changeCondition(index,qMaster);
-                        qMasterManager.editData(index,qMaster);
                     }
                 }
             }
@@ -111,17 +120,20 @@ public class ListQRActivity extends BaseActivity {
                 String key = dataSnapshot.getKey();
                 if(mQRbyUserList.contains(key)){
                     if(mQRKeyList.contains(key)){
+                        Log.d(TAG, String.valueOf(mQRKeyList));
                         int index = listQRAdapter.getIndex(key);
                         mQRbyUserList.remove(key);
-
                         listQRAdapter.remove(index);
-                        FirebaseUtils.getBaseRef().child("qrcreator")
-                                .child(Uid)
-                                .child(key)
-                                .removeValue();
-                        qMasterManager.removeData(index);
-                        qMasterManager.removeKeyData(key);
                         mQRKeyList = qMasterManager.getKeyList();
+                        Log.d(TAG, String.valueOf(mQRKeyList));
+                        if(mQRKeyList.size()!=0){
+                            listView.setVisibility(View.VISIBLE);
+                            emptyLayout.setVisibility(View.GONE);
+                        }
+                        else{
+                            listView.setVisibility(View.GONE);
+                            emptyLayout.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
@@ -143,9 +155,30 @@ public class ListQRActivity extends BaseActivity {
                     if(!mQRbyUserList.contains(ds.getKey())){
                         mQRbyUserList.add(ds.getKey());
                     }
-                    dbQMaster.limitToLast(20).addChildEventListener(qrListener);
-
                 }
+                dbQMaster.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(mQRKeyList.size() > mQRbyUserList.size()){
+                            for(String key: mQRKeyList){
+                                if(!mQRbyUserList.contains(key)){
+                                    int index = listQRAdapter.getIndex(key);
+                                    listQRAdapter.remove(index);
+                                    qMasterManager.removeData(index);
+                                    qMasterManager.removeKeyData(key);
+                                    mQRKeyList = qMasterManager.getKeyList();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                dbQMaster.limitToLast(20).addChildEventListener(qrListener);
+
 
             }
 
@@ -155,27 +188,6 @@ public class ListQRActivity extends BaseActivity {
             }
         };
 
-        dbQMaster.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(mQRKeyList.size() > mQRbyUserList.size()){
-                    for(String key: mQRKeyList){
-                        if(!mQRbyUserList.contains(key)){
-                            int index = listQRAdapter.getIndex(key);
-                            listQRAdapter.remove(index);
-                            qMasterManager.removeData(index);
-                            qMasterManager.removeKeyData(key);
-                            mQRKeyList = qMasterManager.getKeyList();
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
         dbQCreator.addValueEventListener(qrUserListener);
     }
 }

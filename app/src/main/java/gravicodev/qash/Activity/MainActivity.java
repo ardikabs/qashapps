@@ -47,8 +47,8 @@ public class MainActivity extends BaseActivity {
     private static final int REQUEST_COARSE_LOCATION = 100;
     private static final int BARCODE_READER_REQUEST_CODE = 1;
 
-    private static  HashMap<DatabaseReference, ValueEventListener> valueListenerList = new HashMap<>();
-    private static HashMap<DatabaseReference, ChildEventListener> childListenerList = new HashMap<>();
+    public HashMap<DatabaseReference, ValueEventListener> valueListenerList = new HashMap<>();
+    public HashMap<DatabaseReference, ChildEventListener> childListenerList = new HashMap<>();
 
 
     private SessionManager sessionManager;
@@ -320,7 +320,7 @@ public class MainActivity extends BaseActivity {
     }
 
     // Method for massal remover of valuelistener
-    public static void removeValueListener(HashMap<DatabaseReference, ValueEventListener> hashMap) {
+    public void removeValueListener(HashMap<DatabaseReference, ValueEventListener> hashMap) {
 
         for (Map.Entry<DatabaseReference, ValueEventListener> entry : hashMap.entrySet()) {
 
@@ -335,7 +335,7 @@ public class MainActivity extends BaseActivity {
     }
 
     // Method for massal remover of childlistener
-    public static void removeChildListener(HashMap<DatabaseReference, ChildEventListener> hashMap) {
+    public void removeChildListener(HashMap<DatabaseReference, ChildEventListener> hashMap) {
 
         for (Map.Entry<DatabaseReference, ChildEventListener> entry : hashMap.entrySet()) {
 
