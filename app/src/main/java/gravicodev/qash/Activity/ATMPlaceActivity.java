@@ -53,16 +53,16 @@ public class ATMPlaceActivity extends AppCompatActivity {
         });
 
         listView = (ListView) findViewById(R.id.listATM);
-        List<HashMap<String,String>> emptyList = new ArrayList<>();
+        List<HashMap<String, String>> emptyList = new ArrayList<>();
         listATMAdapter = new ListATMAdapter(this, emptyList);
         listView.setAdapter(listATMAdapter);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
-            LocationManager lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Location location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             final double[] longitude = {location.getLongitude()};
             final double[] latitude = {location.getLatitude()};
@@ -91,8 +91,8 @@ public class ATMPlaceActivity extends AppCompatActivity {
 
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
 
-            Log.d(TAG,""+longitude[0]);
-            Log.d(TAG,""+latitude[0]);
+            Log.d(TAG, "" + longitude[0]);
+            Log.d(TAG, "" + latitude[0]);
 
             VolleyHelper vh = new VolleyHelper();
             try {
@@ -105,19 +105,19 @@ public class ATMPlaceActivity extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        for(int i = 0; i < arrATM.length();i++){
-                            HashMap<String,String> newdata = new HashMap<>();
+                        for (int i = 0; i < arrATM.length(); i++) {
+                            HashMap<String, String> newdata = new HashMap<>();
                             try {
-                                newdata.put("title",arrATM.getJSONObject(i).getString("Type"));
-                                newdata.put("distance",arrATM.getJSONObject(i).getString("Distance"));
-                                newdata.put("address",arrATM.getJSONObject(i).getString("Address"));
+                                newdata.put("title", arrATM.getJSONObject(i).getString("Type"));
+                                newdata.put("distance", arrATM.getJSONObject(i).getString("Distance"));
+                                newdata.put("address", arrATM.getJSONObject(i).getString("Address"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                             listATMAdapter.refill(newdata);
                         }
                     }
-                },""+latitude[0], ""+longitude[0]);
+                }, "" + latitude[0], "" + longitude[0]);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -129,8 +129,6 @@ public class ATMPlaceActivity extends AppCompatActivity {
             case 1: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.

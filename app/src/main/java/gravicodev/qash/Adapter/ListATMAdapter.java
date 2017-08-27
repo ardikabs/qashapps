@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -80,7 +81,8 @@ public class ListATMAdapter extends BaseAdapter {
         }
         else{
             float kmDistance = distance/1000f;
-            holder.distance.setText(kmDistance+" KM");
+            DecimalFormat df = new DecimalFormat("#.#");
+            holder.distance.setText(df.format(kmDistance)+" KM");
         }
         return convertView;
     }

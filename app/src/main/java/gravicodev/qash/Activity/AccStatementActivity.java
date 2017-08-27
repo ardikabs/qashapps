@@ -144,7 +144,7 @@ public class AccStatementActivity extends AppCompatActivity {
                             String date = data.getJSONObject(i).getString("TransactionDate");
                             String type = data.getJSONObject(i).getString("TransactionType");
                             if(trailer.indexOf("Pay By Qash") >=0){
-                                if(data.getJSONObject(i).getString("TransactionType").equalsIgnoreCase("D")){
+                                if(data.getJSONObject(i).getString("TransactionType").equalsIgnoreCase("C")){
                                     creditQ += Integer.parseInt(amount.split("\\.")[0]);
                                     type = "Q"+type;
                                 }
@@ -153,7 +153,7 @@ public class AccStatementActivity extends AppCompatActivity {
                                     type = "Q"+type;
                                 }
                             }
-                            if(data.getJSONObject(i).getString("TransactionType").equalsIgnoreCase("D")){
+                            if(data.getJSONObject(i).getString("TransactionType").equalsIgnoreCase("C")){
                                 credit += Integer.parseInt(amount.split("\\.")[0]);
                             }
                             else{
