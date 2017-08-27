@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.HashMap;
+import java.util.List;
+
 import gravicodev.qash.R;
 
 /**
@@ -18,7 +21,7 @@ public class ListATMAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private String[] title, address, distance;
-
+    private List<HashMap<String,String>> mATMList;
     public ListATMAdapter(Activity context, String[] title, String[] address, String[] distance){
         this.context = context;
         inflater = LayoutInflater.from(context);
@@ -26,10 +29,15 @@ public class ListATMAdapter extends BaseAdapter {
         this.address = address;
         this.distance = distance;
     }
+    public ListATMAdapter(Activity context, List<HashMap<String,String>> mATMList){
+        this.context = context;
+        inflater = LayoutInflater.from(context);
+        this.mATMList = mATMList;
+    }
 
     @Override
     public int getCount() {
-        return title.length;
+        return mATMList.size();
     }
 
     @Override
@@ -50,6 +58,8 @@ public class ListATMAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
+        HashMap<String,String> data = mATMList.get(position);
+
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_atm, null);
             holder = new ViewHolder();
@@ -62,9 +72,21 @@ public class ListATMAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.title.setText(title[position]);
-        holder.address.setText(address[position]);
-        holder.distance.setText(distance[position]);
+        holder.title.setText(data.get("title"));
+        holder.address.setText(data.get("address"));
+        int distance = Integer.parseInt(data.get("distance").split("\\.")[0]);
+        if(distance < 1000){
+            holder.distance.setText(distance+" M");
+        }
+        else{
+            float kmDistance = distance/1000f;
+            holder.distance.setText(kmDistance+" KM");
+        }
         return convertView;
+    }
+
+    public void refill(HashMap<String,String> data){
+        mATMList.add(data);
+        notifyDataSetChanged();
     }
 }
