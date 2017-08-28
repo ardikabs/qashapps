@@ -3,6 +3,7 @@ package gravicodev.qash.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,7 @@ public class HistoryFragment extends Fragment {
 
     private List<String> mListHistoryKey;
     private QHistoryManager qHistoryManager;
-
+    int check = 0;
     public HistoryFragment() {}
 
     @Override
@@ -73,25 +74,20 @@ public class HistoryFragment extends Fragment {
                 qHistory.setKey(key);
                 if(dataSnapshot.exists()){
                     if(!mListHistoryKey.contains(key)){
-                        listHistoryAdapter.refill(qHistory);
+                        Log.d(TAG,"ke-"+check+"::"+key);
+                        check++;
                         qHistoryManager.addData(qHistory);
                         qHistoryManager.addKeyList(key);
                         mListHistoryKey = qHistoryManager.getKeyList();
+                        listHistoryAdapter.refill(qHistory);
                     }
                     else{
                         int index = listHistoryAdapter.getIndex(key);
                         listHistoryAdapter.changeCondition(index,qHistory);
                         qHistoryManager.editData(index,qHistory);
                     }
-
-                    if(mListHistoryKey.size()!=0){
-                        listView.setVisibility(View.VISIBLE);
-                        emptyLayout.setVisibility(View.GONE);
-                    }
-                    else{
-                        listView.setVisibility(View.GONE);
-                        emptyLayout.setVisibility(View.VISIBLE);
-                    }
+                    listView.setVisibility(View.VISIBLE);
+                    emptyLayout.setVisibility(View.GONE);
                 }
             }
 
@@ -142,7 +138,7 @@ public class HistoryFragment extends Fragment {
         DatabaseReference dbHistory = FirebaseUtils.getBaseRef().child("qhistory")
                 .child(((MainActivity)getActivity()).getUser().accountNumber);
 
-        dbHistory.orderByChild("used_at").limitToLast(10).addChildEventListener(historyListener);
+        dbHistory.orderByChild("used_at").limitToLast(20).addChildEventListener(historyListener);
 
         // Add Listener
         ((MainActivity)getActivity()).addChildListener(dbHistory,historyListener);

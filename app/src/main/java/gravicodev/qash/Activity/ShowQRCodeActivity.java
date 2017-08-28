@@ -1,17 +1,25 @@
 package gravicodev.qash.Activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -22,22 +30,30 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.vision.barcode.Barcode;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QMaster;
@@ -93,10 +109,17 @@ public class ShowQRCodeActivity extends BaseActivity {
         qrcodeName.setText(name);
         qrcodeBalance.setText("Rp " + balance);
 
+//        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         // QRCODE BITMAP
         try {
+//            BitMatrix bitMatrix = multiFormatWriter.encode(key,BarcodeFormat.QR_CODE,1000,1000);
+//            Bitmap mylogo = drawableToBitmap(getResources().getDrawable(R.drawable.ic_qash));
+//            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+//            Bitmap qrcode = barcodeEncoder.createBitmap(bitMatrix);
+//            Bitmap bitmap = mergeBitmaps(mylogo,qrcode);
             Bitmap bitmap = encodeAsBitmap(key);
             qrcodeView.setImageBitmap(bitmap);
+
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -177,7 +200,6 @@ public class ShowQRCodeActivity extends BaseActivity {
         return strHasil;
     }
 
-
     private String parseWaktu(String time) {
         if(time.length() == 1)
         {
@@ -187,6 +209,42 @@ public class ShowQRCodeActivity extends BaseActivity {
         }
     }
 
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if(bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    public Bitmap mergeBitmaps(Bitmap logo, Bitmap qrcode) {
+
+        Bitmap combined = Bitmap.createBitmap(qrcode.getWidth(), qrcode.getHeight(), qrcode.getConfig());
+        Canvas canvas = new Canvas(combined);
+        int canvasWidth = canvas.getWidth();
+        int canvasHeight = canvas.getHeight();
+        canvas.drawBitmap(qrcode, new Matrix(), null);
+
+        Bitmap resizeLogo = Bitmap.createScaledBitmap(logo, canvasWidth/4, canvasHeight/4, true);
+        int centreX = (canvasWidth - resizeLogo.getWidth());
+        int centreY = (canvasHeight - resizeLogo.getHeight());
+        canvas.drawBitmap(resizeLogo, centreX, centreY, null);
+        return combined;
+    }
 
     Bitmap encodeAsBitmap(String str) throws WriterException {
         BitMatrix result;
@@ -208,8 +266,10 @@ public class ShowQRCodeActivity extends BaseActivity {
         }
         Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, WIDTH, 0, 0, w, h);
+
         return bitmap;
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
