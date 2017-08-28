@@ -30,6 +30,8 @@ public class SessionManager {
     private final String PREF_ACCOUNT_NUMBER;
     private final String PREF_ACCOUNT_BALANCE;
 
+    private final String PREF_DEVICE_ID;
+
     private final String IS_LOGIN;
 
     private Context context;
@@ -46,7 +48,7 @@ public class SessionManager {
         PREF_USER_FULLNAME = context.getString(R.string.fullname);
         PREF_ACCOUNT_NUMBER = context.getString(R.string.accnum);
         PREF_ACCOUNT_BALANCE = context.getString(R.string.balanceacc);
-
+        PREF_DEVICE_ID = "Device ID";
         IS_LOGIN = "isLoggedIn";
 
 
@@ -61,6 +63,12 @@ public class SessionManager {
         editor.putString(PREF_USER_FULLNAME, user.fullname);
         editor.putString(PREF_ACCOUNT_NUMBER, user.accountNumber);
         editor.putInt(PREF_ACCOUNT_BALANCE, user.getBalance());
+        editor.putString(PREF_DEVICE_ID, FirebaseInstanceId.getInstance().getId());
+
+        FirebaseUtils.getBaseRef().child("userDevice")
+                .child(user.accountNumber)
+                .child(FirebaseInstanceId.getInstance().getId())
+                .setValue(true);
 
         editor.putBoolean(IS_LOGIN,true);
         editor.commit();
@@ -82,7 +90,7 @@ public class SessionManager {
 
     public void logOut(){
         try {
-            String token = FirebaseInstanceId.getInstance().getToken();
+            String token = this.getDeviceId();
             FirebaseUtils.getBaseRef().child("userDevice")
                     .child(preferences.getString(PREF_ACCOUNT_NUMBER,null))
                     .child(token).removeValue();
@@ -118,5 +126,13 @@ public class SessionManager {
         return preferences.getBoolean(IS_LOGIN,false);
     }
 
+    public String getDeviceId(){
+        return preferences.getString(PREF_DEVICE_ID,null);
+    }
+
+    public void resetDeviceId(String key){
+        editor.putString(PREF_DEVICE_ID, key);
+        editor.commit();
+    }
 
 }

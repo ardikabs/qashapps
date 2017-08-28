@@ -67,6 +67,8 @@ public class ScanQRCodeFragment extends Fragment {
     private LottieAnimationView animSuccess;
     private TextView ammountAccepted;
     private Spinner spinnerTemplate;
+    private List<String> templateList;
+    private ArrayList<HashMap<String,String>> templateData;
 
     public ScanQRCodeFragment() {}
 
@@ -83,12 +85,12 @@ public class ScanQRCodeFragment extends Fragment {
         animSuccess = (LottieAnimationView) rootView.findViewById(R.id.animation_success);
         spinnerTemplate = (Spinner) rootView.findViewById(R.id.spinnerTemplate);
 
-        List<String> templateList = new ArrayList<String>();
-        templateList.add("10000 " + "-" + " Jajan 1");
-        templateList.add("20000 " + "-" + " Jajan 2");
-        templateList.add("30000 " + "-" + " Jajan 3");
-        templateList.add("40000 " + "-" + " Jajan 4");
-        templateList.add("50000 " + "-" + " Jajan 5");
+
+        templateList = new ArrayList<>();
+        templateData = new ArrayList<>();
+        HashMap<String,String> initData = new HashMap<>();
+        templateList.add("Choose Your Template");
+        templateData.add(initData);
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, templateList);
@@ -98,13 +100,19 @@ public class ScanQRCodeFragment extends Fragment {
         spinnerTemplate.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getItemAtPosition(position).toString();
-                String[] parts = item.split("-");
-                String balance = parts[0].trim();
-                String ket = parts[1].trim();
-
-                scanBalance.setText(balance);
-                scanKet.setText(ket);
+                if(position>0){
+                    String item = parent.getItemAtPosition(position).toString();
+                    int index = templateList.indexOf(item);
+                    HashMap<String,String> data = templateData.get(index);
+                    String balance = data.get("balance");
+                    String desc = data.get("desc");
+                    scanBalance.setText(((MainActivity)getActivity()).moneyParserString(balance));
+                    scanKet.setText(desc);
+                }
+                else{
+                    scanBalance.setText("");
+                    scanKet.setText("");
+                }
             }
 
             @Override
@@ -152,8 +160,45 @@ public class ScanQRCodeFragment extends Fragment {
                 scanBalance.addTextChangedListener(this);
             }
         });
-
+        firebaseHandler();
         return rootView;
+    }
+
+    private void firebaseHandler() {
+        String Uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        ValueEventListener valueTemplateListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                templateData.clear();
+                templateList.clear();
+                HashMap<String,String> initData = new HashMap<>();
+                templateList.add("Choose Your Template");
+                templateData.add(initData);
+                for (DataSnapshot ds : dataSnapshot.getChildren()){
+                    String balance  = ds.child("balance").getValue(String.class);
+                    String desc = ds.child("desc").getValue(String.class);
+                    String key = desc+" "+"(Rp "+((MainActivity)getActivity()).moneyParserString(balance)+")";
+                    templateList.add(key);
+
+                    HashMap<String,String> data = new HashMap<>();
+                    data.put("desc",desc);
+                    data.put("balance",balance);
+                    templateData.add(data);
+                }
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(),
+                        android.R.layout.simple_spinner_item, templateList);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerTemplate.setAdapter(dataAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        DatabaseReference dbTemplateUser = FirebaseUtils.getBaseRef().child("settings")
+                .child(Uid).child("templates");
+        dbTemplateUser.addValueEventListener(valueTemplateListener);
     }
 
     @Override
@@ -221,27 +266,31 @@ public class ScanQRCodeFragment extends Fragment {
     }
 
     private void proses(Integer balance, DataSnapshot dataSnapshot) {
+
         final Integer balanceUsed = Integer.parseInt(((MainActivity)getActivity()).moneyParserToInt(scanBalance.getText().toString().trim()));
-        String BeneficieryAccountNumber = ((MainActivity)getActivity()).getUser().accountNumber;
-        String SourceAccountNumber = dataSnapshot.child("SourceAccountNumber").getValue(String.class);
-        // For Sender
-        DatabaseReference dbHistoryOut = FirebaseUtils.getBaseRef().child("qhistory")
-                .child(SourceAccountNumber);
-
-        // For Receiver
-        DatabaseReference dbHistoryIn = FirebaseUtils.getBaseRef().child("qhistory")
-                .child(BeneficieryAccountNumber);
-
-        DatabaseReference dbMaster = FirebaseUtils.getBaseRef().child("qmaster")
-                .child(dataSnapshot.getKey());
-
-        DatabaseReference dbTrx = FirebaseUtils.getBaseRef().child("qtransactions")
-                .child(dataSnapshot.getKey());
 
         if(balanceUsed > balance){
             showToast("Balance Qash tidak mencukupi");
         }
         else{
+            String BeneficieryAccountNumber = ((MainActivity)getActivity()).getUser().accountNumber;
+            String SourceAccountNumber = dataSnapshot.child("SourceAccountNumber").getValue(String.class);
+
+            // For Sender
+            DatabaseReference dbHistoryOut = FirebaseUtils.getBaseRef().child("qhistory")
+                    .child(SourceAccountNumber);
+
+            // For Receiver
+            DatabaseReference dbHistoryIn = FirebaseUtils.getBaseRef().child("qhistory")
+                    .child(BeneficieryAccountNumber);
+
+            DatabaseReference dbMaster = FirebaseUtils.getBaseRef().child("qmaster")
+                    .child(dataSnapshot.getKey());
+
+            DatabaseReference dbTrx = FirebaseUtils.getBaseRef().child("qtransactions")
+                    .child(dataSnapshot.getKey());
+
+
 
             QMaster qMaster = dataSnapshot.getValue(QMaster.class);
             qMaster.balance -= balanceUsed;
@@ -252,20 +301,27 @@ public class ScanQRCodeFragment extends Fragment {
 
             QTransactions trx = new QTransactions(balanceUsed,qHistory.used_at,msg,((MainActivity)getActivity()).getUser().accountNumber, qMaster.SourceAccountNumber);
 
-
-            dbMaster.setValue(qMaster);
+/*          Transaksi terjadi pertama kali
+*           Jika transaksi telah berhasil, menambahkan uang pada penerima
+*           dan mengurangi uang pada pemilik
+*           Sehingga QMaster berkurang valuenya
+*           Dan menambahkan data pada QHistory*
+*/
+            dbTrx.setValue(trx);
 
             qHistory.setStatus("negative");
-
             dbHistoryOut.child(dbHistoryOut.push().getKey())
                     .setValue(qHistory);
 
             qHistory.setStatus("positive");
             dbHistoryIn.child(dbHistoryIn.push().getKey())
                     .setValue(qHistory);
-            dbTrx.setValue(trx);
 
-            showSuccess(balanceUsed);
+            dbMaster.setValue(qMaster);
+
+            ((MainActivity)getActivity()).showSuccess(balanceUsed);
+
+/*            Push Notification Function
             VolleyHelper vh = new VolleyHelper();
             try {
                 String title = "QASH "+qMaster.title + " telah digunakan !";
@@ -274,6 +330,7 @@ public class ScanQRCodeFragment extends Fragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+*/
             scanBalance.setText("");
             scanKet.setText("");
         }

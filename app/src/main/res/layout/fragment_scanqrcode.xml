@@ -5,6 +5,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:id="@+id/dimmerSuccess"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#e700437d"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animation_success"
+                android:layout_width="@dimen/img_width_height"
+                android:layout_height="@dimen/img_width_height"
+                android:layout_gravity="center"
+                app:lottie_fileName="success.json"
+                app:lottie_loop="false" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/accepted"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/ammountAccepted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/ammount_accepted"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -58,7 +100,7 @@
                 android:drawablePadding="16dp"
                 android:drawableStart="@drawable/ic_description"
                 android:hint="@string/scan_ket"
-                android:inputType="textCapSentences"
+                android:inputType="textCapWords"
                 android:maxLines="1"
                 android:padding="16dp"
                 android:textColorHint="@android:color/black"
@@ -94,47 +136,5 @@
             android:textColor="@android:color/white" />
 
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/dimmerSuccess"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#e700437d"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/animation_success"
-                android:layout_width="@dimen/img_width_height"
-                android:layout_height="@dimen/img_width_height"
-                android:layout_gravity="center"
-                app:lottie_fileName="success.json"
-                app:lottie_loop="false" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/accepted"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:textColor="@android:color/white" />
-
-            <TextView
-                android:id="@+id/ammountAccepted"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/ammount_accepted"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:textColor="@android:color/white" />
-
-        </LinearLayout>
-
-    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

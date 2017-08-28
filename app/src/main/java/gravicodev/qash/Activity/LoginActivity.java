@@ -76,6 +76,8 @@ public class LoginActivity extends BaseActivity {
             return;
         }
         showProgressDialog();
+
+/*       ### Login with custom auth ###
         VolleyHelper vh = new VolleyHelper();
         try {
             vh.login(new VolleyCallback() {
@@ -105,6 +107,24 @@ public class LoginActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+*/
+        mAuth.signInWithEmailAndPassword(userid,pin)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            //Successfull Login
+                            onAuthSuccess(task.getResult().getUser());
+                        }
+                        else{
+                            //Unsuccessfull Login
+                            hideProgressDialog();
+                            showToast(task.getException().getMessage());
+                            useridLogin.setText("");
+                            pinLogin.setText("");
+                        }
+                    }
+                });
 
     }
 
@@ -112,12 +132,18 @@ public class LoginActivity extends BaseActivity {
         FirebaseUtils.getBaseRef().child("users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                user.setBalance(dataSnapshot.child("balance").getValue(Integer.class));
-                hideProgressDialog();
-                sessionManager.logIn(user);
-                startActivity(new Intent (LoginActivity.this,MainActivity.class));
-                finish();
+                if(dataSnapshot.exists()){
+                    User user = dataSnapshot.getValue(User.class);
+                    user.setBalance(dataSnapshot.child("balance").getValue(Integer.class));
+                    hideProgressDialog();
+                    sessionManager.logIn(user);
+                    startActivity(new Intent (LoginActivity.this,MainActivity.class));
+                    finish();
+                }
+                else{
+                    showToast("User not found");
+                }
+
 
             }
 
@@ -136,7 +162,11 @@ public class LoginActivity extends BaseActivity {
         boolean valid = true;
 
         if (TextUtils.isEmpty(email)){
-            useridLogin.setError(getString(R.string.err_msg_userid));
+            useridLogin.setError(getString(R.string.err_msg_emailempty));
+            valid = false;
+        }
+        else if(!isValidEmail(email)){
+            useridLogin.setError(getString(R.string.err_msg_email));
             valid = false;
         }
         else {

@@ -3,14 +3,14 @@ package gravicodev.qash.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,7 +18,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import gravicodev.qash.Activity.MainActivity;
@@ -26,7 +25,7 @@ import gravicodev.qash.Adapter.ListCurrentBalanceAdapter;
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QMaster;
 import gravicodev.qash.Models.User;
-import gravicodev.qash.Preference.HomeManager;
+import gravicodev.qash.Preference.QMasterManager;
 import gravicodev.qash.R;
 import gravicodev.qash.Session.SessionManager;
 
@@ -35,11 +34,12 @@ public class HomeFragment extends Fragment {
     private ListView listView;
     private ListCurrentBalanceAdapter listCurrentBalanceAdapter;
     private TextView nameNasabah, balanceNasabah, initialName;
+    private FrameLayout emptyLayout;
     private SwitchCompat switchQr;
 
     private List<String> mQRKeyList;
     private List<String> mQRbyUserList;
-    private HomeManager homeManager;
+    private QMasterManager QMasterManager;
     public HomeFragment() {
     }
 
@@ -47,24 +47,32 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        homeManager = new HomeManager(getContext());
+        QMasterManager = new QMasterManager(getContext());
+
         nameNasabah = (TextView) rootView.findViewById(R.id.nameNasabah);
         balanceNasabah = (TextView) rootView.findViewById(R.id.balanceNasabah);
         initialName = (TextView) rootView.findViewById(R.id.initialName);
         switchQr = (SwitchCompat) rootView.findViewById(R.id.switchQr);
+        emptyLayout = (FrameLayout) rootView.findViewById(R.id.emptyCurrentQr);
+        listView = (ListView) rootView.findViewById(R.id.listCurrentBalance);
+
+
         List<QMaster> emptyList = new ArrayList<>();
         mQRKeyList = new ArrayList<>();
-        if(!homeManager.getData().isEmpty()){
-            emptyList = homeManager.getData();
-            mQRKeyList = homeManager.getKeyList();
+        if(!QMasterManager.getData().isEmpty()){
+            emptyList = QMasterManager.getData();
+            mQRKeyList = QMasterManager.getKeyList();
+            listView.setVisibility(View.VISIBLE);
+            emptyLayout.setVisibility(View.GONE);
+        }
+        else{
+            listView.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
         }
 
-        listView = (ListView) rootView.findViewById(R.id.listCurrentBalance);
-//        List<QMaster> emptyList = new ArrayList<>();
         listCurrentBalanceAdapter = new ListCurrentBalanceAdapter(getActivity(),emptyList );
         listView.setAdapter(listCurrentBalanceAdapter);
 
-//        mQRKeyList = new ArrayList<>();
         mQRbyUserList = new ArrayList<>();
 
         firebaseHandler();
@@ -76,7 +84,7 @@ public class HomeFragment extends Fragment {
         nameNasabah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                homeManager.delete();
+                QMasterManager.delete();
             }
         });
         return rootView;
@@ -93,40 +101,64 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
+                QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+                qMaster.setKey(key);
                 if(mQRbyUserList.contains(key)){
                     if(!mQRKeyList.contains(key)){
-                        QMaster qMaster = dataSnapshot.getValue(QMaster.class);
-                        qMaster.setKey(key);
-
                         listCurrentBalanceAdapter.refill(qMaster);
-                        homeManager.addData(qMaster);
-                        homeManager.addKeyList(key);
-                        mQRKeyList = homeManager.getKeyList();
+                        QMasterManager.addData(qMaster);
+                        QMasterManager.addKeyList(key);
+                        mQRKeyList = QMasterManager.getKeyList();
                     }
                     else{
-                        QMaster qMaster = dataSnapshot.getValue(QMaster.class);
-                        qMaster.setKey(key);
                         int index = listCurrentBalanceAdapter.getIndex(key);
-
                         listCurrentBalanceAdapter.changeCondition(index,qMaster);
-                        homeManager.editData(index,qMaster);
+                        QMasterManager.editData(index,qMaster);
                     }
+                    listView.setVisibility(View.VISIBLE);
+                    emptyLayout.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
-                if(mQRbyUserList.contains(key)){
+                QMaster qMaster = dataSnapshot.getValue(QMaster.class);
+                qMaster.setKey(key);
+
+/*              Jika balance qmaster menjadi 0, data qr code langsung di hapus
+                if(qMaster.balance == 0){
+                    FirebaseUtils.getBaseRef().child("qmaster")
+                            .child(key)
+                            .removeValue();
+
+                    int index = listCurrentBalanceAdapter.getIndex(key);
+                    mQRbyUserList.remove(key);
+                    listCurrentBalanceAdapter.remove(index);
+                    QMasterManager.removeData(index);
+                    QMasterManager.removeKeyData(key);
+                    mQRKeyList = QMasterManager.getKeyList();
+
+                    if(mQRKeyList.size()!=0){
+                        listView.setVisibility(View.VISIBLE);
+                        emptyLayout.setVisibility(View.GONE);
+                    }
+                    else{
+                        listView.setVisibility(View.GONE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                    }
+                }
+                else{}
+*/
+                if (mQRbyUserList.contains(key)){
                     if(mQRKeyList.contains(key)){
-                        QMaster qMaster = dataSnapshot.getValue(QMaster.class);
-                        qMaster.setKey(key);
 
                         int index = listCurrentBalanceAdapter.getIndex(key);
                         listCurrentBalanceAdapter.changeCondition(index,qMaster);
-                        homeManager.editData(index,qMaster);
+                        QMasterManager.editData(index,qMaster);
                     }
                 }
+
             }
 
             @Override
@@ -135,16 +167,20 @@ public class HomeFragment extends Fragment {
                 if(mQRbyUserList.contains(key)){
                     if(mQRKeyList.contains(key)){
                         int index = listCurrentBalanceAdapter.getIndex(key);
-
                         mQRbyUserList.remove(key);
                         listCurrentBalanceAdapter.remove(index);
-                        FirebaseUtils.getBaseRef().child("qrcreator")
-                                .child(Uid)
-                                .child(key)
-                                .removeValue();
-                        homeManager.removeData(index);
-                        homeManager.removeKeyData(index);
-                        mQRKeyList = homeManager.getKeyList();
+                        QMasterManager.removeData(index);
+                        QMasterManager.removeKeyData(key);
+                        mQRKeyList = QMasterManager.getKeyList();
+
+                        if(mQRKeyList.size()!=0){
+                            listView.setVisibility(View.VISIBLE);
+                            emptyLayout.setVisibility(View.GONE);
+                        }
+                        else{
+                            listView.setVisibility(View.GONE);
+                            emptyLayout.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }
@@ -191,9 +227,33 @@ public class HomeFragment extends Fragment {
                     if(!mQRbyUserList.contains(ds.getKey())){
                         mQRbyUserList.add(ds.getKey());
                     }
-                    dbQMaster.limitToLast(20).addChildEventListener(qrListener);
-
                 }
+                // Listener to sum the total of QR owned by user
+                dbQMaster.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(mQRKeyList.size() > mQRbyUserList.size()){
+                            for(String key: mQRKeyList){
+                                if(!mQRbyUserList.contains(key)){
+                                    int index = listCurrentBalanceAdapter.getIndex(key);
+                                    listCurrentBalanceAdapter.remove(index);
+                                    QMasterManager.removeData(index);
+                                    QMasterManager.removeKeyData(key);
+                                    mQRKeyList = QMasterManager.getKeyList();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                // Event Listener QR Master owned by user
+                dbQMaster.limitToLast(20).addChildEventListener(qrListener);
+
 
             }
 
@@ -202,29 +262,6 @@ public class HomeFragment extends Fragment {
 
             }
         } ;
-
-        // Listener to sum the total of QR owned by user
-        dbQMaster.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if(mQRKeyList.size() > mQRbyUserList.size()){
-                    for(String key: mQRKeyList){
-                        if(!mQRbyUserList.contains(key)){
-                            int index = listCurrentBalanceAdapter.getIndex(key);
-                            listCurrentBalanceAdapter.remove(index);
-                            homeManager.removeData(index);
-                            homeManager.removeKeyData(index);
-                            mQRKeyList = homeManager.getKeyList();
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
         // Value Listener
         dbUsers.addValueEventListener(userListener);

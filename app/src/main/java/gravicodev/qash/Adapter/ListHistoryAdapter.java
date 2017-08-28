@@ -114,6 +114,17 @@ public class ListHistoryAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public int getIndex(String key){
+        int i = 0;
+        for (QHistory qHistory: mQHistory){
+            if(qHistory.getKey().equalsIgnoreCase(key)){
+                return i;
+            }
+            i++;
+        }
+        return 0;
+    }
+
     private String timestampConverter(long timestamp) {
         String relativeTime;
 

@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -16,10 +17,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import gravicodev.qash.Adapter.TabFragmentPagerAdapter;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,6 +42,8 @@ import java.util.Map;
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QHistory;
 import gravicodev.qash.Models.User;
+import gravicodev.qash.Preference.QHistoryManager;
+import gravicodev.qash.Preference.QMasterManager;
 import gravicodev.qash.R;
 import gravicodev.qash.Session.SessionManager;
 import gravicodev.qash.Volley.VolleyHelper;
@@ -46,6 +53,9 @@ public class MainActivity extends BaseActivity {
     private Toolbar toolbar;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+    private FrameLayout dimmer;
+    private LottieAnimationView animSuccess;
+    private TextView ammountAccepted;
     private static final int REQUEST_COARSE_LOCATION = 100;
     private static final int BARCODE_READER_REQUEST_CODE = 1;
 
@@ -74,6 +84,10 @@ public class MainActivity extends BaseActivity {
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
 
+        dimmer = (FrameLayout) findViewById(R.id.dimmerSuccess);
+        ammountAccepted = (TextView) findViewById(R.id.ammountAccepted);
+        animSuccess = (LottieAnimationView) findViewById(R.id.animation_success);
+
         // Change Icon Tab Layout
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_home);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_generateqr);
@@ -84,7 +98,6 @@ public class MainActivity extends BaseActivity {
         Intent intent = getIntent();
         if(intent.hasExtra("index")){
             int index = intent.getIntExtra("index",3);
-            Log.d(TAG,"INDEX : "+index);
             // Change Color Icon Tab Layout
             tabLayout.getTabAt(0).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
             tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
@@ -94,7 +107,6 @@ public class MainActivity extends BaseActivity {
             tabLayout.getTabAt(index).select();
         }
         else{
-            Log.d(TAG,"DIAWAL");
             // Change Color Icon Tab Layout
             tabLayout.getTabAt(0).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
             tabLayout.getTabAt(1).getIcon().setColorFilter(Color.parseColor("#014A87"), PorterDuff.Mode.SRC_IN);
@@ -166,12 +178,6 @@ public class MainActivity extends BaseActivity {
                     new String[]{Manifest.permission.CAMERA},
                     1);
         }
-
-
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        FirebaseUtils.getBaseRef().child("userDevice")
-                .child(sessionManager.getUser().accountNumber)
-                .child(refreshedToken).setValue(true);
 
         firebaseHandler();
 
@@ -261,7 +267,8 @@ public class MainActivity extends BaseActivity {
         }
         else if (id == R.id.action_logout) {
             Toast.makeText(getApplication(), "Thank you for using QashApps", Toast.LENGTH_SHORT).show();
-
+            new QMasterManager(this).delete();
+            new QHistoryManager(this).delete();
             sessionManager.logOut();
             userOut();
         }
@@ -351,6 +358,28 @@ public class MainActivity extends BaseActivity {
 
         }
 
+    }
+
+    public void showSuccess(Integer acceptedNumber){
+        ammountAccepted.setText("Rp. "+ (moneyParserString(String.valueOf(acceptedNumber))));
+        toolbar.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        dimmer.setVisibility(View.VISIBLE);
+        animSuccess.playAnimation();
+
+        int delay = 1;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                toolbar.setVisibility(View.VISIBLE);
+                viewPager.setVisibility(View.VISIBLE);
+                tabLayout.setVisibility(View.VISIBLE);
+
+                dimmer.setVisibility(View.GONE);
+
+            }
+        }, delay * 3000);
     }
 
     @Override

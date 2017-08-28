@@ -35,7 +35,7 @@
                 android:drawablePadding="16dp"
                 android:drawableStart="@drawable/ic_qrcode"
                 android:hint="@string/generate_name"
-                android:inputType="textCapSentences"
+                android:inputType="textCapWords"
                 android:maxLines="1"
                 android:padding="16dp"
                 android:textColorHint="@android:color/black"

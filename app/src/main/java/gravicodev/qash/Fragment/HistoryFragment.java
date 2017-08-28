@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -22,14 +23,17 @@ import gravicodev.qash.Activity.MainActivity;
 import gravicodev.qash.Adapter.ListHistoryAdapter;
 import gravicodev.qash.Helper.FirebaseUtils;
 import gravicodev.qash.Models.QHistory;
+import gravicodev.qash.Preference.QHistoryManager;
 import gravicodev.qash.R;
 
 public class HistoryFragment extends Fragment {
     private static final String TAG = "HistoryFragment";
     private ListView listView;
+    private FrameLayout emptyLayout;
     private ListHistoryAdapter listHistoryAdapter;
 
     private List<String> mListHistoryKey;
+    private QHistoryManager qHistoryManager;
 
     public HistoryFragment() {}
 
@@ -37,12 +41,23 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_history, container, false);
-
-        mListHistoryKey = new ArrayList<>();
-        List<QHistory> emptyList = new ArrayList<>();
-
+        emptyLayout = (FrameLayout) rootView.findViewById(R.id.emptyHistory);
         listView = (ListView) rootView.findViewById(R.id.listQashHistory);
-        listHistoryAdapter = new ListHistoryAdapter(getActivity(),emptyList);
+
+        qHistoryManager = new QHistoryManager(getContext());
+        mListHistoryKey = new ArrayList<>();
+        List<QHistory> initList = new ArrayList<>();
+        if(!qHistoryManager.getData().isEmpty()){
+            initList = qHistoryManager.getData();
+            mListHistoryKey = qHistoryManager.getKeyList();
+            listView.setVisibility(View.VISIBLE);
+            emptyLayout.setVisibility(View.GONE);
+        }
+        else{
+            listView.setVisibility(View.GONE);
+            emptyLayout.setVisibility(View.VISIBLE);
+        }
+        listHistoryAdapter = new ListHistoryAdapter(getActivity(),initList);
         listView.setAdapter(listHistoryAdapter);
 
         queryHistory();
@@ -50,17 +65,32 @@ public class HistoryFragment extends Fragment {
     }
 
     private void queryHistory() {
-        ChildEventListener historyListener = new ChildEventListener() {
+        final ChildEventListener historyListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
+                QHistory qHistory = dataSnapshot.getValue(QHistory.class);
+                qHistory.setKey(key);
                 if(dataSnapshot.exists()){
-
                     if(!mListHistoryKey.contains(key)){
-                        QHistory qhistory = dataSnapshot.getValue(QHistory.class);
-                        mListHistoryKey.add(key);
-                        listHistoryAdapter.refill(qhistory);
+                        listHistoryAdapter.refill(qHistory);
+                        qHistoryManager.addData(qHistory);
+                        qHistoryManager.addKeyList(key);
+                        mListHistoryKey = qHistoryManager.getKeyList();
+                    }
+                    else{
+                        int index = listHistoryAdapter.getIndex(key);
+                        listHistoryAdapter.changeCondition(index,qHistory);
+                        qHistoryManager.editData(index,qHistory);
+                    }
 
+                    if(mListHistoryKey.size()!=0){
+                        listView.setVisibility(View.VISIBLE);
+                        emptyLayout.setVisibility(View.GONE);
+                    }
+                    else{
+                        listView.setVisibility(View.GONE);
+                        emptyLayout.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -68,22 +98,33 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 String key = dataSnapshot.getKey();
-                QHistory qhistory = dataSnapshot.getValue(QHistory.class);
+                QHistory qHistory = dataSnapshot.getValue(QHistory.class);
                 if(mListHistoryKey.contains(key)){
-                    int index = mListHistoryKey.indexOf(key);
-                    listHistoryAdapter.changeCondition(index,qhistory);
-                }
 
+                    int index = listHistoryAdapter.getIndex(key);
+                    listHistoryAdapter.changeCondition(index,qHistory);
+                    qHistoryManager.editData(index,qHistory);
+                }
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 String key = dataSnapshot.getKey();
-                QHistory qhistory = dataSnapshot.getValue(QHistory.class);
                 if(mListHistoryKey.contains(key)){
-                    int index = mListHistoryKey.indexOf(key);
-                    mListHistoryKey.remove(key);
+                    int index = listHistoryAdapter.getIndex(key);
                     listHistoryAdapter.remove(index);
+                    qHistoryManager.removeData(index);
+                    qHistoryManager.removeKeyData(key);
+                    mListHistoryKey = qHistoryManager.getKeyList();
+
+                    if(mListHistoryKey.size()!=0){
+                        listView.setVisibility(View.VISIBLE);
+                        emptyLayout.setVisibility(View.GONE);
+                    }
+                    else{
+                        listView.setVisibility(View.GONE);
+                        emptyLayout.setVisibility(View.VISIBLE);
+                    }
                 }
             }
 
@@ -97,6 +138,7 @@ public class HistoryFragment extends Fragment {
 
             }
         };
+
         DatabaseReference dbHistory = FirebaseUtils.getBaseRef().child("qhistory")
                 .child(((MainActivity)getActivity()).getUser().accountNumber);
 

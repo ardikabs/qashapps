@@ -10,9 +10,13 @@
     <string name="logout">Log Out</string>
     <string name="about">About</string>
     <string name="share">Share</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
 
     <!-- Error Message -->
     <string name="err_msg_userid">Invalid User ID</string>
+    <string name="err_msg_email">Invalid Email Format</string>
+    <string name="err_msg_emailempty">Email can\'t be empty</string>
     <string name="err_msg_pin">Pin number can\'t be empty</string>
     <string name="err_msg_min_pin">Pin number must be 6 character</string>
     <string name="err_msg_qrname">QR Name can\'t be empty</string>
@@ -39,6 +43,8 @@
     <string name="qr_show">Show QR-Code</string>
 
     <string name="list_info">List more information</string>
+    <string name="empty_qr">Your QR-Code list is still empty</string>
+    <string name="empty_history">Your transaction list is still empty</string>
 
     <!-- Slider Activity -->
     <string name="next">Next</string>
@@ -141,6 +147,9 @@
     <string name="new_template">Add New Template</string>
     <string name="create_template">Create Template</string>
     <string name="list_template">List Template</string>
+
+    <!-- Update Template Acitivity -->
+    <string name="update_template">Update Template</string>
 
     <!-- Show QR Code Activity -->
     <string name="show_qr">QR-Code</string>

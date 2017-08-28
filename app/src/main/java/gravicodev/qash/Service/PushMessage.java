@@ -5,6 +5,9 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+import gravicodev.qash.Helper.FirebaseUtils;
+import gravicodev.qash.Session.SessionManager;
+
 /**
  * Created by mfatihas on 8/24/2017.
  */
@@ -16,6 +19,17 @@ public class PushMessage extends FirebaseInstanceIdService {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
+
+
+        FirebaseUtils.getBaseRef().child("userDevice")
+                .child(new SessionManager(getApplicationContext()).getUser().getUserid())
+                .child(new SessionManager(getApplicationContext()).getDeviceId())
+                .removeValue();
+
+        FirebaseUtils.getBaseRef().child("userDevice")
+                .child(new SessionManager(getApplicationContext()).getUser().getUserid())
+                .child(refreshedToken)
+                .setValue(true);
 
         //Ketika ada token baru. send ke db firebase beserta nomer rekening pemilik token tersebut.
 

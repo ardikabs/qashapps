@@ -9,28 +9,33 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+
 import gravicodev.qash.R;
 
 public class ListTemplateAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
-    private String[] balance, description;
+    private List<HashMap<String,Object>> mTemplateList;
 
-    public ListTemplateAdapter(Activity context, String[] balance, String[] description){
+    public ListTemplateAdapter(Activity context, List<HashMap<String,Object>> mTemplateList){
         this.context = context;
         inflater = LayoutInflater.from(context);
-        this.balance = balance;
-        this.description = description;
+        this.mTemplateList = mTemplateList;
     }
 
     @Override
     public int getCount() {
-        return balance.length;
+        return mTemplateList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return position;
     }
 
     @Override
@@ -46,6 +51,10 @@ public class ListTemplateAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
+        HashMap<String,Object> data = mTemplateList.get(position);
+        String desc = (String) data.get("desc");
+        String balance = (String) data.get("balance");
+
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.list_template, null);
             holder = new ViewHolder();
@@ -57,8 +66,71 @@ public class ListTemplateAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.balanceTemplate.setText(balance[position]);
-        holder.descTemplate.setText(description[position]);
+        holder.descTemplate.setText(desc);
+        holder.balanceTemplate.setText("Rp "+moneyParserString(balance));
         return convertView;
     }
+
+    public void refill(HashMap<String, Object> template){
+        mTemplateList.add(template);
+        Collections.sort(mTemplateList, new Comparator<HashMap<String,Object>>() {
+            @Override
+            public int compare(HashMap<String,Object> o1, HashMap<String,Object> o2) {
+                Long ts1 = (Long) o1.get("created_at");
+                Long ts2 = (Long) o2.get("created_at");
+                return ts2.compareTo(ts1);
+            }
+        });
+        notifyDataSetChanged();
+    }
+
+    public void change(int index, HashMap<String,Object> template){
+        mTemplateList.set(index,template);
+        notifyDataSetChanged();
+    }
+
+    public void remove(int index){
+        mTemplateList.remove(index);
+        notifyDataSetChanged();
+    }
+
+    public int getIndex(String key){
+        int i = 0;
+        for(HashMap<String,Object> data : mTemplateList){
+            String keyData = (String) data.get("key");
+            if(keyData.equalsIgnoreCase(key)){
+                return i;
+            }
+            i++;
+        }
+        return 0;
+    }
+
+    public HashMap<String,Object> getData(int index){
+        return mTemplateList.get(index);
+    }
+
+    public String moneyParserString(String data){
+        ArrayList<String> input = new ArrayList<>();
+        for(int i = data.length()-1;i>=0;i--){
+            if(!".".equals(String.valueOf(data.charAt(i)))){
+                input.add(String.valueOf(data.charAt(i)));
+            }
+        }
+
+        String strHasil = "";
+        int x = 1;
+        for(int i=0; i < input.size();i++){
+            if(x==3 && i != (input.size()-1)){
+                strHasil = "." + input.get(i) + strHasil;
+                x = 0;
+            }else{
+                strHasil = input.get(i) + strHasil;
+            }
+            x++;
+        }
+
+        return strHasil;
+    }
+
 }

@@ -110,15 +110,16 @@ public class ListQRAdapter extends BaseAdapter {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseUtils.getBaseRef()
-                                .child("qmaster")
-                                .child(key)
-                                .removeValue();
-
-                        FirebaseUtils.getBaseRef()
                                 .child("qcreator")
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .child(key)
                                 .removeValue();
+
+                        FirebaseUtils.getBaseRef()
+                                .child("qmaster")
+                                .child(key)
+                                .removeValue();
+
                     }
                 });
 
@@ -167,10 +168,17 @@ public class ListQRAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public QMaster getInfo(int position){
-        QMaster qMaster = mQMaster.get(position);
-        return qMaster;
+    public int getIndex(String key){
+        int i = 0;
+        for (QMaster qMaster: mQMaster){
+            if(qMaster.getKey().equalsIgnoreCase(key)){
+                return i;
+            }
+            i++;
+        }
+        return 0;
     }
+
 
     public String moneyParserString(String data){
         ArrayList<String> input = new ArrayList<>();
