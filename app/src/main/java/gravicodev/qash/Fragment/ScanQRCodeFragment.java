@@ -321,6 +321,44 @@ public class ScanQRCodeFragment extends Fragment {
 
             ((MainActivity)getActivity()).showSuccess(balanceUsed);
 
+            // User Info
+            FirebaseUtils.getBaseRef().child("users").orderByChild("accountNumber").equalTo(BeneficieryAccountNumber)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                User user = ds.getValue(User.class);
+                                user.setBalance(user.getBalance() + balanceUsed);
+                                FirebaseUtils.getBaseRef().child("users").child(ds.getKey())
+                                        .child("balance").setValue(user.getBalance());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+            // Recipient Info
+            FirebaseUtils.getBaseRef().child("users").orderByChild("accountNumber").equalTo(SourceAccountNumber)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for(DataSnapshot ds : dataSnapshot.getChildren()){
+                                User user = ds.getValue(User.class);
+                                user.setBalance(user.getBalance() - balanceUsed);
+                                FirebaseUtils.getBaseRef().child("users").child(ds.getKey())
+                                        .child("balance").setValue(user.getBalance());
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
 /*            Push Notification Function
             VolleyHelper vh = new VolleyHelper();
             try {
