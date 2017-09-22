@@ -17,7 +17,6 @@ public class QHistory {
     public String msg;
     private String status;
     private String key;
-    private Boolean checked = false;
 
     public QHistory(){
 
@@ -27,14 +26,6 @@ public class QHistory {
         this.used_at = System.currentTimeMillis();
         this.title = title;
         this.msg = msg;
-    }
-
-    public Boolean getChecked() {
-        return checked;
-    }
-
-    public void setChecked(Boolean checked) {
-        this.checked = checked;
     }
 
     public String getKey() {
@@ -60,6 +51,7 @@ public class QHistory {
         result.put("used_at",used_at);
         result.put("title",title);
         result.put("msg",msg);
+        result.put("status",status);
 
         return result;
     }
