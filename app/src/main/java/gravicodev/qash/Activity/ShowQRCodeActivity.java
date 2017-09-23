@@ -88,6 +88,12 @@ public class ShowQRCodeActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_qrcode);
         toolbar.getNavigationIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
         setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         qrcodeName = (TextView) findViewById(R.id.qrcode_name);
         qrcodeBalance = (TextView) findViewById(R.id.qrcode_balance);

@@ -126,6 +126,15 @@ public class HomeFragment extends Fragment {
                 QMaster qMaster = dataSnapshot.getValue(QMaster.class);
                 qMaster.setKey(key);
 
+                if (mQRbyUserList.contains(key)){
+                    if(mQRKeyList.contains(key)){
+
+                        int index = listCurrentBalanceAdapter.getIndex(key);
+                        listCurrentBalanceAdapter.changeCondition(index,qMaster);
+                        QMasterManager.editData(index,qMaster);
+                    }
+                }
+
 /*              Jika balance qmaster menjadi 0, data qr code langsung di hapus
                 if(qMaster.balance == 0){
                     FirebaseUtils.getBaseRef().child("qmaster")
@@ -150,14 +159,7 @@ public class HomeFragment extends Fragment {
                 }
                 else{}
 */
-                if (mQRbyUserList.contains(key)){
-                    if(mQRKeyList.contains(key)){
 
-                        int index = listCurrentBalanceAdapter.getIndex(key);
-                        listCurrentBalanceAdapter.changeCondition(index,qMaster);
-                        QMasterManager.editData(index,qMaster);
-                    }
-                }
 
             }
 

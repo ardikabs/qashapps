@@ -123,7 +123,6 @@ public class ListQRActivity extends BaseActivity {
                 String key = dataSnapshot.getKey();
                 if (mQRbyUserList.contains(key)) {
                     if (mQRKeyList.contains(key)) {
-                        Log.d(TAG, String.valueOf(mQRKeyList));
                         int index = listQRAdapter.getIndex(key);
                         mQRbyUserList.remove(key);
                         listQRAdapter.remove(index);

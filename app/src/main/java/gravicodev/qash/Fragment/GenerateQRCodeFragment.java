@@ -154,14 +154,16 @@ public class GenerateQRCodeFragment extends Fragment {
 
     private void firebaseHandler() {
         db = FirebaseUtils.getBaseRef().child("timestamp").child(((MainActivity)getActivity()).getUid());
+        final String qr_name = qrName.getText().toString().trim();
+        final String qr_balance =  ((MainActivity)getActivity()).moneyParserToInt(qrBalance.getText().toString().trim());
+
         timestampListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     User user = ((MainActivity)getActivity()).getUser();
                     Long createdTimestamp = dataSnapshot.getValue(Long.class);
-                    String qr_name = qrName.getText().toString().trim();
-                    String qr_balance =  ((MainActivity)getActivity()).moneyParserToInt(qrBalance.getText().toString().trim());
+
                     String accNumber = user.accountNumber;
 
                     Calendar cal = Calendar.getInstance();
@@ -226,6 +228,12 @@ public class GenerateQRCodeFragment extends Fragment {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
         alertDialogBuilder.setMessage(message);
         alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setCancelable(true);
+
+        btnGenerate.setEnabled(true);
+        qrName.setText("");
+        qrBalance.setText("");
+        db.removeEventListener(timestampListener);
 
         if(status.equalsIgnoreCase("OK")){
 
@@ -235,20 +243,20 @@ public class GenerateQRCodeFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), ShowQRCodeActivity.class);
                     intent.putExtra("ShowQR", data);
                     startActivity(intent);
-
-                    qrName.setText("");
-                    qrBalance.setText("");
-                    btnGenerate.setEnabled(true);
-                    db.removeEventListener(timestampListener);
                 }
             });
+            alertDialogBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+
 
         }
         else{
             alertDialogBuilder.setNegativeButton(status, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    btnGenerate.setEnabled(true);
                 }
             });
         }
